@@ -1,6 +1,8 @@
 TARGET = jirate
 TEMPLATE = aux
 
+system(echo "\\\{\\\"version\\\":\\\"$${SPECVERSION}\\\"\\\}" > qml/version.json)
+
 qml.files = qml/*
 qml.path = /usr/share/$${TARGET}/qml
 
@@ -21,5 +23,6 @@ OTHER_FILES += qml/jirate.qml \
     qml/pages/IssueView.qml \
     qml/pages/MainPage.qml \
     qml/pages/CommentView.qml \
-    qml/pages/AddCommentDialog.qml
+    qml/pages/AddCommentDialog.qml \
+    qml/pages/About.qml
 

@@ -9,6 +9,24 @@ ApplicationWindow
 
     property int searchtotalcount: 0
     property var currentissue
+    property var application
+
+    Component.onCompleted:
+    {
+        var xhr = new XMLHttpRequest
+        xhr.onreadystatechange = (function(myxhr)
+        {
+            return function()
+            {
+                if (myxhr.readyState === 4)
+                {
+                    application = JSON.parse(myxhr.responseText)
+                }
+            }
+        })(xhr);
+        xhr.open("GET", Qt.resolvedUrl("version.json"), true)
+        xhr.send();
+    }
 
     ConfigurationValue
     {

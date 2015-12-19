@@ -25,7 +25,7 @@ Simple Jira interface
 
 %build
 
-%qtc_qmake5 
+%qtc_qmake5 SPECVERSION=%{version}
 
 %qtc_make %{?_smp_mflags}
 
