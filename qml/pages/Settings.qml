@@ -29,7 +29,7 @@ Page
 
             PageHeader
             {
-                title: "Authentication"
+                title: "Settings"
             }
 
 
@@ -40,6 +40,7 @@ Page
                 width: parent.width
                 focus: true
                 text: Qt.atob(hosturlstring.value)
+                inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData
                 EnterKey.iconSource: "image://theme/icon-m-enter-accept"
                 EnterKey.onClicked:
                 {
@@ -53,6 +54,7 @@ Page
                 width: parent.width
                 focus: false
                 text: Qt.atob(authstring.value).split(":")[0]
+                inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData
                 EnterKey.iconSource: "image://theme/icon-m-enter-accept"
                 EnterKey.onClicked:
                 {
@@ -66,6 +68,7 @@ Page
                 width: parent.width
                 focus: false
                 text: Qt.atob(authstring.value).split(":").pop()
+                inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData
                 EnterKey.iconSource: "image://theme/icon-m-enter-accept"
                 EnterKey.onClicked:
                 {

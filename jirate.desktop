@@ -2,6 +2,6 @@
 Type=Application
 X-Nemo-Application-Type=silica-qt5
 Icon=jirate
-Exec=jirate
+Exec=saifish-qml jirate
 Name=jirate
 

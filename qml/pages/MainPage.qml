@@ -7,7 +7,10 @@ Page
 
     SilicaFlickable 
     {
+        id: flick
         anchors.fill: parent
+
+        VerticalScrollDecorator { flickable: flick }
 
         PullDownMenu 
         {
@@ -15,6 +18,16 @@ Page
             {
                 text: "Settings"
                 onClicked: pageStack.push(Qt.resolvedUrl("Settings.qml"))
+            }
+        }
+
+        PushUpMenu
+        {
+            visible: issues.count > 0 && issues.count < searchtotalcount
+            MenuItem
+            {
+                text: "Load more..."
+                onClicked: jqlsearch(issues.count)
             }
         }
 
@@ -32,39 +45,51 @@ Page
                 title: "Jirate"
             }
             
-            Button
+            Item
             {
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: "my open issues"
-                onClicked:
+                width: parent.width
+                height: jql.implicitHeight
+                TextArea
                 {
-                    request(Qt.atob(hosturlstring.value) + "rest/api/2/search?jql=assignee=currentuser()+and+resolution+is+empty+ORDER+BY+key+ASC&maxResults=10",
-                    function (o)
+                    id: jql
+                    label: "JQL"
+                    anchors.left: parent.left
+                    anchors.leftMargin: Theme.paddingSmall
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: parent.width - Theme.itemSizeMedium
+                    height: implicitHeight
+                    focus: false
+                    wrapMode: Text.WrapAnywhere
+                    inputMethodHints: Qt.ImhUrlCharactersOnly
+                    text: jqlstring.value
+                    EnterKey.iconSource: "image://theme/icon-m-search"
+                    EnterKey.onClicked:
                     {
-                        var d = eval('new Object(' + o.responseText + ')');
-                        total.text = d.maxResults + " of " + d.total
-
-                        issues.clear()
-
-                        for (var i=0 ; i<d.maxResults ; i++)
-                        {
-                            issues.append({
-                                key: d.issues[i].key,
-                                summary: d.issues[i].fields.summary,
-                                assignee: d.issues[i].fields.assignee.displayName,
-                                issueicon: d.issues[i].fields.issuetype.iconUrl,
-                                statusicon: d.issues[i].fields.status.iconUrl,
-                                priorityicon: d.issues[i].fields.priority.iconUrl,
-                            })
-                        }
-                    })
+                        focus = false
+                        jqlstring.value = jql.text
+                        jqlsearch(0)
+                    }
+                }
+                IconButton
+                {
+                    id: searchbutton
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: Theme.paddingSmall
+                    icon.source: "image://theme/icon-m-search"
+                    onClicked:
+                    {
+                        jql.focus = false
+                        jqlstring.value = jql.text
+                        jqlsearch(0)
+                    }
                 }
             }
 
-            Label
+            DetailItem
             {
-                id: total
-                x: Theme.paddingLarge
+                label: "Showing"
+                value: issues.count + " of " + searchtotalcount
             }
 
             Repeater
@@ -74,6 +99,7 @@ Page
                 {
                     width: column.width
                     height: Theme.itemSizeLarge
+                    onClicked: pageStack.push(Qt.resolvedUrl("IssueView.qml"), {key: key})
                     Column
                     {
                         width: parent.width - Theme.itemSizeExtraSmall - Theme.paddingMedium
@@ -134,29 +160,6 @@ Page
                 }
             }
         }
-    }
-
-    ListModel
-    {
-        id: issues
-    }
-
-    function request(url, callback)
-    {
-        console.log(url)
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = (function(myxhr)
-        {
-            return function()
-            {
-                if(myxhr.readyState === 4)
-                    callback(myxhr);
-            }
-        })(xhr);
-        xhr.open("GET", url, true);
-        xhr.setRequestHeader("Authorization", "Basic " + authstring.value)
-        xhr.setRequestHeader("Content-type", "application/json");
-        xhr.send('');
     }
 }
 

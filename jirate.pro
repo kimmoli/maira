@@ -1,15 +1,25 @@
-
 TARGET = jirate
+TEMPLATE = aux
 
-CONFIG += sailfishapp
+qml.files = qml/*
+qml.path = /usr/share/$${TARGET}/qml
 
-SOURCES += src/jirate.cpp
+desktop.files = $${TARGET}.desktop
+desktop.path = /usr/share/applications
+
+appicons.files = appicons/*
+appicons.path = /usr/share/icons/hicolor/
+
+INSTALLS = qml desktop appicons
 
 OTHER_FILES += qml/jirate.qml \
     qml/cover/CoverPage.qml \
-    qml/pages/FirstPage.qml \
     rpm/jirate.spec \
     jirate.desktop \
-    jirate.png \
-    qml/pages/Settings.qml
+    appicons/86x86/apps/jirate.png \
+    qml/pages/Settings.qml \
+    qml/pages/IssueView.qml \
+    qml/pages/MainPage.qml \
+    qml/pages/CommentView.qml \
+    qml/pages/AddCommentDialog.qml
 

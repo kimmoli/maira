@@ -5,22 +5,20 @@ Name:       jirate
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 
-Summary:    Jirate
+Summary:    Jira Pirate
 Version:    0.0.1
 Release:    1
 Group:      Qt/Qt
 License:    LICENSE
-URL:        http://example.org/
+URL:        https://github.com/kimmoli/jirate
+BuildArch:  noarch
 Source0:    %{name}-%{version}.tar.bz2
 Requires:   sailfishsilica-qt5 >= 0.10.9
-BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
-BuildRequires:  pkgconfig(Qt5Core)
-BuildRequires:  pkgconfig(Qt5Qml)
-BuildRequires:  pkgconfig(Qt5Quick)
+Requires:   libsailfishapp-launcher
 BuildRequires:  desktop-file-utils
 
 %description
-Short description of my SailfishOS Application
+Simple Jira interface
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -41,8 +39,7 @@ desktop-file-install --delete-original \
    %{buildroot}%{_datadir}/applications/*.desktop
 
 %files
-%defattr(-,root,root,-)
-%{_bindir}
+%defattr(644,root,root,755)
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/86x86/apps/%{name}.png
