@@ -12,7 +12,7 @@ desktop.path = /usr/share/applications
 appicons.files = appicons/*
 appicons.path = /usr/share/icons/hicolor/
 
-INSTALLS = qml desktop appicons
+INSTALLS += qml desktop appicons
 
 OTHER_FILES += qml/jirate.qml \
     qml/cover/CoverPage.qml \

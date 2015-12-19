@@ -28,6 +28,39 @@ ApplicationWindow
         })(xhr);
         xhr.open("GET", Qt.resolvedUrl("version.json"), true)
         xhr.send();
+
+        auth()
+    }
+
+    function auth()
+    {
+        var url = Qt.atob(hosturlstring.value) + "rest/auth/1/session"
+
+        var content = {}
+        content.username = Qt.atob(authstring.value).split(":")[0]
+        content.password = Qt.atob(authstring.value).split(":")[1]
+
+        var contentstring = JSON.stringify(content)
+        console.log(contentstring)
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = (function(myxhr)
+        {
+            return function()
+            {
+                if(myxhr.readyState === 4)
+                {
+                    console.log("auth: status " + myxhr.status)
+                    console.log("auth: " + myxhr.responseText)
+                    jqlsearch(0)
+                }
+            }
+        })(xhr);
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-type", "application/json")
+        xhr.setRequestHeader("Content-length", contentstring.length)
+        xhr.setRequestHeader("Connection", "close");
+        xhr.send(contentstring);
     }
 
     ConfigurationValue
@@ -81,7 +114,7 @@ ApplicationWindow
             }
         })(xhr);
         xhr.open("GET", url, true);
-        xhr.setRequestHeader("Authorization", "Basic " + authstring.value)
+        // xhr.setRequestHeader("Authorization", "Basic " + authstring.value)
         xhr.setRequestHeader("Content-type", "application/json");
         xhr.send('');
     }
@@ -91,7 +124,6 @@ ApplicationWindow
         request(Qt.atob(hosturlstring.value) + "rest/api/2/search?jql=" + jqlstring.value.replace(/ /g, "+") + "&startAt=" + startat + "&maxResults=10",
         function (o)
         {
-            //var d = eval('new Object(' + o.responseText + ')')
             var d = JSON.parse(o.responseText)
 
             if (startat == 0)
@@ -123,10 +155,9 @@ ApplicationWindow
         request(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey,
         function (o)
         {
-            //currentissue = eval('new Object(' + o.responseText + ')')
             currentissue = JSON.parse(o.responseText)
 
-            console.log(JSON.stringify(currentissue, null, 4))
+            //console.log(JSON.stringify(currentissue, null, 4))
 
             comments.clear()
             for (var i=0 ; i < currentissue.fields.comment.comments.length; i++)
@@ -166,7 +197,7 @@ ApplicationWindow
             }
         })(xhr);
         xhr.open("POST", url, true);
-        xhr.setRequestHeader("Authorization", "Basic " + authstring.value)
+        // xhr.setRequestHeader("Authorization", "Basic " + authstring.value)
         xhr.setRequestHeader("Content-type", "application/json")
         xhr.setRequestHeader("Content-length", content.length)
         xhr.setRequestHeader("Connection", "close");
@@ -178,7 +209,7 @@ ApplicationWindow
     {
         var content = {}
         content.body = body
-        console.log(issuekey + " << " + JSON.stringify(content))
+        // console.log(issuekey + " << " + JSON.stringify(content))
         post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content))
     }
 
