@@ -29,11 +29,18 @@ Page
                         if (newcomment.commenttext.length > 0)
                         {
                             addcomment(key, newcomment.commenttext)
-                            fetchissue(key)
+                            refreshtimer.start()
                         }
                     })
                 }
             }
+        }
+
+        Timer
+        {
+            id: refreshtimer
+            interval: 500
+            onTriggered: fetchissue(key)
         }
 
         contentHeight: column.height
