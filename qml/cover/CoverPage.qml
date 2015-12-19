@@ -3,11 +3,19 @@ import Sailfish.Silica 1.0
 
 CoverBackground 
 {
+    Image
+    {
+        id: icon
+        anchors.centerIn: parent
+        source: imagelocation
+    }
     Label 
     {
-        id: label
-        anchors.centerIn: parent
+        anchors.top: icon.bottom
+        anchors.topMargin: Theme.paddingMedium
+        anchors.horizontalCenter: parent.horizontalCenter
         text: "Jirate"
+        font.bold: true
     }
 }
 

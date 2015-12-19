@@ -3,8 +3,6 @@ import Sailfish.Silica 1.0
 
 Page
 {
-    property string imagelocation: "/usr/share/icons/hicolor/86x86/apps/jirate.png"
-
     id: page
 
     SilicaFlickable

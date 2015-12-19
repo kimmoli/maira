@@ -7,6 +7,8 @@ ApplicationWindow
     initialPage: Qt.resolvedUrl("pages/MainPage.qml")
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 
+    property string imagelocation: "/usr/share/icons/hicolor/86x86/apps/jirate.png"
+
     property int searchtotalcount: 0
     property var currentissue
     property var application
