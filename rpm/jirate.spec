@@ -6,7 +6,7 @@ Name:       jirate
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 
 Summary:    Jira Pirate
-Version:    0.0.1
+Version:    0.0.2
 Release:    1
 Group:      Qt/Qt
 License:    LICENSE
@@ -42,4 +42,4 @@ desktop-file-install --delete-original \
 %defattr(644,root,root,755)
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
-%{_datadir}/icons/hicolor/86x86/apps/%{name}.png
+%{_datadir}/icons/hicolor/*/apps/%{name}.png

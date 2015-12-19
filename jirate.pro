@@ -24,5 +24,6 @@ OTHER_FILES += qml/jirate.qml \
     qml/pages/MainPage.qml \
     qml/pages/CommentView.qml \
     qml/pages/AddCommentDialog.qml \
-    qml/pages/About.qml
+    qml/pages/About.qml \
+    qml/pages/AttachmentView.qml
 

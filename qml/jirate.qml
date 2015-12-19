@@ -61,6 +61,11 @@ ApplicationWindow
         id: comments
     }
 
+    ListModel
+    {
+        id: attachments
+    }
+
     /*********************************************************************************/
 
     function request(url, callback)
@@ -121,6 +126,8 @@ ApplicationWindow
             //currentissue = eval('new Object(' + o.responseText + ')')
             currentissue = JSON.parse(o.responseText)
 
+            console.log(JSON.stringify(currentissue, null, 4))
+
             comments.clear()
             for (var i=0 ; i < currentissue.fields.comment.comments.length; i++)
             {
@@ -128,6 +135,19 @@ ApplicationWindow
                     author: currentissue.fields.comment.comments[i].author.displayName,
                     body: currentissue.fields.comment.comments[i].body,
                     created: currentissue.fields.comment.comments[i].created
+                })
+            }
+
+            attachments.clear()
+            for (var i=0 ; i < currentissue.fields.attachment.length; i++)
+            {
+                attachments.append({
+                    filename: currentissue.fields.attachment[i].filename,
+                    author: currentissue.fields.attachment[i].author.displayName,
+                    created: currentissue.fields.attachment[i].created,
+                    thumbnail: currentissue.fields.attachment[i].thumbnail,
+                    content: currentissue.fields.attachment[i].content,
+                    mime: currentissue.fields.attachment[i].mimeType
                 })
             }
         })
@@ -162,6 +182,10 @@ ApplicationWindow
         post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content))
     }
 
+    function stringStartsWith (string, prefix)
+    {
+        return string.slice(0, prefix.length) == prefix
+    }
 }
 
 

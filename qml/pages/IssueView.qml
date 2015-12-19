@@ -101,6 +101,44 @@ Page
 
             SectionHeader
             {
+                text: "Attachments (" + currentissue.fields.attachment.length + ")"
+            }
+            Repeater
+            {
+                model: attachments
+                delegate: BackgroundItem
+                {
+                    width: parent.width
+                    height: Theme.itemSizeExtraSmall
+                    onClicked: pageStack.push(Qt.resolvedUrl("AttachmentView.qml"), {attachment: attachments.get(index)})
+
+                    Column
+                    {
+                        x: Theme.paddingSmall
+                        width: parent.width - 2*Theme.paddingSmall
+                        Item
+                        {
+                            width: parent.width
+                            height: Theme.itemSizeExtraSmall/2
+                            Label
+                            {
+                                anchors.left: parent.left
+                                font.pixelSize: Theme.fontSizeSmall
+                                text: filename
+                            }
+                            Label
+                            {
+                                anchors.right: parent.right
+                                font.pixelSize: Theme.fontSizeSmall
+                                text: Qt.formatDateTime(new Date(created), "hh:mm dd.MM.yyyy")
+                            }
+                        }
+                    }
+                }
+            }
+
+            SectionHeader
+            {
                 text: "Comments (" + comments.count + ")"
             }
 
