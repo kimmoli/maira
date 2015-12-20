@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "../components"
 
 Page
 {
@@ -57,14 +58,16 @@ Page
                 title: key
             }
 
-            DetailItem
+            DetailUserItem
             {
                 label: "Reporter"
+                avatar: currentissue.fields.reporter.avatarUrls["32x32"]
                 value: currentissue.fields.reporter.displayName
             }
-            DetailItem
+            DetailUserItem
             {
                 label: "Assignee"
+                avatar: currentissue.fields.assignee.avatarUrls["32x32"]
                 value: currentissue.fields.assignee.displayName
             }
             DetailItem

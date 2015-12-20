@@ -1,18 +1,13 @@
 TARGET = jirate
-TEMPLATE = aux
+QT += network
+CONFIG += sailfishapp
 
 system(echo "\\\{\\\"version\\\":\\\"$${SPECVERSION}\\\"\\\}" > qml/version.json)
-
-qml.files = qml/*
-qml.path = /usr/share/$${TARGET}/qml
-
-desktop.files = $${TARGET}.desktop
-desktop.path = /usr/share/applications
 
 appicons.files = appicons/*
 appicons.path = /usr/share/icons/hicolor/
 
-INSTALLS += qml desktop appicons
+INSTALLS += appicons
 
 OTHER_FILES += qml/jirate.qml \
     qml/cover/CoverPage.qml \
@@ -26,5 +21,9 @@ OTHER_FILES += qml/jirate.qml \
     qml/pages/AddCommentDialog.qml \
     qml/pages/About.qml \
     qml/pages/AttachmentView.qml \
-    qml/components/Messagebox.qml
+    qml/components/Messagebox.qml \
+    qml/components/DetailUserItem.qml
+
+SOURCES += \
+    src/main.cpp
 

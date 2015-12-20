@@ -153,7 +153,6 @@ ApplicationWindow
             }
         })(xhr)
         xhr.open("GET", url, true)
-        // xhr.setRequestHeader("Authorization", "Basic " + authstring.value)
         xhr.setRequestHeader("Content-type", "application/json")
         xhr.send('')
     }
@@ -215,6 +214,7 @@ ApplicationWindow
                 attachments.append({
                     filename: currentissue.fields.attachment[i].filename,
                     author: currentissue.fields.attachment[i].author.displayName,
+                    avatarurl: currentissue.fields.attachment[i].author.avatarUrls["32x32"],
                     created: currentissue.fields.attachment[i].created,
                     thumbnail: currentissue.fields.attachment[i].thumbnail,
                     content: currentissue.fields.attachment[i].content,
@@ -237,7 +237,6 @@ ApplicationWindow
             }
         })(xhr)
         xhr.open("POST", url, true)
-        // xhr.setRequestHeader("Authorization", "Basic " + authstring.value)
         xhr.setRequestHeader("Content-type", "application/json")
         xhr.setRequestHeader("Content-length", content.length)
         xhr.setRequestHeader("Connection", "close")
@@ -271,30 +270,6 @@ ApplicationWindow
             console.log(desc + " >>>")
         if (verbosejson.value)
             console.log(JSON.stringify(obj, null, 4))
-    }
-
-    function fetchimage(url)
-    {
-        log(url)
-        var xhr = new XMLHttpRequest()
-        xhr.onreadystatechange = (function(myxhr)
-        {
-            return function()
-            {
-                if(myxhr.readyState === XMLHttpRequest.DONE)
-                {
-                    log(myxhr.status, "fetchimage status")
-                    log(myxhr.responseText)
-                    var x = myxhr.responseText
-                    for (var i=0 ; i<20 ; i++)
-                        console.log(x.charCodeAt(i) + " " + x.charAt(i) + " " + x[i])
-                    // console.log(Qt.btoa(x))
-                }
-            }
-        })(xhr)
-        xhr.open("GET", url, true)
-        xhr.setRequestHeader("Content-type", "text/plain; charset=x-user-defined")
-        xhr.send('')
     }
 }
 

@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "../components"
 
 Page
 {
@@ -36,9 +37,10 @@ Page
                 title: attachment.filename
             }
 
-            DetailItem
+            DetailUserItem
             {
                 label: "Author"
+                avatar: attachment.avatarurl
                 value: attachment.author
             }
             DetailItem
@@ -51,8 +53,7 @@ Page
             {
                 id: thumbnail
                 anchors.horizontalCenter: parent.horizontalCenter
-                source: imagelocation
-                Component.onCompleted: fetchimage(attachment.thumbnail)
+                source: attachment.thumbnail
             }
         }
     }
