@@ -61,10 +61,19 @@ Page
                     {
                         if (stringStartsWith(attachment.mime, "image"))
                             pageStack.push(Qt.resolvedUrl("ImageViewer.qml"), {source: attachment.content})
+                        else
+                            FileDownloader.downloadFile(attachment.content, attachment.filename)
                     }
                 }
             }
         }
+    }
+
+    Connections
+    {
+        target: FileDownloader
+        onDownloadSuccess: msgbox.showMessage("downloaded ok")
+        onDownloadFailed: msgbox.showError("download failed")
     }
 }
 

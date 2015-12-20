@@ -127,7 +127,7 @@ Page
                             {
                                 anchors.left: parent.left
                                 font.pixelSize: Theme.fontSizeSmall
-                                text: filename
+                                text: author
                             }
                             Label
                             {
@@ -135,6 +135,14 @@ Page
                                 font.pixelSize: Theme.fontSizeSmall
                                 text: Qt.formatDateTime(new Date(created), "hh:mm dd.MM.yyyy")
                             }
+                        }
+                        Label
+                        {
+                            width: parent.width
+                            height: Theme.itemSizeExtraSmall/2
+                            font.pixelSize: Theme.fontSizeExtraSmall
+                            elide: Text.ElideRight
+                            text: filename
                         }
                     }
                 }

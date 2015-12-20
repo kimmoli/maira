@@ -187,6 +187,7 @@ ApplicationWindow
             {
                 comments.append({
                     author: currentissue.fields.comment.comments[i].author.displayName,
+                    avatarurl: currentissue.fields.comment.comments[i].author.avatarUrls["32x32"],
                     body: currentissue.fields.comment.comments[i].body,
                     created: currentissue.fields.comment.comments[i].created
                 })

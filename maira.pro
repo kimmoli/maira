@@ -26,5 +26,9 @@ OTHER_FILES += qml/maira.qml \
     qml/pages/ImageViewer.qml
 
 SOURCES += \
-    src/main.cpp
+    src/main.cpp \
+    src/filedownloader.cpp
+
+HEADERS += \
+    src/filedownloader.h
 
