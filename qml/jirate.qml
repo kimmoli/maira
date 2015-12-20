@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import org.nemomobile.configuration 1.0
+import "components"
 
 ApplicationWindow
 {
@@ -12,6 +13,7 @@ ApplicationWindow
     property int searchtotalcount: 0
     property var currentissue
     property var application
+    property bool loggedin: false
 
     Component.onCompleted:
     {
@@ -23,6 +25,7 @@ ApplicationWindow
                 if (myxhr.readyState === 4)
                 {
                     application = JSON.parse(myxhr.responseText)
+                    logjson(application)
                 }
             }
         })(xhr);
@@ -34,6 +37,10 @@ ApplicationWindow
 
     function auth()
     {
+        issues.clear()
+        comments.clear()
+        attachments.clear()
+
         var url = Qt.atob(hosturlstring.value) + "rest/auth/1/session"
 
         var content = {}
@@ -41,7 +48,7 @@ ApplicationWindow
         content.password = Qt.atob(authstring.value).split(":")[1]
 
         var contentstring = JSON.stringify(content)
-        console.log(contentstring)
+        logjson(contentstring, "auth")
 
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = (function(myxhr)
@@ -50,9 +57,20 @@ ApplicationWindow
             {
                 if(myxhr.readyState === 4)
                 {
-                    console.log("auth: status " + myxhr.status)
-                    console.log("auth: " + myxhr.responseText)
-                    jqlsearch(0)
+                    log("auth: status " + myxhr.status)
+                    var ar = JSON.parse(myxhr.responseText)
+                    logjson(ar, "auth")
+                    if (myxhr.status === 200) /* auth ok */
+                    {
+                        msgbox.showMessage("Login ok")
+                        loggedin = true
+                        jqlsearch(0)
+                    }
+                    else
+                    {
+                        msgbox.showError("Login failed")
+                        loggedin = false
+                    }
                 }
             }
         })(xhr);
@@ -84,6 +102,19 @@ ApplicationWindow
         defaultValue: "assignee=currentuser() and resolution is empty ORDER BY key ASC"
     }
 
+    ConfigurationValue
+    {
+        id: verbose
+        key: "/apps/harbour-jirate/verbose"
+        defaultValue: 0
+    }
+    ConfigurationValue
+    {
+        id: verbosejson
+        key: "/apps/harbour-jirate/verbosejson"
+        defaultValue: 0
+    }
+
     ListModel
     {
         id: issues
@@ -99,18 +130,26 @@ ApplicationWindow
         id: attachments
     }
 
+    Messagebox
+    {
+        id: msgbox
+    }
+
     /*********************************************************************************/
 
     function request(url, callback)
     {
-        console.log(url)
+        log(url)
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = (function(myxhr)
         {
             return function()
             {
                 if(myxhr.readyState === 4)
+                {
+                    log("status + " + myxhr.status, "request")
                     callback(myxhr);
+                }
             }
         })(xhr);
         xhr.open("GET", url, true);
@@ -125,8 +164,9 @@ ApplicationWindow
         function (o)
         {
             var d = JSON.parse(o.responseText)
+            logjson(d, "jqlsearch")
 
-            if (startat == 0)
+            if (startat === 0)
                 issues.clear()
 
             searchtotalcount = d.total
@@ -157,7 +197,7 @@ ApplicationWindow
         {
             currentissue = JSON.parse(o.responseText)
 
-            //console.log(JSON.stringify(currentissue, null, 4))
+            logjson(currentissue, "fetchissue")
 
             comments.clear()
             for (var i=0 ; i < currentissue.fields.comment.comments.length; i++)
@@ -186,14 +226,14 @@ ApplicationWindow
 
     function post(url, content)
     {
-        console.log(url)
+        log(url)
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = (function(myxhr)
         {
             return function()
             {
                 if(myxhr.readyState === 4)
-                    console.log("status " + myxhr.status)
+                    log("status " + myxhr.status, "post")
             }
         })(xhr);
         xhr.open("POST", url, true);
@@ -209,13 +249,28 @@ ApplicationWindow
     {
         var content = {}
         content.body = body
-        // console.log(issuekey + " << " + JSON.stringify(content))
+        logjson(content, issuekey)
         post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content))
     }
 
     function stringStartsWith (string, prefix)
     {
         return string.slice(0, prefix.length) == prefix
+    }
+
+    function log(text, desc)
+    {
+        if (verbose.value && typeof desc !=='undefined')
+            console.log(desc + " >>> " + text)
+        else if (verbose.value)
+            console.log(text)
+    }
+    function logjson(obj, desc)
+    {
+        if (verbosejson.value && typeof desc !=='undefined')
+            console.log(desc + " >>>")
+        if (verbosejson.value)
+            console.log(JSON.stringify(obj, null, 4))
     }
 }
 

@@ -32,6 +32,34 @@ Page
                 title: "Settings"
             }
 
+            SectionHeader
+            {
+                text: "General"
+            }
+
+            TextSwitch
+            {
+                width: parent.width
+                x: Theme.paddingMedium
+                text: "Verbose debug mode"
+                automaticCheck: false
+                checked: verbose.value === 1
+                onClicked: verbose.value = (checked ? 0 : 1)
+            }
+            TextSwitch
+            {
+                width: parent.width
+                x: Theme.paddingMedium
+                text: "Print all JSON"
+                automaticCheck: false
+                checked: verbosejson.value === 1
+                onClicked: verbosejson.value = (checked ? 0 : 1)
+            }
+
+            SectionHeader
+            {
+                text: "Login"
+            }
 
             TextField
             {
@@ -78,12 +106,14 @@ Page
             Button
             {
                 anchors.horizontalCenter: parent.horizontalCenter
-                enabled: (authstring.value !== Qt.btoa(authusr.text + ":" + authpwd.text)) || (hosturlstring.value !== Qt.btoa(hosturlstring.text))
+                enabled: (authstring.value !== Qt.btoa(authusr.text + ":" + authpwd.text)) || (hosturlstring.value !== Qt.btoa(hosturl.text))
                 text: "Save"
                 onClicked:
                 {
                     hosturlstring.value = Qt.btoa(hosturl.text)
                     authstring.value = Qt.btoa(authusr.text + ":" + authpwd.text)
+                    auth()
+                    pageStack.pop()
                 }
             }
         }

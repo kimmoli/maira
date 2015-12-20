@@ -28,7 +28,7 @@ Page
 
         PushUpMenu
         {
-            visible: issues.count > 0 && issues.count < searchtotalcount
+            visible: loggedin && issues.count > 0 && issues.count < searchtotalcount
             MenuItem
             {
                 text: "Load more..."
@@ -72,7 +72,10 @@ Page
                     {
                         focus = false
                         jqlstring.value = jql.text
-                        jqlsearch(0)
+                        if (loggedin)
+                            jqlsearch(0)
+                        else
+                            msgbox.showError("You're not logged in")
                     }
                 }
                 IconButton
@@ -86,7 +89,10 @@ Page
                     {
                         jql.focus = false
                         jqlstring.value = jql.text
-                        jqlsearch(0)
+                        if (loggedin)
+                            jqlsearch(0)
+                        else
+                            msgbox.showError("You're not logged in")
                     }
                 }
             }
