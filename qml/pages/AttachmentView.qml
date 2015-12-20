@@ -51,7 +51,8 @@ Page
             {
                 id: thumbnail
                 anchors.horizontalCenter: parent.horizontalCenter
-                source: attachment.thumbnail
+                source: imagelocation
+                Component.onCompleted: fetchimage(attachment.thumbnail)
             }
         }
     }
