@@ -48,7 +48,11 @@ Page
                 label: "Created"
                 value: Qt.formatDateTime(new Date(attachment.created), "hh:mm dd.MM.yyyy")
             }
-
+            DetailItem
+            {
+                label: "Type"
+                value: attachment.mime
+            }
             Image
             {
                 id: thumbnail
@@ -59,10 +63,7 @@ Page
                     anchors.fill: parent
                     onClicked:
                     {
-                        if (stringStartsWith(attachment.mime, "image"))
-                            pageStack.push(Qt.resolvedUrl("ImageViewer.qml"), {source: attachment.content})
-                        else
-                            FileDownloader.downloadFile(attachment.content, attachment.filename)
+                        FileDownloader.downloadFile(attachment.content, attachment.filename)
                     }
                 }
             }

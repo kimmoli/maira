@@ -162,7 +162,7 @@ ApplicationWindow
                     assignee: d.issues[i].fields.assignee.displayName,
                     issueicon: d.issues[i].fields.issuetype.iconUrl,
                     statusicon: d.issues[i].fields.status.iconUrl,
-                    priorityicon: iconUrl(d.issues[i].fields.priority),
+                    priorityicon: iconUrl(d.issues[i].fields.priority)
                 })
             }
         })
