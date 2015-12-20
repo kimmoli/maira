@@ -53,7 +53,16 @@ Page
             {
                 id: thumbnail
                 anchors.horizontalCenter: parent.horizontalCenter
-                source: attachment.thumbnail
+                source: stringStartsWith(attachment.mime, "image") ? attachment.thumbnail : imagelocation
+                BackgroundItem
+                {
+                    anchors.fill: parent
+                    onClicked:
+                    {
+                        if (stringStartsWith(attachment.mime, "image"))
+                            pageStack.push(Qt.resolvedUrl("ImageViewer.qml"), {source: attachment.content})
+                    }
+                }
             }
         }
     }

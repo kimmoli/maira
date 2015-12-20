@@ -22,7 +22,8 @@ OTHER_FILES += qml/jirate.qml \
     qml/pages/About.qml \
     qml/pages/AttachmentView.qml \
     qml/components/Messagebox.qml \
-    qml/components/DetailUserItem.qml
+    qml/components/DetailUserItem.qml \
+    qml/pages/ImageViewer.qml
 
 SOURCES += \
     src/main.cpp
