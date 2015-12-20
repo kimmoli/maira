@@ -1,16 +1,16 @@
-Name:       jirate
+Name:       harbour-maira
 
 %{!?qtc_qmake:%define qtc_qmake %qmake}
 %{!?qtc_qmake5:%define qtc_qmake5 %qmake5}
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 
-Summary:    Jira Pirate
+Summary:    Sailfish application for JIRA
 Version:    0.0.2
 Release:    1
 Group:      Qt/Qt
 License:    LICENSE
-URL:        https://github.com/kimmoli/jirate
+URL:        https://github.com/kimmoli/maira.git
 Source0:    %{name}-%{version}.tar.bz2
 Requires:   sailfishsilica-qt5 >= 0.10.9
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
@@ -20,7 +20,7 @@ BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  desktop-file-utils
 
 %description
-Simple Jira interface
+Application to interact with JIRA from your Sailfish device
 
 %prep
 %setup -q -n %{name}-%{version}

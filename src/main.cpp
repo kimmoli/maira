@@ -80,12 +80,16 @@ int main(int argc, char *argv[])
 {
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
 
+    app->setApplicationName(APPNAME);
+    app->setOrganizationName(APPNAME);
+    app->setApplicationVersion(APPVERSION);
+
     QScopedPointer<QQuickView> view(SailfishApp::createView());
 
     QQmlEngine *engine = view->engine();
     engine->setNetworkAccessManagerFactory(new MyNetworkAccessManagerFactory);
 
-    view->setSource(SailfishApp::pathTo("qml/jirate.qml"));
+    view->setSource(SailfishApp::pathTo("qml/maira.qml"));
     view->show();
 
     return app->exec();

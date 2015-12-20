@@ -1,19 +1,19 @@
-TARGET = jirate
+TARGET = harbour-maira
 QT += network
 CONFIG += sailfishapp
 
-system(echo "\\\{\\\"version\\\":\\\"$${SPECVERSION}\\\"\\\}" > qml/version.json)
+DEFINES += "APPVERSION=\\\"$${SPECVERSION}\\\""
+DEFINES += "APPNAME=\\\"$${TARGET}\\\""
 
-appicons.files = appicons/*
-appicons.path = /usr/share/icons/hicolor/
+icons.files = icons/*
+icons.path = /usr/share/icons/hicolor/
+INSTALLS += icons
 
-INSTALLS += appicons
-
-OTHER_FILES += qml/jirate.qml \
+OTHER_FILES += qml/maira.qml \
     qml/cover/CoverPage.qml \
-    rpm/jirate.spec \
-    jirate.desktop \
-    appicons/86x86/apps/jirate.png \
+    rpm/harbour-maira.spec \
+    harbour-maira.desktop \
+    icons/86x86/apps/harbour-maira.png \
     qml/pages/Settings.qml \
     qml/pages/IssueView.qml \
     qml/pages/MainPage.qml \

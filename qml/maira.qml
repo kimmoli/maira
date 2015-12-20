@@ -8,30 +8,14 @@ ApplicationWindow
     initialPage: Qt.resolvedUrl("pages/MainPage.qml")
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 
-    property string imagelocation: "/usr/share/icons/hicolor/86x86/apps/jirate.png"
+    property string imagelocation: "/usr/share/icons/hicolor/86x86/apps/harbour-maira.png"
 
     property int searchtotalcount: 0
     property var currentissue
-    property var application
     property bool loggedin: false
 
     Component.onCompleted:
     {
-        var xhr = new XMLHttpRequest()
-        xhr.onreadystatechange = (function(myxhr)
-        {
-            return function()
-            {
-                if (myxhr.readyState === 4)
-                {
-                    application = JSON.parse(myxhr.responseText)
-                    logjson(application)
-                }
-            }
-        })(xhr)
-        xhr.open("GET", Qt.resolvedUrl("version.json"), true)
-        xhr.send()
-
         auth()
     }
 
@@ -84,34 +68,34 @@ ApplicationWindow
     ConfigurationValue
     {
         id: hosturlstring
-        key: "/apps/harbour-jirate/host"
+        key: "/apps/harbour-maira/host"
         defaultValue: Qt.btoa("http://jiraserver:1234/")
     }
 
     ConfigurationValue
     {
         id: authstring
-        key: "/apps/harbour-jirate/user"
+        key: "/apps/harbour-maira/user"
         defaultValue: Qt.btoa("username:password")
     }
 
     ConfigurationValue
     {
         id: jqlstring
-        key: "/apps/harbour-jirate/jql"
+        key: "/apps/harbour-maira/jql"
         defaultValue: "assignee=currentuser() and resolution is empty ORDER BY key ASC"
     }
 
     ConfigurationValue
     {
         id: verbose
-        key: "/apps/harbour-jirate/verbose"
+        key: "/apps/harbour-maira/verbose"
         defaultValue: 0
     }
     ConfigurationValue
     {
         id: verbosejson
-        key: "/apps/harbour-jirate/verbosejson"
+        key: "/apps/harbour-maira/verbosejson"
         defaultValue: 0
     }
 

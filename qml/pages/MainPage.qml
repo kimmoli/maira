@@ -47,7 +47,7 @@ Page
             
             PageHeader 
             {
-                title: "Jirate"
+                title: "Maira"
             }
             
             Item

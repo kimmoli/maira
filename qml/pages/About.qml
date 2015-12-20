@@ -19,11 +19,11 @@ Page
             spacing: Theme.paddingLarge
             PageHeader
             {
-                title: "About Jirate"
+                title: "About Maira"
             }
             Label
             {
-                text: "Simple Jira interface"
+                text: "Sailfish interface for JIRA®"
                 color: Theme.primaryColor
                 font.pixelSize: Theme.fontSizeMedium
                 font.bold: true
@@ -54,10 +54,30 @@ Page
             }
             Label
             {
-                text: "Version: " + application.version
+                text: "Version: " + Qt.application.version
                 color: Theme.primaryColor
                 font.pixelSize: Theme.fontSizeMedium
                 anchors.horizontalCenter: parent.horizontalCenter
+            }
+            Label
+            {
+                text: "Sailfish is a registered trademark of Jolla Ltd. JIRA is a registered trademark of Atlassian Pty Ltd."
+                wrapMode: Text.Wrap
+                width: parent.width - 2*Theme.paddingLarge
+                color: Theme.primaryColor
+                font.pixelSize: Theme.fontSizeMedium
+                anchors.horizontalCenter: parent.horizontalCenter
+                horizontalAlignment: Text.AlignHCenter
+            }
+            Label
+            {
+                text: "This application is open source. Source code can be forked from https://github.com/kimmoli/maira"
+                wrapMode: Text.Wrap
+                width: parent.width - 2*Theme.paddingLarge
+                color: Theme.primaryColor
+                font.pixelSize: Theme.fontSizeMedium
+                anchors.horizontalCenter: parent.horizontalCenter
+                horizontalAlignment: Text.AlignHCenter
             }
         }
     }

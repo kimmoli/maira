@@ -14,7 +14,7 @@ CoverBackground
         anchors.top: icon.bottom
         anchors.topMargin: Theme.paddingMedium
         anchors.horizontalCenter: parent.horizontalCenter
-        text: "Jirate"
+        text: "Maira"
         font.bold: true
     }
 }
