@@ -7,6 +7,7 @@ Page
     id: page
 
     property var comment
+    signal commentupdated
 
     SilicaFlickable
     {
@@ -19,7 +20,20 @@ Page
         {
             MenuItem
             {
-                text: "Dummy menu"
+                text: "Edit comment"
+                onClicked:
+                {
+                    var editcomment = pageStack.push(Qt.resolvedUrl("AddCommentDialog.qml"), { commenttext: comment.body} )
+                    editcomment.accepted.connect(function()
+                    {
+                        if (editcomment.commenttext.length > 0)
+                        {
+                            managecomment(comment.issuekey, editcomment.commenttext, comment.id)
+                            comment.body = editcomment.commenttext
+                            commentupdated()
+                        }
+                    })
+                }
             }
         }
 

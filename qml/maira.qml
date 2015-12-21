@@ -8,6 +8,9 @@ ApplicationWindow
     initialPage: Qt.resolvedUrl("pages/MainPage.qml")
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 
+    allowedOrientations: Orientation.All
+    _defaultPageOrientations: Orientation.All
+
     property string imagelocation: "/usr/share/icons/hicolor/86x86/apps/harbour-maira.png"
 
     property int searchtotalcount: 0
@@ -189,7 +192,9 @@ ApplicationWindow
                     author: currentissue.fields.comment.comments[i].author.displayName,
                     avatarurl: currentissue.fields.comment.comments[i].author.avatarUrls["32x32"],
                     body: currentissue.fields.comment.comments[i].body,
-                    created: currentissue.fields.comment.comments[i].created
+                    created: currentissue.fields.comment.comments[i].created,
+                    id: currentissue.fields.comment.comments[i].id,
+                    issuekey: currentissue.key
                 })
             }
 
@@ -209,8 +214,9 @@ ApplicationWindow
         })
     }
 
-    function post(url, content)
+    function post(url, content, reqtype)
     {
+        reqtype = typeof reqtype === 'undefined' ? "POST" : reqtype
         log(url)
         var xhr = new XMLHttpRequest()
         xhr.onreadystatechange = (function(myxhr)
@@ -218,10 +224,14 @@ ApplicationWindow
             return function()
             {
                 if(myxhr.readyState === 4)
+                {
                     log("status " + myxhr.status, "post")
+                    if (myxhr.status < 200 || myxhr.status > 204)
+                        msgbox.showError("Operation failed")
+                }
             }
         })(xhr)
-        xhr.open("POST", url, true)
+        xhr.open(reqtype, url, true)
         xhr.setRequestHeader("Content-type", "application/json")
         xhr.setRequestHeader("Content-length", content.length)
         xhr.setRequestHeader("Connection", "close")
@@ -229,12 +239,28 @@ ApplicationWindow
     }
 
 
-    function addcomment(issuekey, body)
+    function managecomment(issuekey, body, id)
     {
         var content = {}
         content.body = body
         logjson(content, issuekey)
-        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content))
+        if (id > 0)
+            post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment/" + id, JSON.stringify(content), "PUT")
+        else
+            post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content))
+    }
+
+    function manageissue(issuekey, summary, description)
+    {
+        var content = {}
+        var fields = {}
+        if (summary.length > 0)
+            fields.summary = summary.replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ')
+        if (description.length > 0)
+            fields.description = description
+        content.fields = fields
+        logjson(content, issuekey)
+        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey, JSON.stringify(content), "PUT")
     }
 
     function stringStartsWith (string, prefix)

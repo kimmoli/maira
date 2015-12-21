@@ -7,6 +7,7 @@ Page
     id: page
 
     property string key: ""
+    property bool showAttachments: false
 
     Component.onCompleted: fetchissue(key)
 
@@ -29,7 +30,7 @@ Page
                     {
                         if (newcomment.commenttext.length > 0)
                         {
-                            addcomment(key, newcomment.commenttext)
+                            managecomment(key, newcomment.commenttext)
                             refreshtimer.start()
                         }
                     })
@@ -87,6 +88,20 @@ Page
                 wrapMode: Text.Wrap
                 font.pixelSize: Theme.fontSizeSmall
                 text: currentissue.fields.summary
+                BackgroundItem
+                {
+                    anchors.fill: parent
+                    onClicked:
+                    {
+                        var ed = pageStack.push(Qt.resolvedUrl("AddCommentDialog.qml"), { commenttext: currentissue.fields.summary})
+                        ed.accepted.connect(function()
+                        {
+                            if (ed.commenttext.length > 0)
+                                manageissue(currentissue.key, ed.commenttext, "")
+                            refreshtimer.start()
+                        })
+                    }
+                }
             }
 
             SectionHeader
@@ -100,6 +115,20 @@ Page
                 wrapMode: Text.Wrap
                 font.pixelSize: Theme.fontSizeSmall
                 text: currentissue.fields.description
+                BackgroundItem
+                {
+                    anchors.fill: parent
+                    onClicked:
+                    {
+                        var ed = pageStack.push(Qt.resolvedUrl("AddCommentDialog.qml"), { commenttext: currentissue.fields.description})
+                        ed.accepted.connect(function()
+                        {
+                            if (ed.commenttext.length > 0)
+                                manageissue(currentissue.key, "", ed.commenttext)
+                            refreshtimer.start()
+                        })
+                    }
+                }
             }
 
             SectionHeader
@@ -112,7 +141,11 @@ Page
                 delegate: BackgroundItem
                 {
                     width: parent.width
-                    height: Theme.itemSizeExtraSmall
+                    height: (!showAttachments && (index > 2)) ? 0 : Theme.itemSizeExtraSmall
+                    Behavior on height { SmoothedAnimation { duration: 500 } }
+                    visible: height > 0
+                    clip: true
+
                     onClicked: pageStack.push(Qt.resolvedUrl("AttachmentView.qml"), {attachment: attachments.get(index)})
 
                     Column
@@ -147,6 +180,20 @@ Page
                     }
                 }
             }
+            BackgroundItem
+            {
+                visible: currentissue.fields.attachment.length > 3
+                width: parent.width
+                height: Theme.itemSizeSmall/2
+                onClicked: showAttachments = !showAttachments
+                Image
+                {
+                    source: "image://Theme/icon-lock-more"
+                    anchors.right: parent.right
+                    anchors.rightMargin: Theme.paddingMedium
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
 
             SectionHeader
             {
@@ -160,7 +207,14 @@ Page
                 {
                     width: parent.width
                     height: Theme.itemSizeExtraSmall
-                    onClicked: pageStack.push(Qt.resolvedUrl("CommentView.qml"), {comment: comments.get(index)})
+                    onClicked:
+                    {
+                        var cv = pageStack.push(Qt.resolvedUrl("CommentView.qml"), {comment: comments.get(index)})
+                        cv.commentupdated.connect(function()
+                        {
+                            refreshtimer.start()
+                        })
+                    }
 
                     Column
                     {

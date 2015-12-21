@@ -46,6 +46,7 @@ Dialog
                 height: Math.max(dialog.height - dialogHeader.height, implicitHeight)
                 placeholderText: "Enter your comment here..."
                 focus: true
+		text: commenttext
                 wrapMode: Text.WrapAnywhere
                 font.pixelSize: Theme.fontSizeSmall
                 // font.family: "Monospace"
