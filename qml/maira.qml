@@ -55,7 +55,15 @@ ApplicationWindow
                     }
                     else
                     {
-                        msgbox.showError("Login failed, code " + myxhr.status)
+                        log("auth fail response: " + myxhr.responseText)
+                        if (myxhr.status === 0 || myxhr.status === 404)
+                            msgbox.showError("Host not found")
+                        else if (myxhr.status === 401)
+                            msgbox.showError("Invalid credentials")
+                        else if (myxhr.status === 403)
+                            msgbox.showError("You are not allowed to login")
+                        else
+                            msgbox.showError("Login failed, code " + myxhr.status)
                         loggedin = false
                     }
                 }
