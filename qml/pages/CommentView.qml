@@ -9,6 +9,8 @@ Page
     property var comment
     signal commentupdated
 
+    RemorsePopup { id: remorse }
+
     SilicaFlickable
     {
         id: flick
@@ -18,6 +20,16 @@ Page
 
         PullDownMenu
         {
+            MenuItem
+            {
+                text: "Remove comment"
+                onClicked: remorse.execute("Removing", function()
+                {
+                    removecomment(comment.issuekey, comment.id)
+                    refreshtimer.start()
+                    pageStack.pop()
+                })
+            }
             MenuItem
             {
                 text: "Edit comment"

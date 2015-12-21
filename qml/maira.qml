@@ -45,17 +45,17 @@ ApplicationWindow
                 if(myxhr.readyState === 4)
                 {
                     log("auth: status " + myxhr.status)
-                    var ar = JSON.parse(myxhr.responseText)
-                    logjson(ar, "auth")
                     if (myxhr.status === 200) /* auth ok */
                     {
+                        var ar = JSON.parse(myxhr.responseText)
+                        logjson(ar, "auth")
                         msgbox.showMessage("Login ok")
                         loggedin = true
                         jqlsearch(0)
                     }
                     else
                     {
-                        msgbox.showError("Login failed")
+                        msgbox.showError("Login failed, code " + myxhr.status)
                         loggedin = false
                     }
                 }
@@ -292,6 +292,11 @@ ApplicationWindow
     function removeattachment(id)
     {
         post(Qt.atob(hosturlstring.value) + "rest/api/2/attachment/" + id, "", "DELETE")
+    }
+
+    function removecomment(issuekey, id)
+    {
+        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment/" + id, "", "DELETE")
     }
 
     function stringStartsWith (string, prefix)

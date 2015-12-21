@@ -75,6 +75,12 @@ QNetworkAccessManager *MyNetworkAccessManagerFactory::create(QObject *parent)
     nam->setCookieJar(cookieJar);
     cookieJar->setParent(0);
 
+    QNetworkDiskCache* diskCache = new QNetworkDiskCache(parent);
+    QString dataPath = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+    diskCache->setCacheDirectory(dataPath);
+    diskCache->setMaximumCacheSize(5*1024*1024);
+    nam->setCache(diskCache);
+
     return nam;
 }
 
