@@ -125,6 +125,29 @@ ApplicationWindow
         id: attachments
     }
 
+    ListModel
+    {
+        id: users
+        function update(searchtext)
+        {
+            log(searchtext)
+            clear()
+            request(Qt.atob(hosturlstring.value) + "rest/api/2/user/picker?maxResults=10&query=" + searchtext,
+            function (o)
+            {
+                var d = JSON.parse(o.responseText)
+                logjson(d, "userpicker")
+
+                for (var i=0 ; i<d.users.length ; i++)
+                {
+                    append({key: d.users[i].key,
+                           html: d.users[i].html,
+                           })
+                }
+            })
+        }
+    }
+
     Messagebox
     {
         id: msgbox
@@ -296,6 +319,14 @@ ApplicationWindow
         content.fields = fields
         logjson(content, issuekey)
         post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey, JSON.stringify(content), "PUT")
+    }
+
+    function assignissue(issuekey, name)
+    {
+        var content = {}
+        content.name = name
+        logjson(content, issuekey)
+        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/assignee", JSON.stringify(content), "PUT")
     }
 
     function removeattachment(id)

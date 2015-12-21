@@ -22,6 +22,21 @@ Page
         {
             MenuItem
             {
+                text: "Assign issue"
+                onClicked:
+                {
+                    var user = pageStack.push("UserSelector.qml")
+                    user.changeUser.connect(function()
+                    {
+                        if (user.username.length > 0)
+                        assignissue(key, user.username)
+                        refreshtimer.start()
+                    })
+                }
+            }
+
+            MenuItem
+            {
                 text: "Add attachment"
                 onClicked:
                 {
