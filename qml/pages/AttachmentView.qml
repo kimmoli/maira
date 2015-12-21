@@ -8,6 +8,8 @@ Page
 
     property var attachment
 
+    RemorsePopup { id: remorse }
+
     SilicaFlickable
     {
         id: flick
@@ -19,7 +21,13 @@ Page
         {
             MenuItem
             {
-                text: "Dummy menu"
+                text: "Remove attachment"
+                onClicked: remorse.execute("Removing", function()
+                {
+                    removeattachment(attachment.id)
+                    refreshtimer.start()
+                    pageStack.pop()
+                })
             }
         }
 

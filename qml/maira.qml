@@ -227,6 +227,7 @@ ApplicationWindow
             for (var i=0 ; i < currentissue.fields.attachment.length; i++)
             {
                 attachments.append({
+                    id: currentissue.fields.attachment[i].id,
                     filename: currentissue.fields.attachment[i].filename,
                     author: currentissue.fields.attachment[i].author.displayName,
                     avatarurl: currentissue.fields.attachment[i].author.avatarUrls["32x32"],
@@ -286,6 +287,11 @@ ApplicationWindow
         content.fields = fields
         logjson(content, issuekey)
         post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey, JSON.stringify(content), "PUT")
+    }
+
+    function removeattachment(id)
+    {
+        post(Qt.atob(hosturlstring.value) + "rest/api/2/attachment/" + id, "", "DELETE")
     }
 
     function stringStartsWith (string, prefix)
