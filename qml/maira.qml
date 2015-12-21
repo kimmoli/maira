@@ -242,7 +242,8 @@ ApplicationWindow
                     created: currentissue.fields.attachment[i].created,
                     thumbnail: currentissue.fields.attachment[i].thumbnail,
                     content: currentissue.fields.attachment[i].content,
-                    mime: currentissue.fields.attachment[i].mimeType
+                    mime: currentissue.fields.attachment[i].mimeType,
+                    issuekey: currentissue.key
                 })
             }
         })

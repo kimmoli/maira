@@ -29,6 +29,22 @@ Page
                     pageStack.pop()
                 })
             }
+            MenuItem
+            {
+                text: "Mention in comment"
+                onClicked:
+                {
+                    var newcomment = pageStack.push(Qt.resolvedUrl("Editor.qml"), {text: (stringStartsWith(attachment.mime, "image") ? ("!" + attachment.filename + "|thumbnail!") : ("[^" + attachment.filename + "]"))})
+                    newcomment.accepted.connect(function()
+                    {
+                        if (newcomment.text.length > 0)
+                        {
+                            managecomment(attachment.issuekey, newcomment.text)
+                            refreshtimer.start()
+                        }
+                    })
+                }
+            }
         }
 
         contentHeight: column.height
