@@ -26,8 +26,10 @@ OTHER_FILES += qml/maira.qml \
 
 SOURCES += \
     src/main.cpp \
-    src/filedownloader.cpp
+    src/filedownloader.cpp \
+    src/fileuploader.cpp
 
 HEADERS += \
-    src/filedownloader.h
+    src/filedownloader.h \
+    src/fileuploader.h
 

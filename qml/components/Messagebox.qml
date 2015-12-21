@@ -17,7 +17,7 @@ Rectangle
         color = "red"
         messageboxText.text = message
         messagebox.opacity = 0.9
-        messageboxVisibility.interval = (delay>0) ? delay : 3000
+        messageboxVisibility.interval = (delay>0) ? delay : 2000
         messageboxVisibility.restart()
     }
 

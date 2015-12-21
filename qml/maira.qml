@@ -124,6 +124,31 @@ ApplicationWindow
 
     /*********************************************************************************/
 
+    Connections
+    {
+        target: FileDownloader
+        onDownloadSuccess: msgbox.showMessage("Download ok")
+        onDownloadFailed: msgbox.showError("Download failed")
+    }
+
+    Connections
+    {
+        target: FileUploader
+        onUploadSuccess:
+        {
+            refreshtimer.start()
+            msgbox.showMessage("Upload ok")
+        }
+        onUploadFailed: msgbox.showError("Upload failed")
+    }
+
+    Timer
+    {
+        id: refreshtimer
+        interval: 500
+        onTriggered: fetchissue(currentissue.key)
+    }
+
     function request(url, callback)
     {
         log(url)

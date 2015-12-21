@@ -69,13 +69,6 @@ Page
             }
         }
     }
-
-    Connections
-    {
-        target: FileDownloader
-        onDownloadSuccess: msgbox.showMessage("downloaded ok")
-        onDownloadFailed: msgbox.showError("download failed")
-    }
 }
 
 

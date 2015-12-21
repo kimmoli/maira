@@ -22,6 +22,20 @@ Page
         {
             MenuItem
             {
+                text: "Add attachment"
+                onClicked:
+                {
+                    var filePicker = pageStack.push("Sailfish.Pickers.ContentPickerPage", { "allowedOrientations" : Orientation.All });
+                    filePicker.selectedContentChanged.connect(function()
+                    {
+                        var filename = filePicker.selectedContent
+                        FileUploader.uploadFile(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + key + "/attachments", filename)
+                    });
+                }
+            }
+
+            MenuItem
+            {
                 text: "Add comment"
                 onClicked:
                 {
@@ -36,13 +50,6 @@ Page
                     })
                 }
             }
-        }
-
-        Timer
-        {
-            id: refreshtimer
-            interval: 500
-            onTriggered: fetchissue(key)
         }
 
         contentHeight: column.height

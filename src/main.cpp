@@ -8,6 +8,7 @@
 #include <QCoreApplication>
 #include <QtNetwork>
 #include "filedownloader.h"
+#include "fileuploader.h"
 
 class MyNetworkCookieJar : public QNetworkCookieJar
 {
@@ -92,6 +93,9 @@ int main(int argc, char *argv[])
 
     FileDownloader *fd = new FileDownloader(engine);
     view->rootContext()->setContextProperty("FileDownloader", fd);
+
+    FileUploader *fu = new FileUploader(engine);
+    view->rootContext()->setContextProperty("FileUploader", fu);
 
     view->setSource(SailfishApp::pathTo("qml/maira.qml"));
     view->show();
