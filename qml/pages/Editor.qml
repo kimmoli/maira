@@ -5,13 +5,13 @@ Dialog
 {
     id: dialog
 
-    property var commenttext: ""
+    property var text: ""
 
     onDone:
     {
         if (result === DialogResult.Accepted)
         {
-            commenttext = area.text
+            text = area.text
         }
     }
 
@@ -44,13 +44,11 @@ Dialog
                 id: area
                 width: parent.width
                 height: Math.max(dialog.height - dialogHeader.height, implicitHeight)
-                placeholderText: "Enter your comment here..."
+                placeholderText: "Enter your text here..."
                 focus: true
-		text: commenttext
+                text: dialog.text
                 wrapMode: Text.WrapAnywhere
                 font.pixelSize: Theme.fontSizeSmall
-                // font.family: "Monospace"
-
                 selectionMode: TextEdit.SelectCharacters
                 background: null
             }

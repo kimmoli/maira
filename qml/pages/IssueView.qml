@@ -25,12 +25,12 @@ Page
                 text: "Add comment"
                 onClicked:
                 {
-                    var newcomment = pageStack.push(Qt.resolvedUrl("AddCommentDialog.qml"), {commenttext: ""})
+                    var newcomment = pageStack.push(Qt.resolvedUrl("Editor.qml"), {text: ""})
                     newcomment.accepted.connect(function()
                     {
-                        if (newcomment.commenttext.length > 0)
+                        if (newcomment.text.length > 0)
                         {
-                            managecomment(key, newcomment.commenttext)
+                            managecomment(key, newcomment.text)
                             refreshtimer.start()
                         }
                     })
@@ -93,11 +93,11 @@ Page
                     anchors.fill: parent
                     onClicked:
                     {
-                        var ed = pageStack.push(Qt.resolvedUrl("AddCommentDialog.qml"), { commenttext: currentissue.fields.summary})
+                        var ed = pageStack.push(Qt.resolvedUrl("Editor.qml"), { text: currentissue.fields.summary})
                         ed.accepted.connect(function()
                         {
-                            if (ed.commenttext.length > 0)
-                                manageissue(currentissue.key, ed.commenttext, "")
+                            if (ed.text.length > 0)
+                                manageissue(currentissue.key, ed.text, "")
                             refreshtimer.start()
                         })
                     }
@@ -120,11 +120,11 @@ Page
                     anchors.fill: parent
                     onClicked:
                     {
-                        var ed = pageStack.push(Qt.resolvedUrl("AddCommentDialog.qml"), { commenttext: currentissue.fields.description})
+                        var ed = pageStack.push(Qt.resolvedUrl("Editor.qml"), { text: currentissue.fields.description})
                         ed.accepted.connect(function()
                         {
-                            if (ed.commenttext.length > 0)
-                                manageissue(currentissue.key, "", ed.commenttext)
+                            if (ed.text.length > 0)
+                                manageissue(currentissue.key, "", ed.text)
                             refreshtimer.start()
                         })
                     }

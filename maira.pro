@@ -18,11 +18,11 @@ OTHER_FILES += qml/maira.qml \
     qml/pages/IssueView.qml \
     qml/pages/MainPage.qml \
     qml/pages/CommentView.qml \
-    qml/pages/AddCommentDialog.qml \
     qml/pages/About.qml \
     qml/pages/AttachmentView.qml \
     qml/components/Messagebox.qml \
-    qml/components/DetailUserItem.qml
+    qml/components/DetailUserItem.qml \
+    qml/pages/Editor.qml
 
 SOURCES += \
     src/main.cpp \

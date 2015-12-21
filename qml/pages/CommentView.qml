@@ -23,13 +23,13 @@ Page
                 text: "Edit comment"
                 onClicked:
                 {
-                    var editcomment = pageStack.push(Qt.resolvedUrl("AddCommentDialog.qml"), { commenttext: comment.body} )
+                    var editcomment = pageStack.push(Qt.resolvedUrl("Editor.qml"), { text: comment.body} )
                     editcomment.accepted.connect(function()
                     {
-                        if (editcomment.commenttext.length > 0)
+                        if (editcomment.text.length > 0)
                         {
-                            managecomment(comment.issuekey, editcomment.commenttext, comment.id)
-                            comment.body = editcomment.commenttext
+                            managecomment(comment.issuekey, editcomment.text, comment.id)
+                            comment.body = editcomment.text
                             commentupdated()
                         }
                     })
