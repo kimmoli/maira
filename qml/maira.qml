@@ -30,6 +30,7 @@ ApplicationWindow
         issues.clear()
         comments.clear()
         attachments.clear()
+        loggedin = false
 
         var url = Qt.atob(hosturlstring.value) + "rest/auth/1/session"
 
@@ -37,47 +38,14 @@ ApplicationWindow
         content.username = Qt.atob(authstring.value).split(":")[0]
         content.password = Qt.atob(authstring.value).split(":")[1]
 
-        var contentstring = JSON.stringify(content)
-        logjson(contentstring, "auth")
-
-        var xhr = new XMLHttpRequest()
-        xhr.onreadystatechange = (function(myxhr)
+        post(Qt.atob(hosturlstring.value) + "rest/auth/1/session", JSON.stringify(content), "POST", function(o)
         {
-            return function()
-            {
-                if(myxhr.readyState === 4)
-                {
-                    bi.stop()
-                    log("auth: status " + myxhr.status)
-                    if (myxhr.status === 200) /* auth ok */
-                    {
-                        var ar = JSON.parse(myxhr.responseText)
-                        logjson(ar, "auth")
-                        msgbox.showMessage("Login ok")
-                        loggedin = true
-                        jqlsearch(0)
-                    }
-                    else
-                    {
-                        log("auth fail response: " + myxhr.responseText)
-                        if (myxhr.status === 0 || myxhr.status === 404)
-                            msgbox.showError("Host not found")
-                        else if (myxhr.status === 401)
-                            msgbox.showError("Invalid credentials")
-                        else if (myxhr.status === 403)
-                            msgbox.showError("You are not allowed to login")
-                        else
-                            msgbox.showError("Login failed, code " + myxhr.status)
-                        loggedin = false
-                    }
-                }
-            }
-        })(xhr)
-        xhr.open("POST", url, true)
-        xhr.setRequestHeader("Content-type", "application/json")
-        xhr.setRequestHeader("Content-length", contentstring.length)
-        xhr.setRequestHeader("Connection", "close")
-        xhr.send(contentstring)
+            var ar = JSON.parse(o.responseText)
+            logjson(ar, "auth")
+            msgbox.showMessage("Login ok")
+            loggedin = true
+            jqlsearch(0)
+        })
     }
 
     ConfigurationValue
@@ -161,25 +129,17 @@ ApplicationWindow
             request(Qt.atob(hosturlstring.value) + "rest/api/2/filter/favourite",
             function (o)
             {
-                if (o.status === 200)
-                {
-                    var d = JSON.parse(o.responseText)
-                    logjson(d, "update filters")
+                var d = JSON.parse(o.responseText)
+                logjson(d, "update filters")
 
-                    for (var i=0 ; i<d.length ; i++)
-                    {
-                        append({ id: d[i].id,
-                               jql: d[i].jql,
-                               name: d[i].name,
-                               description: d[i].description,
-                               owner: d[i].owner.name
-                               })
-                    }
-                }
-                else
+                for (var i=0 ; i<d.length ; i++)
                 {
-                    log(o.responseText)
-                    msgbox.showError("error " + o.status)
+                    append({ id: d[i].id,
+                           jql: d[i].jql,
+                           name: d[i].name,
+                           description: d[i].description,
+                           owner: d[i].owner.name
+                           })
                 }
             })
         }
@@ -236,6 +196,8 @@ ApplicationWindow
         }
     }
 
+    /************************************************************************************/
+
     function request(url, callback)
     {
         bi.start()
@@ -248,8 +210,17 @@ ApplicationWindow
                 if(myxhr.readyState === 4)
                 {
                     bi.stop()
-                    log("status " + myxhr.status, "request")
-                    callback(myxhr)
+                    log(myxhr.status, "request status")
+                    if (myxhr.status < 200 || myxhr.status > 204)
+                    {
+                        log(myxhr.responseText, "request error")
+                        msgbox.showError("Operation failed")
+                    }
+                    else
+                    {
+                        if (typeof callback === "function")
+                            callback(myxhr)
+                    }
                 }
             }
         })(xhr)
@@ -257,6 +228,41 @@ ApplicationWindow
         xhr.setRequestHeader("Content-type", "application/json")
         xhr.send('')
     }
+
+    function post(url, content, reqtype, callback)
+    {
+        bi.start()
+        reqtype = typeof reqtype === 'undefined' ? "POST" : reqtype
+        log(url)
+        var xhr = new XMLHttpRequest()
+        xhr.onreadystatechange = (function(myxhr)
+        {
+            return function()
+            {
+                if(myxhr.readyState === 4)
+                {
+                    bi.stop()
+                    log(myxhr.status, "post status")
+                    if (myxhr.status < 200 || myxhr.status > 204)
+                    {
+                        log(myxhr.responseText, "post error")
+                        msgbox.showError("Operation failed")
+                    }
+                    else if (typeof callback === "function")
+                    {
+                        callback(myxhr)
+                    }
+                }
+            }
+        })(xhr)
+        xhr.open(reqtype, url, true)
+        xhr.setRequestHeader("Content-type", "application/json")
+        xhr.setRequestHeader("Content-length", content.length)
+        xhr.setRequestHeader("Connection", "close")
+        xhr.send(content)
+    }
+
+    /************************************************************************************/
 
     function jqlsearch(startat)
     {
@@ -329,40 +335,6 @@ ApplicationWindow
             }
         })
     }
-
-    function post(url, content, reqtype, callback)
-    {
-        bi.start()
-        reqtype = typeof reqtype === 'undefined' ? "POST" : reqtype
-        log(url)
-        var xhr = new XMLHttpRequest()
-        xhr.onreadystatechange = (function(myxhr)
-        {
-            return function()
-            {
-                if(myxhr.readyState === 4)
-                {
-                    bi.stop()
-                    log("status " + myxhr.status, "post")
-                    if (myxhr.status < 200 || myxhr.status > 204)
-                    {
-                        log(myxhr.responseText, "post error")
-                        msgbox.showError("Operation failed")
-                    }
-                    else if (typeof callback === "function")
-                    {
-                        callback(myxhr)
-                    }
-                }
-            }
-        })(xhr)
-        xhr.open(reqtype, url, true)
-        xhr.setRequestHeader("Content-type", "application/json")
-        xhr.setRequestHeader("Content-length", content.length)
-        xhr.setRequestHeader("Connection", "close")
-        xhr.send(content)
-    }
-
 
     function managecomment(issuekey, body, id)
     {
