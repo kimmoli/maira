@@ -16,6 +16,7 @@ public:
     Q_INVOKABLE void uploadFile(QUrl url, QUrl source);
 
 signals:
+    void uploadStarted();
     void uploadSuccess();
     void uploadFailed();
 

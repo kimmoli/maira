@@ -10,6 +10,8 @@ FileUploader::FileUploader(QQmlEngine *engine, QObject *parent) :
 
 void FileUploader::uploadFile(QUrl url, QUrl source)
 {
+    emit uploadStarted();
+
     QString filename = source.toString(QUrl::RemoveScheme);
 
     qDebug() << "url" << url << "filename" << filename;

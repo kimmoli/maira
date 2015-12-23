@@ -20,6 +20,7 @@ public:
     Q_INVOKABLE void open(QString filename);
 
 signals:
+    void downloadStarted();
     void downloadSuccess();
     void downloadFailed();
 

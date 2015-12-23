@@ -9,6 +9,8 @@ FileDownloader::FileDownloader(QQmlEngine *engine, QObject *parent) :
 
 void FileDownloader::downloadFile(QUrl url, QString filename)
 {
+    emit downloadStarted();
+
     m_filename = filename;
     qDebug() << "downloading" << url << "to" << filename;
 

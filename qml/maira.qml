@@ -26,6 +26,7 @@ ApplicationWindow
 
     function auth()
     {
+        bi.start()
         issues.clear()
         comments.clear()
         attachments.clear()
@@ -46,6 +47,7 @@ ApplicationWindow
             {
                 if(myxhr.readyState === 4)
                 {
+                    bi.stop()
                     log("auth: status " + myxhr.status)
                     if (myxhr.status === 200) /* auth ok */
                     {
@@ -189,35 +191,54 @@ ApplicationWindow
         id: msgbox
     }
 
+    BusyIndicator
+    {
+        id: bi
+        running: false
+        size: BusyIndicatorSize.Large
+        anchors.centerIn: parent
+        function start() { running = true }
+        function stop() { running = false }
+    }
+
     /*********************************************************************************/
 
     Connections
     {
         target: FileDownloader
-        onDownloadSuccess: msgbox.showMessage("Download ok")
-        onDownloadFailed: msgbox.showError("Download failed")
+        onDownloadStarted: bi.start()
+        onDownloadSuccess:
+        {
+            bi.stop()
+            msgbox.showMessage("Download ok")
+        }
+        onDownloadFailed:
+        {
+            bi.stop()
+            msgbox.showError("Download failed")
+        }
     }
 
     Connections
     {
         target: FileUploader
+        onUploadStarted: bi.start()
         onUploadSuccess:
         {
-            refreshtimer.start()
+            bi.stop()
+            fetchissue(currentissue.key)
             msgbox.showMessage("Upload ok")
         }
-        onUploadFailed: msgbox.showError("Upload failed")
-    }
-
-    Timer
-    {
-        id: refreshtimer
-        interval: 500
-        onTriggered: fetchissue(currentissue.key)
+        onUploadFailed:
+        {
+            bi.stop()
+            msgbox.showError("Upload failed")
+        }
     }
 
     function request(url, callback)
     {
+        bi.start()
         log(url)
         var xhr = new XMLHttpRequest()
         xhr.onreadystatechange = (function(myxhr)
@@ -226,6 +247,7 @@ ApplicationWindow
             {
                 if(myxhr.readyState === 4)
                 {
+                    bi.stop()
                     log("status " + myxhr.status, "request")
                     callback(myxhr)
                 }
@@ -310,6 +332,7 @@ ApplicationWindow
 
     function post(url, content, reqtype, callback)
     {
+        bi.start()
         reqtype = typeof reqtype === 'undefined' ? "POST" : reqtype
         log(url)
         var xhr = new XMLHttpRequest()
@@ -319,6 +342,7 @@ ApplicationWindow
             {
                 if(myxhr.readyState === 4)
                 {
+                    bi.stop()
                     log("status " + myxhr.status, "post")
                     if (myxhr.status < 200 || myxhr.status > 204)
                     {
@@ -346,9 +370,9 @@ ApplicationWindow
         content.body = body
         logjson(content, issuekey)
         if (id > 0)
-            post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment/" + id, JSON.stringify(content), "PUT", function() { refreshtimer.start() })
+            post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment/" + id, JSON.stringify(content), "PUT", function() { fetchissue(currentissue.key) })
         else
-            post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content), "POST", function() { refreshtimer.start() })
+            post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content), "POST", function() { fetchissue(currentissue.key) })
     }
 
     function manageissue(issuekey, summary, description)
@@ -361,7 +385,7 @@ ApplicationWindow
             fields.description = description
         content.fields = fields
         logjson(content, issuekey)
-        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey, JSON.stringify(content), "PUT", function() { refreshtimer.start() })
+        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey, JSON.stringify(content), "PUT", function() { fetchissue(currentissue.key) })
     }
 
     function assignissue(issuekey, name)
@@ -369,17 +393,17 @@ ApplicationWindow
         var content = {}
         content.name = name
         logjson(content, issuekey)
-        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/assignee", JSON.stringify(content), "PUT", function() { refreshtimer.start() })
+        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/assignee", JSON.stringify(content), "PUT", function() { fetchissue(currentissue.key) })
     }
 
     function removeattachment(id)
     {
-        post(Qt.atob(hosturlstring.value) + "rest/api/2/attachment/" + id, "", "DELETE", function() { refreshtimer.start() })
+        post(Qt.atob(hosturlstring.value) + "rest/api/2/attachment/" + id, "", "DELETE", function() { fetchissue(currentissue.key) })
     }
 
     function removecomment(issuekey, id)
     {
-        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment/" + id, "", "DELETE", function() { refreshtimer.start() })
+        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment/" + id, "", "DELETE", function() { fetchissue(currentissue.key) })
     }
 
     function managefilter(name, description, jql, id)
