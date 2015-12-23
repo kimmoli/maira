@@ -18,6 +18,7 @@ BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  desktop-file-utils
+BuildRequires:  python
 
 %description
 Application to interact with JIRA from your Sailfish device
