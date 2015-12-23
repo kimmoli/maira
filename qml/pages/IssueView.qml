@@ -30,7 +30,6 @@ Page
                     {
                         if (user.username.length > 0)
                         assignissue(key, user.username)
-                        refreshtimer.start()
                     })
                 }
             }
@@ -60,7 +59,6 @@ Page
                         if (newcomment.text.length > 0)
                         {
                             managecomment(key, newcomment.text)
-                            refreshtimer.start()
                         }
                     })
                 }
@@ -120,7 +118,6 @@ Page
                         {
                             if (ed.text.length > 0)
                                 manageissue(currentissue.key, ed.text, "")
-                            refreshtimer.start()
                         })
                     }
                 }
@@ -147,7 +144,6 @@ Page
                         {
                             if (ed.text.length > 0)
                                 manageissue(currentissue.key, "", ed.text)
-                            refreshtimer.start()
                         })
                     }
                 }
@@ -232,10 +228,6 @@ Page
                     onClicked:
                     {
                         var cv = pageStack.push(Qt.resolvedUrl("CommentView.qml"), {comment: comments.get(index)})
-                        cv.commentupdated.connect(function()
-                        {
-                            refreshtimer.start()
-                        })
                     }
 
                     Column

@@ -26,7 +26,6 @@ Page
                 onClicked: remorse.execute("Removing", function()
                 {
                     removecomment(comment.issuekey, comment.id)
-                    refreshtimer.start()
                     pageStack.pop()
                 })
             }

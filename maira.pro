@@ -23,7 +23,9 @@ OTHER_FILES += qml/maira.qml \
     qml/components/Messagebox.qml \
     qml/components/DetailUserItem.qml \
     qml/pages/Editor.qml \
-    qml/pages/UserSelector.qml
+    qml/pages/UserSelector.qml \
+    qml/pages/FilterSelector.qml \
+    qml/pages/EditFilter.qml
 
 SOURCES += \
     src/main.cpp \

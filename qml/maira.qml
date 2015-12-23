@@ -5,6 +5,8 @@ import "components"
 
 ApplicationWindow
 {
+    id: app
+
     initialPage: Qt.resolvedUrl("pages/MainPage.qml")
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 
@@ -148,6 +150,40 @@ ApplicationWindow
         }
     }
 
+    ListModel
+    {
+        id: filters
+        function update()
+        {
+            clear()
+            request(Qt.atob(hosturlstring.value) + "rest/api/2/filter/favourite",
+            function (o)
+            {
+                if (o.status === 200)
+                {
+                    var d = JSON.parse(o.responseText)
+                    logjson(d, "update filters")
+
+                    for (var i=0 ; i<d.length ; i++)
+                    {
+                        append({ id: d[i].id,
+                               jql: d[i].jql,
+                               name: d[i].name,
+                               description: d[i].description,
+                               owner: d[i].owner.name
+                               })
+                    }
+                }
+                else
+                {
+                    log(o.responseText)
+                    msgbox.showError("error " + o.status)
+                }
+            })
+        }
+    }
+
+
     Messagebox
     {
         id: msgbox
@@ -272,7 +308,7 @@ ApplicationWindow
         })
     }
 
-    function post(url, content, reqtype)
+    function post(url, content, reqtype, callback)
     {
         reqtype = typeof reqtype === 'undefined' ? "POST" : reqtype
         log(url)
@@ -285,7 +321,14 @@ ApplicationWindow
                 {
                     log("status " + myxhr.status, "post")
                     if (myxhr.status < 200 || myxhr.status > 204)
+                    {
+                        log(myxhr.responseText, "post error")
                         msgbox.showError("Operation failed")
+                    }
+                    else if (typeof callback === "function")
+                    {
+                        callback(myxhr)
+                    }
                 }
             }
         })(xhr)
@@ -303,9 +346,9 @@ ApplicationWindow
         content.body = body
         logjson(content, issuekey)
         if (id > 0)
-            post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment/" + id, JSON.stringify(content), "PUT")
+            post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment/" + id, JSON.stringify(content), "PUT", function() { refreshtimer.start() })
         else
-            post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content))
+            post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content), "POST", function() { refreshtimer.start() })
     }
 
     function manageissue(issuekey, summary, description)
@@ -318,7 +361,7 @@ ApplicationWindow
             fields.description = description
         content.fields = fields
         logjson(content, issuekey)
-        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey, JSON.stringify(content), "PUT")
+        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey, JSON.stringify(content), "PUT", function() { refreshtimer.start() })
     }
 
     function assignissue(issuekey, name)
@@ -326,17 +369,36 @@ ApplicationWindow
         var content = {}
         content.name = name
         logjson(content, issuekey)
-        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/assignee", JSON.stringify(content), "PUT")
+        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/assignee", JSON.stringify(content), "PUT", function() { refreshtimer.start() })
     }
 
     function removeattachment(id)
     {
-        post(Qt.atob(hosturlstring.value) + "rest/api/2/attachment/" + id, "", "DELETE")
+        post(Qt.atob(hosturlstring.value) + "rest/api/2/attachment/" + id, "", "DELETE", function() { refreshtimer.start() })
     }
 
     function removecomment(issuekey, id)
     {
-        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment/" + id, "", "DELETE")
+        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment/" + id, "", "DELETE", function() { refreshtimer.start() })
+    }
+
+    function managefilter(name, description, jql, id)
+    {
+        var content = {}
+        content.name = name
+        content.description = description
+        content.jql = jql
+        content.favourite = true
+        logjson(content, "managefilter")
+        if (id > 0)
+            post(Qt.atob(hosturlstring.value) + "rest/api/2/filter/" + id, JSON.stringify(content), "PUT", function(o) { filters.update() } )
+        else
+            post(Qt.atob(hosturlstring.value) + "rest/api/2/filter", JSON.stringify(content), "POST", function(o) { filters.update() } )
+    }
+
+    function deletefilter(id)
+    {
+        post(Qt.atob(hosturlstring.value) + "rest/api/2/filter/" + id, "", "DELETE", function(o) { filters.update() } )
     }
 
     function stringStartsWith (string, prefix)

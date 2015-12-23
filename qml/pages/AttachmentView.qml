@@ -25,7 +25,6 @@ Page
                 onClicked: remorse.execute("Removing", function()
                 {
                     removeattachment(attachment.id)
-                    refreshtimer.start()
                     pageStack.pop()
                 })
             }
@@ -40,7 +39,6 @@ Page
                         if (newcomment.text.length > 0)
                         {
                             managecomment(attachment.issuekey, newcomment.text)
-                            refreshtimer.start()
                         }
                     })
                 }

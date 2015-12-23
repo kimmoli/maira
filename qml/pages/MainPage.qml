@@ -78,21 +78,40 @@ Page
                             msgbox.showError("You're not logged in")
                     }
                 }
-                IconButton
+                Column
                 {
-                    id: searchbutton
-                    anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: Theme.paddingSmall
-                    icon.source: "image://theme/icon-m-search"
-                    onClicked:
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    IconButton
                     {
-                        jql.focus = false
-                        jqlstring.value = jql.text
-                        if (loggedin)
-                            jqlsearch(0)
-                        else
-                            msgbox.showError("You're not logged in")
+                        icon.source: "image://theme/icon-m-favorite"
+                        onClicked:
+                        {
+                            var f = pageStack.push(Qt.resolvedUrl("FilterSelector.qml"), {newjql: jql.text})
+                            f.filterselected.connect(function()
+                            {
+                                jql.text = f.newjql
+                                jqlstring.value = f.newjql
+                                jqlsearch(0)
+                            })
+                        }
+                    }
+
+                    IconButton
+                    {
+                        id: searchbutton
+                        icon.source: "image://theme/icon-m-search"
+                        onClicked:
+                        {
+                            jql.focus = false
+                            jqlstring.value = jql.text
+                            if (loggedin)
+                                jqlsearch(0)
+                            else
+                                msgbox.showError("You're not logged in")
+                        }
                     }
                 }
             }

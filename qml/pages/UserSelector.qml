@@ -8,13 +8,6 @@ Page
     property string username: ""
     signal changeUser
 
-    Timer
-    {
-        running: true
-        interval: 200
-        onTriggered: flick.headerItem.focus = true
-    }
-
     SilicaListView
     {
         id: flick
