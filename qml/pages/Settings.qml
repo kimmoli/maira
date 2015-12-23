@@ -18,7 +18,7 @@ Page
             }
         }
 
-        contentHeight: column.height
+        contentHeight: column.height + pageHeader.height
 
         Column
         {
@@ -29,6 +29,7 @@ Page
 
             PageHeader
             {
+                id: pageHeader
                 title: "Settings"
             }
 

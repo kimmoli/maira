@@ -26,7 +26,7 @@ Dialog
         id: flick
 
         anchors.fill: parent
-        contentHeight: col.height
+        contentHeight: col.height + dialogHeader.height
         width: parent.width
 
         VerticalScrollDecorator { flickable: flick }

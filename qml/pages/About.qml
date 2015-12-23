@@ -9,7 +9,7 @@ Page
     {
         anchors.fill: parent
 
-        contentHeight: column.height
+        contentHeight: column.height + pageHeader.height
 
         Column
         {
@@ -19,6 +19,7 @@ Page
             spacing: Theme.paddingLarge
             PageHeader
             {
+                id: pageHeader
                 title: "About Maira"
             }
             Label

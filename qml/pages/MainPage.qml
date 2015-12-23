@@ -36,7 +36,7 @@ Page
             }
         }
 
-        contentHeight: column.height
+        contentHeight: column.height + Theme.paddingLarge
 
         Column 
         {
@@ -47,6 +47,7 @@ Page
             
             PageHeader 
             {
+                id: pageHeader
                 title: "Maira"
             }
             

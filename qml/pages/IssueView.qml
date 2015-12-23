@@ -65,7 +65,7 @@ Page
             }
         }
 
-        contentHeight: column.height
+        contentHeight: column.height + Theme.paddingLarge
 
         Column
         {
@@ -76,6 +76,7 @@ Page
 
             PageHeader
             {
+                id: pageHeader
                 title: key
             }
 
@@ -158,7 +159,7 @@ Page
                 model: attachments
                 delegate: BackgroundItem
                 {
-                    width: parent.width
+                    width: column.width
                     height: (!showAttachments && (index > 2)) ? 0 : Theme.itemSizeExtraSmall
                     Behavior on height { SmoothedAnimation { duration: 500 } }
                     visible: height > 0
@@ -223,7 +224,7 @@ Page
                 model: comments
                 delegate: BackgroundItem
                 {
-                    width: parent.width
+                    width: column.width
                     height: Theme.itemSizeExtraSmall
                     onClicked:
                     {
