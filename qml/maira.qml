@@ -100,23 +100,49 @@ ApplicationWindow
     ListModel
     {
         id: users
-        function update(searchtext)
+        property var allusers
+        function update(searchtext, issuekey)
         {
-            log(searchtext)
             clear()
-            request(Qt.atob(hosturlstring.value) + "rest/api/2/user/picker?maxResults=10&query=" + searchtext,
-            function (o)
+            if (searchtext === "")
             {
-                var d = JSON.parse(o.responseText)
-                logjson(d, "userpicker")
-
-                for (var i=0 ; i<d.users.length ; i++)
+                request(Qt.atob(hosturlstring.value) + "rest/api/2/user/assignable/search?issueKey=" + issuekey,
+                function (o)
                 {
-                    append({key: d.users[i].key,
-                           html: d.users[i].html,
-                           })
+                    allusers = JSON.parse(o.responseText)
+                    logjson(allusers, "users update()")
+
+                    for (var i=0 ; i<allusers.length ; i++)
+                    {
+                        if (allusers[i].active)
+                        {
+                            append({key: allusers[i].key,
+                                    name: allusers[i].displayName,
+                                    avatarurl: allusers[i].avatarUrls["48x48"],
+                                    })
+                        }
+                    }
+                })
+            }
+            else
+            {
+                var r = new RegExp(searchtext, "i")
+                for (var i=0 ; i<allusers.length ; i++)
+                {
+                    if (allusers[i].active)
+                    {
+                        if (allusers[i].displayName.search(r) > -1)
+                        {
+                            log(allusers[i].displayName, "append filtered")
+                            append({key: allusers[i].key,
+                                    name: allusers[i].displayName,
+                                    avatarurl: allusers[i].avatarUrls["48x48"],
+                                    })
+                        }
+                    }
                 }
-            })
+
+            }
         }
     }
 

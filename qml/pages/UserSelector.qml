@@ -8,6 +8,8 @@ Page
     property string username: ""
     signal changeUser
 
+    Component.onCompleted: users.update("", currentissue.key)
+
     SilicaListView
     {
         id: flick
@@ -20,7 +22,7 @@ Page
 
             onTextChanged:
             {
-                users.update(text)
+                users.update(text, currentissue.key)
             }
         }
 
@@ -30,16 +32,29 @@ Page
         delegate: ListItem
         {
             height: Theme.itemSizeSmall
-            Label
+            width: flick.width
+            clip: true
+
+            Row
             {
-                width: parent.width
-                clip: true
                 anchors.left: parent.left
                 anchors.leftMargin: Theme.paddingMedium
+                spacing: Theme.paddingMedium
+                width: parent.width
                 anchors.verticalCenter: parent.verticalCenter
-                text: html
-                font.pixelSize: Theme.fontSizeSmall
-                textFormat: Text.RichText
+
+                Image
+                {
+                    source: avatarurl
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Label
+                {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: name
+                    font.pixelSize: Theme.fontSizeMedium
+                }
             }
             BackgroundItem
             {
