@@ -101,12 +101,12 @@ ApplicationWindow
     {
         id: users
         property var allusers
-        function update(searchtext, issuekey)
+        function update(searchtext)
         {
             clear()
             if (searchtext === "")
             {
-                request(Qt.atob(hosturlstring.value) + "rest/api/2/user/assignable/search?issueKey=" + issuekey,
+                request(Qt.atob(hosturlstring.value) + "rest/api/2/user/assignable/search?issueKey=" + currentissue.key,
                 function (o)
                 {
                     allusers = JSON.parse(o.responseText)
@@ -171,6 +171,29 @@ ApplicationWindow
         }
     }
 
+    ListModel
+    {
+        id: issuetransitions
+        function update()
+        {
+            clear()
+            request(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + currentissue.key + "/transitions?expand=transitions.fields",
+            function (o)
+            {
+                var d = JSON.parse(o.responseText)
+                logjson(d, "update transitions")
+
+                for (var i=0 ; i<d.transitions.length ; i++)
+                {
+                    append({ id: d.transitions[i].id,
+                             name: d.transitions[i].name,
+                             description: d.transitions[i].to.description,
+                             fields: d.transitions[i].fields
+                             })
+                }
+            })
+        }
+    }
 
     Messagebox
     {

@@ -8,7 +8,7 @@ Page
     property string username: ""
     signal changeUser
 
-    Component.onCompleted: users.update("", currentissue.key)
+    Component.onCompleted: users.update("")
 
     SilicaListView
     {
@@ -22,7 +22,7 @@ Page
 
             onTextChanged:
             {
-                users.update(text, currentissue.key)
+                users.update(text)
             }
         }
 

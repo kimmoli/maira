@@ -25,7 +25,9 @@ OTHER_FILES += qml/maira.qml \
     qml/pages/Editor.qml \
     qml/pages/UserSelector.qml \
     qml/pages/FilterSelector.qml \
-    qml/pages/EditFilter.qml
+    qml/pages/EditFilter.qml \
+    qml/pages/TransitionSelector.qml \
+    qml/pages/Fields.qml
 
 SOURCES += \
     src/main.cpp \

@@ -22,6 +22,20 @@ Page
         {
             MenuItem
             {
+                text: "Transition"
+                onClicked:
+                {
+                    var tr = pageStack.push("TransitionSelector.qml")
+                    tr.maketransition.connect(function(c)
+                    {
+                        logjson(JSON.stringify(c))
+                        log(tr.id)
+                    })
+                }
+            }
+
+            MenuItem
+            {
                 text: "Assign issue"
                 onClicked:
                 {
