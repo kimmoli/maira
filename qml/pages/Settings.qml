@@ -66,11 +66,13 @@ Page
             {
                 id: hosturl
                 label: "Host"
+                placeholderText: "http://jiraserver:1234/"
                 width: parent.width
-                focus: true
+                focus: false
                 text: Qt.atob(hosturlstring.value)
-                inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData
+                inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData | Qt.ImhUrlCharactersOnly
                 EnterKey.iconSource: "image://theme/icon-m-enter-accept"
+                validator: RegExpValidator { regExp: /^https?:\/\/.*\/$/ }
                 EnterKey.onClicked:
                 {
                     authusr.focus = true
@@ -80,6 +82,7 @@ Page
             {
                 id: authusr
                 label: "Username"
+                placeholderText: "username"
                 width: parent.width
                 focus: false
                 text: Qt.atob(authstring.value).split(":")[0]
@@ -94,10 +97,12 @@ Page
             {
                 id: authpwd
                 label: "Password"
+                placeholderText: "password"
                 width: parent.width
                 focus: false
                 text: Qt.atob(authstring.value).split(":").pop()
                 inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData
+                echoMode: TextInput.PasswordEchoOnEdit
                 EnterKey.iconSource: "image://theme/icon-m-enter-accept"
                 EnterKey.onClicked:
                 {
