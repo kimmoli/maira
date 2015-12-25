@@ -26,10 +26,10 @@ Page
                 onClicked:
                 {
                     var tr = pageStack.push("TransitionSelector.qml")
-                    tr.maketransition.connect(function(c)
+                    tr.maketransition.connect(function(content)
                     {
-                        logjson(JSON.stringify(c))
-                        log(tr.id)
+                        logjson(content, "transition content")
+                        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + currentissue.key + "/transitions", JSON.stringify(content), "POST", function() { fetchissue(currentissue.key) })
                     })
                 }
             }
@@ -105,6 +105,24 @@ Page
                 label: "Assignee"
                 avatar: currentissue.fields.assignee.avatarUrls["32x32"]
                 value: currentissue.fields.assignee.displayName
+            }
+            DetailUserItem
+            {
+                label: "Priority"
+                avatar: currentissue.fields.priority.iconUrl
+                value: currentissue.fields.priority.name
+            }
+            DetailUserItem
+            {
+                label: "Status"
+                avatar: currentissue.fields.status.iconUrl
+                value: currentissue.fields.status.name
+            }
+            DetailItem
+            {
+                visible: currentissue.fields.resolution != null
+                label: "Resolution"
+                value: visible ? currentissue.fields.resolution.name :  ""
             }
             DetailItem
             {

@@ -6,7 +6,7 @@ Page
     id: page
 
     property string transitionid: ""
-    signal maketransition
+    signal maketransition(var content)
 
     SilicaListView
     {
@@ -44,7 +44,6 @@ Page
                     anchors.left: parent.left
                     anchors.leftMargin: Theme.paddingMedium
                     text: name
-                    font.pixelSize: Theme.fontSizeSmall
                     elide: Text.ElideRight
                 }
                 Label
@@ -72,13 +71,21 @@ Page
                     var fielddialog = pageStack.push(Qt.resolvedUrl("Fields.qml"), { fields: f })
                     fielddialog.accepted.connect(function()
                     {
-                        maketransition(fielddialog.content)
-                        pageStack.pop()
+                        var content
+                        content = fielddialog.content
+                        var transition = {}
+                        transition.id = transitionid
+                        content.transition = transition
+                        maketransition(content)
                     })
                 }
                 else
                 {
-                    maketransition({})
+                    var content = {}
+                    var transition = {}
+                    transition.id = transitionid
+                    content.transition = transition
+                    maketransition(content)
                     pageStack.pop()
                 }
             }
