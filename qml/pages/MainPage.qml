@@ -48,7 +48,7 @@ Page
             PageHeader 
             {
                 id: pageHeader
-                title: serverinfo.serverTitle !== undefined ? serverinfo.serverTitle : "Maira"
+                title: serverinfo !== undefined ? serverinfo.serverTitle : "Maira"
             }
             
             Item

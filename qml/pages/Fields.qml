@@ -58,32 +58,32 @@ import Sailfish.Silica 1.0
 "
                     if (fields[i].schema.type === "user")
                     {
-                        var onc = ""
-                        if (fields[i].name === "Assignee")
-                            onc = "
-                onClicked:
-                {
-                    var assignee = {};
-                    assignee.name = key;
-                    content.fields.assignee = assignee;
-                    changed = (key !== currentissue.fields.assignee.name)
-                }
-"
                         s  = s + "
 ComboBox
 {
-    width: parent.width;
+    width: parent.width
     label: \"" + fields[i].name + "\" + (changed ? \"*\" : \"\")
     property bool changed: false
     menu: ContextMenu
     {
         Repeater
         {
-            model: users;
+            model: users
             delegate: MenuItem
             {
-                text: name;
-" + onc + "
+                text: name
+"
+                        if (fields[i].name === "Assignee")
+                            s = s + "
+                onClicked:
+                {
+                    var assignee = {}
+                    assignee.name = key
+                    content.fields.assignee = assignee
+                    changed = (key !== currentissue.fields.assignee.name)
+                }
+"
+                        s = s + "
             }
         }
     }
@@ -94,8 +94,8 @@ ComboBox
     {
         for (var i=0; i<users.count; i++)
             if (users.get(i).key === currentissue.fields.assignee.name)
-                return i;
-        return 0;
+                return i
+        return 0
     }
 "
                         s = s + "
@@ -118,7 +118,7 @@ ComboBox
                             {
                                 s = s + "
         MenuItem {
-            text: \"" + fields[i].allowedValues[u].name + "\";
+            text: \"" + fields[i].allowedValues[u].name + "\"
             onClicked:
             {
                 var " + fields[i].schema.system + " = {}
@@ -133,7 +133,7 @@ ComboBox
                                 s = s + "
         MenuItem
         {
-            text: \"" + fields[i].allowedValues[u].value + "\";
+            text: \"" + fields[i].allowedValues[u].value + "\"
             onClicked:
             {
                 var " + fields[i].schema.system + " = {}
@@ -159,7 +159,7 @@ Label
 "
                     }
                     log(s, "createQmlObject")
-                    var newObject = Qt.createQmlObject(s, col, "dynfield" + i);
+                    var newObject = Qt.createQmlObject(s, col, "dynfield" + i)
                 }
 
             }
