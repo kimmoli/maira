@@ -99,6 +99,11 @@ ApplicationWindow
 
     ListModel
     {
+        id: customfields
+    }
+
+    ListModel
+    {
         id: comments
     }
 
@@ -363,6 +368,53 @@ ApplicationWindow
             currentissue = JSON.parse(o.responseText)
 
             logjson(currentissue, "fetchissue")
+
+            customfields.clear()
+
+            request(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/editmeta", function(o)
+            {
+                var meta = JSON.parse(o.responseText)
+
+                Object.keys(currentissue.fields).forEach(function(key)
+                {
+                    if (stringStartsWith(key, "customfield"))
+                    {
+                        if (meta.fields[key] != undefined && currentissue.fields[key] != null)
+                        {
+                            var s
+                            var au = ""
+
+                            if (typeof currentissue.fields[key] == "string")
+                            {
+                                s = currentissue.fields[key]
+                            }
+                            else if (typeof currentissue.fields[key] == "object" && currentissue.fields[key] != null)
+                            {
+                                if (currentissue.fields[key].value != undefined)
+                                {
+                                    s = currentissue.fields[key].value
+                                }
+                                else if (currentissue.fields[key].displayName != undefined)
+                                {
+                                    s = currentissue.fields[key].displayName
+                                    au = currentissue.fields[key].avatarUrls["32x32"]
+                                }
+                                else if (currentissue.fields[key].name != undefined)
+                                {
+                                    s = currentissue.fields[key].name
+                                    au = currentissue.fields[key].avatarUrls["32x32"]
+                                }
+                            }
+                            if (s != undefined)
+                            {
+                                log(key + " = " + meta.fields[key].name + " = " + s + " : " + typeof currentissue.fields[key])
+                                customfields.append( {fieldname: meta.fields[key].name, fieldvalue: s, avatarurl: au} )
+                            }
+                        }
+                    }
+
+                })
+            })
 
             comments.clear()
             for (var i=0 ; i < currentissue.fields.comment.comments.length; i++)

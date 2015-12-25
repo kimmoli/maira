@@ -53,7 +53,7 @@ Item {
         anchors {
             left: parent.left
             right: parent.horizontalCenter
-            rightMargin: Theme.paddingLarge
+            rightMargin: (avatarImage.status != Image.Null) ? Theme.paddingLarge : Theme.paddingSmall
             leftMargin: detailItem.leftMargin
         }
         horizontalAlignment: Text.AlignRight
@@ -67,7 +67,7 @@ Item {
     {
         id: avatarImage
         anchors.centerIn: parent
-        height: Math.max(labelText.height, valueText.height)
+        height: Theme.paddingLarge * 1.5
         width: height
     }
 
@@ -78,7 +78,7 @@ Item {
         anchors {
             left: parent.horizontalCenter
             right: parent.right
-            leftMargin: Theme.paddingLarge
+            leftMargin: (avatarImage.status != Image.Null) ? Theme.paddingLarge : Theme.paddingSmall
             rightMargin: detailItem.rightMargin
         }
         horizontalAlignment: Text.AlignLeft

@@ -130,6 +130,17 @@ Page
                 value: Qt.formatDateTime(new Date(currentissue.fields.created), "hh:mm dd.MM.yyyy")
             }
 
+            Repeater
+            {
+                model: customfields
+                delegate: DetailUserItem
+                {
+                    label: fieldname
+                    avatar: avatarurl
+                    value: fieldvalue
+                }
+            }
+
             SectionHeader
             {
                 text: "Summary"
