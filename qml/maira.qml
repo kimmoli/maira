@@ -18,6 +18,7 @@ ApplicationWindow
     property int searchtotalcount: 0
     property var currentissue
     property bool loggedin: false
+    property var serverinfo
 
     Component.onCompleted:
     {
@@ -44,7 +45,16 @@ ApplicationWindow
             logjson(ar, "auth")
             msgbox.showMessage("Login ok")
             loggedin = true
+            getserverinfo()
             jqlsearch(0)
+        })
+    }
+
+    function getserverinfo()
+    {
+        request(Qt.atob(hosturlstring.value) + "rest/api/2/serverInfo", function(o)
+        {
+            serverinfo = JSON.parse(o.responseText)
         })
     }
 
@@ -379,6 +389,7 @@ ApplicationWindow
                     thumbnail: currentissue.fields.attachment[i].thumbnail,
                     content: currentissue.fields.attachment[i].content,
                     mime: currentissue.fields.attachment[i].mimeType,
+                    size: currentissue.fields.attachment[i].size,
                     issuekey: currentissue.key
                 })
             }
@@ -449,6 +460,14 @@ ApplicationWindow
     function stringStartsWith (string, prefix)
     {
         return string.slice(0, prefix.length) == prefix
+    }
+
+    function bytesToSize(bytes)
+    {
+       var sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB']
+       if (bytes == 0) return '0 Byte'
+       var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)))
+       return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i]
     }
 
     function log(text, desc)

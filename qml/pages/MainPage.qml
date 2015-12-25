@@ -48,7 +48,7 @@ Page
             PageHeader 
             {
                 id: pageHeader
-                title: "Maira"
+                title: serverinfo.serverTitle !== undefined ? serverinfo.serverTitle : "Maira"
             }
             
             Item
@@ -155,8 +155,7 @@ Page
                         Label
                         {
                             x: Theme.paddingMedium
-                            width: parent.width
-                            text: "Assignee: " + assignee
+                            text: assignee
                             font.pixelSize: Theme.fontSizeSmall
                             elide: Text.ElideRight
                         }

@@ -73,22 +73,35 @@ Page
             }
             DetailItem
             {
+                label: "Size"
+                value: bytesToSize(attachment.size)
+            }
+            DetailItem
+            {
                 label: "Type"
                 value: attachment.mime
+            }
+            Item
+            {
+                width: 1
+                height: Theme.paddingLarge
             }
             Image
             {
                 id: thumbnail
                 anchors.horizontalCenter: parent.horizontalCenter
-                source: stringStartsWith(attachment.mime, "image") ? attachment.thumbnail : imagelocation
-                BackgroundItem
-                {
-                    anchors.fill: parent
-                    onClicked:
-                    {
-                        FileDownloader.downloadFile(attachment.content, attachment.filename)
-                    }
-                }
+                source: stringStartsWith(attachment.mime, "image") ? attachment.thumbnail : "image://theme/icon-l-document"
+            }
+            Item
+            {
+                width: 1
+                height: Theme.paddingLarge
+            }
+            IconButton
+            {
+                icon.source: "image://theme/icon-m-cloud-download"
+                anchors.horizontalCenter: parent.horizontalCenter
+                onClicked: FileDownloader.downloadFile(attachment.content, attachment.filename)
             }
         }
     }
