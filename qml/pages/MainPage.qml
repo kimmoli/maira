@@ -12,6 +12,12 @@ Page
 
         VerticalScrollDecorator { flickable: flick }
 
+        onAtYEndChanged:
+        {
+            if (atYEnd && loggedin && issues.count > 0 && issues.count < searchtotalcount)
+                jqlsearch(issues.count)
+        }
+
         PullDownMenu 
         {
             MenuItem
@@ -23,16 +29,6 @@ Page
             {
                 text: "Settings"
                 onClicked: pageStack.push(Qt.resolvedUrl("Settings.qml"))
-            }
-        }
-
-        PushUpMenu
-        {
-            visible: loggedin && issues.count > 0 && issues.count < searchtotalcount
-            MenuItem
-            {
-                text: "Load more..."
-                onClicked: jqlsearch(issues.count)
             }
         }
 
@@ -191,6 +187,17 @@ Page
                             source: statusicon
                         }
                     }
+                }
+            }
+            Item
+            {
+                visible: loggedin && issues.count > 0 && issues.count < searchtotalcount
+                height: Theme.itemSizeExtraLarge
+                width: parent.width
+                Label
+                {
+                    text: "Show " + Math.min(10, searchtotalcount-issues.count) + " more..."
+                    anchors.centerIn: parent
                 }
             }
         }
