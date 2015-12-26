@@ -28,7 +28,8 @@ OTHER_FILES += qml/maira.qml \
     qml/pages/EditFilter.qml \
     qml/pages/TransitionSelector.qml \
     qml/pages/Fields.qml \
-    qml/pages/ActivityStream.qml
+    qml/pages/ActivityStream.qml \
+    qml/pages/EditAccount.qml
 
 SOURCES += \
     src/main.cpp \

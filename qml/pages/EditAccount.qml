@@ -5,21 +5,17 @@ Dialog
 {
     id: dialog
 
-    property string name: ""
-    property string description: ""
-    property string jql: ""
+    property string host
+    property string auth
 
     onDone:
     {
         if (result === DialogResult.Accepted)
         {
-            name = nameedit.text
-            description = descedit.text
-            jql = jqledit.text
+            host = Qt.btoa(hosturl.text)
+            auth = Qt.btoa(authusr.text + ":" + authpwd.text)
         }
     }
-
-    canAccept: jqledit.text.length > 0 && nameedit.text.length > 0
 
     SilicaFlickable
     {
@@ -47,45 +43,49 @@ Dialog
 
             TextField
             {
-                id: nameedit
-                placeholderText: "Mandatory filter name"
-                label: "Name"
+                id: hosturl
+                label: "Host"
+                placeholderText: "http://jiraserver:1234/"
                 width: parent.width
-                focus: true
-                text: name
+                focus: false
+                text: Qt.atob(accounts.current.host)
+                inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData | Qt.ImhUrlCharactersOnly
                 EnterKey.iconSource: "image://theme/icon-m-enter-accept"
+                validator: RegExpValidator { regExp: /^https?:\/\/.*\/$/ }
                 EnterKey.onClicked:
                 {
-                    descedit.focus = true
+                    authusr.focus = true
                 }
             }
             TextField
             {
-                id: descedit
-                placeholderText: "Description"
-                label: "Description"
+                id: authusr
+                label: "Username"
+                placeholderText: "username"
                 width: parent.width
-                text: description
+                focus: false
+                text: Qt.atob(accounts.current.auth).split(":")[0]
+                inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData
                 EnterKey.iconSource: "image://theme/icon-m-enter-accept"
                 EnterKey.onClicked:
                 {
-                    jqledit.focus = true
+                    authpwd.focus = true
                 }
             }
-            TextArea
+            TextField
             {
-                id: jqledit
-                placeholderText: "JQL Query"
-                label: "JQL"
+                id: authpwd
+                label: "Password"
+                placeholderText: "password"
                 width: parent.width
-                text: jql
-                //height: implicitHeight
-                wrapMode: Text.WrapAnywhere
-                inputMethodHints: Qt.ImhUrlCharactersOnly | Qt.ImhNoAutoUppercase
+                focus: false
+                text: Qt.atob(accounts.current.auth).split(":").pop()
+                inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData
+                echoMode: TextInput.PasswordEchoOnEdit
                 EnterKey.iconSource: "image://theme/icon-m-enter-accept"
                 EnterKey.onClicked:
                 {
-                    nameedit.focus = true
+                    hosturl.focus = true
                 }
             }
         }

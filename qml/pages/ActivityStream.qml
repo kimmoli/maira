@@ -77,7 +77,7 @@ Page
                         Image
                         {
                             visible: (content != undefined)
-                            source: (content != undefined) ? content.match(new RegExp("<img.*src=\\\"(" + Qt.atob(hosturlstring.value) + ".*?)\\\""))[1] : ""
+                            source: (content != undefined) ? content.match(new RegExp("<img.*src=\\\"(" + Qt.atob(accounts.current.host) + ".*?)\\\""))[1] : ""
                         }
                     }
                     onClicked:

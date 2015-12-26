@@ -82,21 +82,22 @@ Page
                 id: contextmenu
                 ContextMenu
                 {
+                    property bool my: Qt.atob(accounts.current.auth).split(":")[0] === owner
                     MenuItem
                     {
-                        visible: Qt.atob(authstring.value).split(":")[0] === owner
+                        visible: my
                         text: "Delete"
                         onClicked: remove()
                     }
                     MenuItem
                     {
-                        visible: Qt.atob(authstring.value).split(":")[0] === owner
+                        visible: my
                         text: "Edit"
                         onClicked: editfilter(name , description, jql, id)
                     }
                     MenuItem
                     {
-                        visible: Qt.atob(authstring.value).split(":")[0] !== owner
+                        visible: !my
                         enabled: false
                         text: "Not your filter. Edit prohibited."
                     }

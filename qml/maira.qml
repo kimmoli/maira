@@ -2,6 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import org.nemomobile.configuration 1.0
 import org.nemomobile.notifications 1.0
+import QtQuick.LocalStorage 2.0
 import "components"
 
 ApplicationWindow
@@ -23,7 +24,23 @@ ApplicationWindow
 
     Component.onCompleted:
     {
+        accounts.reload()
+        accounts.findaccount()
         auth()
+    }
+
+    function opendb()
+    {
+        return LocalStorage.openDatabaseSync('harbour-maira', '', 'Accounts', 2000, function(db)
+        {
+            log("Creating db")
+            db.transaction(function(x)
+            {
+                x.executeSql("CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, host TEXT, auth TEXT)")
+                x.executeSql("INSERT INTO accounts (host, auth) VALUES(?, ?)",[Qt.btoa("http://jiraserver:8080/"), Qt.btoa("username:password")])
+            })
+        })
+
     }
 
     function auth()
@@ -34,13 +51,13 @@ ApplicationWindow
         attachments.clear()
         loggedin = false
 
-        var url = Qt.atob(hosturlstring.value) + "rest/auth/1/session"
+        var url = Qt.atob(accounts.current.host) + "rest/auth/1/session"
 
         var content = {}
-        content.username = Qt.atob(authstring.value).split(":")[0]
-        content.password = Qt.atob(authstring.value).split(":")[1]
+        content.username = Qt.atob(accounts.current.auth).split(":")[0]
+        content.password = Qt.atob(accounts.current.auth).split(":")[1]
 
-        post(Qt.atob(hosturlstring.value) + "rest/auth/1/session", JSON.stringify(content), "POST", function(o)
+        post(url, JSON.stringify(content), "POST", function(o)
         {
             var ar = JSON.parse(o.responseText)
             logjson(ar, "auth")
@@ -53,7 +70,7 @@ ApplicationWindow
 
     function getserverinfo()
     {
-        request(Qt.atob(hosturlstring.value) + "rest/api/2/serverInfo", function(o)
+        request(Qt.atob(accounts.current.host) + "rest/api/2/serverInfo", function(o)
         {
             serverinfo = JSON.parse(o.responseText)
         })
@@ -61,16 +78,15 @@ ApplicationWindow
 
     ConfigurationValue
     {
-        id: hosturlstring
-        key: "/apps/harbour-maira/host"
-        defaultValue: Qt.btoa("http://jiraserver:1234/")
-    }
-
-    ConfigurationValue
-    {
-        id: authstring
-        key: "/apps/harbour-maira/user"
-        defaultValue: Qt.btoa("username:password")
+        id: activeaccount
+        key: "/apps/harbour-maira/activeaccount"
+        defaultValue: 1
+        onValueChanged:
+        {
+            log("account changed to " + value)
+            accounts.findaccount()
+            auth()
+        }
     }
 
     ConfigurationValue
@@ -91,6 +107,39 @@ ApplicationWindow
         id: verbosejson
         key: "/apps/harbour-maira/verbosejson"
         defaultValue: 0
+    }
+
+    ListModel
+    {
+        id: accounts
+
+        property var current
+
+        function findaccount()
+        {
+            for (var i=0 ; i<count; i++)
+                if (get(i).id == activeaccount.value)
+                {
+                    current = get(i)
+                    break
+                }
+            log("account " + activeaccount.value + " at index " + i)
+        }
+
+        function reload()
+        {
+            var db = opendb()
+            clear()
+            db.transaction(function(x)
+            {
+                var res = x.executeSql("SELECT * FROM accounts")
+                for(var i = 0; i < res.rows.length; i++)
+                {
+                    log(res.rows.item(i).id + " = " + res.rows.item(i).host + " - " + res.rows.item(i).auth)
+                    append(res.rows.item(i))
+                }
+            })
+        }
     }
 
     ListModel
@@ -122,7 +171,7 @@ ApplicationWindow
             clear()
             if (searchtext === "")
             {
-                request(Qt.atob(hosturlstring.value) + "rest/api/2/user/assignable/search?issueKey=" + currentissue.key,
+                request(Qt.atob(accounts.current.host) + "rest/api/2/user/assignable/search?issueKey=" + currentissue.key,
                 function (o)
                 {
                     allusers = JSON.parse(o.responseText)
@@ -168,7 +217,7 @@ ApplicationWindow
         function update()
         {
             clear()
-            request(Qt.atob(hosturlstring.value) + "rest/api/2/filter/favourite",
+            request(Qt.atob(accounts.current.host) + "rest/api/2/filter/favourite",
             function (o)
             {
                 var d = JSON.parse(o.responseText)
@@ -193,7 +242,7 @@ ApplicationWindow
         function update()
         {
             clear()
-            request(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + currentissue.key + "/transitions?expand=transitions.fields",
+            request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key + "/transitions?expand=transitions.fields",
             function (o)
             {
                 var d = JSON.parse(o.responseText)
@@ -220,9 +269,8 @@ ApplicationWindow
         function update()
         {
             var check = activitystream.count > 0
-            activitystreamtimer.restart()
 
-            request(Qt.atob(hosturlstring.value) + "activity", function(o)
+            request(Qt.atob(accounts.current.host) + "activity", function(o)
             {
                 var rootElement = o.responseXML.documentElement
                 var cNodes = rootElement.childNodes
@@ -287,7 +335,8 @@ ApplicationWindow
     {
         /* Update stream every 5 mins */
         id: activitystreamtimer
-        repeat: true
+        running: loggedin
+        repeat: loggedin
         interval: 300000
         onTriggered: activitystream.update()
     }
@@ -433,7 +482,7 @@ ApplicationWindow
 
     function jqlsearch(startat)
     {
-        request(Qt.atob(hosturlstring.value) + "rest/api/2/search?jql=" + jqlstring.value.replace(/ /g, "+") + "&startAt=" + startat + "&maxResults=10",
+        request(Qt.atob(accounts.current.host) + "rest/api/2/search?jql=" + jqlstring.value.replace(/ /g, "+") + "&startAt=" + startat + "&maxResults=10",
         function (o)
         {
             var d = JSON.parse(o.responseText)
@@ -465,7 +514,7 @@ ApplicationWindow
 
     function fetchissue(issuekey)
     {
-        request(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey,
+        request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey,
         function (o)
         {
             currentissue = JSON.parse(o.responseText)
@@ -474,7 +523,7 @@ ApplicationWindow
 
             customfields.clear()
 
-            request(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/editmeta", function(o)
+            request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/editmeta", function(o)
             {
                 var meta = JSON.parse(o.responseText)
 
@@ -557,9 +606,9 @@ ApplicationWindow
         content.body = body
         logjson(content, issuekey)
         if (id > 0)
-            post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment/" + id, JSON.stringify(content), "PUT", function() { fetchissue(currentissue.key) })
+            post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/comment/" + id, JSON.stringify(content), "PUT", function() { fetchissue(currentissue.key) })
         else
-            post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content), "POST", function() { fetchissue(currentissue.key) })
+            post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content), "POST", function() { fetchissue(currentissue.key) })
     }
 
     function manageissue(issuekey, summary, description)
@@ -572,7 +621,7 @@ ApplicationWindow
             fields.description = description
         content.fields = fields
         logjson(content, issuekey)
-        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey, JSON.stringify(content), "PUT", function() { fetchissue(currentissue.key) })
+        post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey, JSON.stringify(content), "PUT", function() { fetchissue(currentissue.key) })
     }
 
     function assignissue(issuekey, name)
@@ -580,17 +629,17 @@ ApplicationWindow
         var content = {}
         content.name = name
         logjson(content, issuekey)
-        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/assignee", JSON.stringify(content), "PUT", function() { fetchissue(currentissue.key) })
+        post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/assignee", JSON.stringify(content), "PUT", function() { fetchissue(currentissue.key) })
     }
 
     function removeattachment(id)
     {
-        post(Qt.atob(hosturlstring.value) + "rest/api/2/attachment/" + id, "", "DELETE", function() { fetchissue(currentissue.key) })
+        post(Qt.atob(accounts.current.host) + "rest/api/2/attachment/" + id, "", "DELETE", function() { fetchissue(currentissue.key) })
     }
 
     function removecomment(issuekey, id)
     {
-        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + issuekey + "/comment/" + id, "", "DELETE", function() { fetchissue(currentissue.key) })
+        post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/comment/" + id, "", "DELETE", function() { fetchissue(currentissue.key) })
     }
 
     function managefilter(name, description, jql, id)
@@ -602,14 +651,14 @@ ApplicationWindow
         content.favourite = true
         logjson(content, "managefilter")
         if (id > 0)
-            post(Qt.atob(hosturlstring.value) + "rest/api/2/filter/" + id, JSON.stringify(content), "PUT", function(o) { filters.update() } )
+            post(Qt.atob(accounts.current.host) + "rest/api/2/filter/" + id, JSON.stringify(content), "PUT", function(o) { filters.update() } )
         else
-            post(Qt.atob(hosturlstring.value) + "rest/api/2/filter", JSON.stringify(content), "POST", function(o) { filters.update() } )
+            post(Qt.atob(accounts.current.host) + "rest/api/2/filter", JSON.stringify(content), "POST", function(o) { filters.update() } )
     }
 
     function deletefilter(id)
     {
-        post(Qt.atob(hosturlstring.value) + "rest/api/2/filter/" + id, "", "DELETE", function(o) { filters.update() } )
+        post(Qt.atob(accounts.current.host) + "rest/api/2/filter/" + id, "", "DELETE", function(o) { filters.update() } )
     }
 
     function stringStartsWith (string, prefix)

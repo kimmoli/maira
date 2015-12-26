@@ -32,6 +32,7 @@ Page
             }
             MenuItem
             {
+                enabled: loggedin
                 text: "Activity"
                 onClicked:
                 {

@@ -27,7 +27,7 @@ Page
                     tr.maketransition.connect(function(content)
                     {
                         logjson(content, "transition content")
-                        post(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + currentissue.key + "/transitions", JSON.stringify(content), "POST", function() { fetchissue(currentissue.key) })
+                        post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key + "/transitions", JSON.stringify(content), "POST", function() { fetchissue(currentissue.key) })
                     })
                 }
             }
@@ -55,7 +55,7 @@ Page
                     filePicker.selectedContentChanged.connect(function()
                     {
                         var filename = filePicker.selectedContent
-                        FileUploader.uploadFile(Qt.atob(hosturlstring.value) + "rest/api/2/issue/" + key + "/attachments", filename)
+                        FileUploader.uploadFile(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + key + "/attachments", filename)
                     });
                 }
             }

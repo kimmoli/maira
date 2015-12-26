@@ -8,24 +8,12 @@ Page
     SilicaFlickable
     {
         anchors.fill: parent
-
-        PullDownMenu
-        {
-            MenuItem
-            {
-                text: "Clear"
-                onClicked: authstring.value = ""
-            }
-        }
-
         contentHeight: column.height + pageHeader.height
 
         Column
         {
             id: column
-
             width: page.width
-            spacing: Theme.paddingLarge
 
             PageHeader
             {
@@ -59,67 +47,119 @@ Page
 
             SectionHeader
             {
-                text: "Login"
+                text: "Account"
             }
 
-            TextField
+            Repeater
             {
-                id: hosturl
-                label: "Host"
-                placeholderText: "http://jiraserver:1234/"
-                width: parent.width
-                focus: false
-                text: Qt.atob(hosturlstring.value)
-                inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData | Qt.ImhUrlCharactersOnly
-                EnterKey.iconSource: "image://theme/icon-m-enter-accept"
-                validator: RegExpValidator { regExp: /^https?:\/\/.*\/$/ }
-                EnterKey.onClicked:
+                model: accounts
+                delegate: ListItem
                 {
-                    authusr.focus = true
-                }
-            }
-            TextField
-            {
-                id: authusr
-                label: "Username"
-                placeholderText: "username"
-                width: parent.width
-                focus: false
-                text: Qt.atob(authstring.value).split(":")[0]
-                inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData
-                EnterKey.iconSource: "image://theme/icon-m-enter-accept"
-                EnterKey.onClicked:
-                {
-                    authpwd.focus = true
-                }
-            }
-            TextField
-            {
-                id: authpwd
-                label: "Password"
-                placeholderText: "password"
-                width: parent.width
-                focus: false
-                text: Qt.atob(authstring.value).split(":").pop()
-                inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData
-                echoMode: TextInput.PasswordEchoOnEdit
-                EnterKey.iconSource: "image://theme/icon-m-enter-accept"
-                EnterKey.onClicked:
-                {
-                    hosturl.focus = true
-                }
-            }
-            Button
-            {
-                anchors.horizontalCenter: parent.horizontalCenter
-                enabled: (authstring.value !== Qt.btoa(authusr.text + ":" + authpwd.text)) || (hosturlstring.value !== Qt.btoa(hosturl.text))
-                text: "Save"
-                onClicked:
-                {
-                    hosturlstring.value = Qt.btoa(hosturl.text)
-                    authstring.value = Qt.btoa(authusr.text + ":" + authpwd.text)
-                    auth()
-                    pageStack.pop()
+                    id: listItem
+                    contentHeight: Theme.itemSizeMedium
+                    menu: contextmenu
+
+                    Column
+                    {
+                        width: parent.width
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        Label
+                        {
+                            width: parent.width
+                            clip: true
+                            anchors.left: parent.left
+                            anchors.leftMargin: Theme.paddingMedium
+                            text: Qt.atob(host)
+                            elide: Text.ElideRight
+                            font.bold: activeaccount.value === accounts.get(index).id
+                        }
+                        Label
+                        {
+                            width: parent.width
+                            clip: true
+                            anchors.left: parent.left
+                            anchors.leftMargin: Theme.paddingMedium
+                            text: Qt.atob(auth).split(":")[0]
+                            font.pixelSize: Theme.fontSizeSmall
+                            elide: Text.ElideRight
+                            font.bold: activeaccount.value === accounts.get(index).id
+                        }
+                    }
+                    onClicked:
+                    {
+                        log("selected account: " + accounts.get(index).id)
+                        activeaccount.value = accounts.get(index).id
+                        pageStack.pop()
+                    }
+
+                    function remove()
+                    {
+                        remorseAction("Deleting", function()
+                        {
+                            var db = opendb()
+                            db.transaction(function(x)
+                            {
+                                x.executeSql("DELETE FROM accounts WHERE id=?",[accounts.get(index).id])
+                                log("account deleted")
+                            })
+                            accounts.reload()
+                            activeaccount.value = accounts.get(0).id
+                        })
+                    }
+
+                    function editaccount()
+                    {
+                        activeaccount.value = accounts.get(index).id
+                        var ea = pageStack.push(Qt.resolvedUrl("EditAccount.qml"))
+                        ea.accepted.connect(function()
+                        {
+                            log(ea.host + " " + ea.auth)
+                            var db = opendb()
+                            db.transaction(function(x)
+                            {
+                                x.executeSql("UPDATE accounts SET host=?, auth=? WHERE id=?",[ea.host, ea.auth, activeaccount.value])
+                                log("account updated")
+                            })
+                            accounts.reload()
+                        })
+                    }
+
+                    function addaccount()
+                    {
+                        activeaccount.value = accounts.get(index).id
+                        var db = opendb()
+                        db.transaction(function(x)
+                        {
+                            x.executeSql("INSERT INTO accounts (host, auth) VALUES(?, ?)",[accounts.current.host, accounts.current.auth])
+                            log("inserted new account")
+                        })
+                        accounts.reload()
+                    }
+
+                    Component
+                    {
+                        id: contextmenu
+                        ContextMenu
+                        {
+                            MenuItem
+                            {
+                                visible: accounts.count > 1
+                                text: "Delete"
+                                onClicked: remove()
+                            }
+                            MenuItem
+                            {
+                                text: "Edit"
+                                onClicked: editaccount()
+                            }
+                            MenuItem
+                            {
+                                text: "Clone as new"
+                                onClicked: addaccount()
+                            }
+                        }
+                    }
                 }
             }
         }
