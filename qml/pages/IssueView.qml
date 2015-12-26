@@ -120,6 +120,12 @@ Page
             }
             DetailUserItem
             {
+                label: "Type"
+                avatar: currentissue.fields.issuetype.iconUrl
+                value: currentissue.fields.issuetype.name
+            }
+            DetailUserItem
+            {
                 label: "Priority"
                 avatar: currentissue.fields.priority.iconUrl
                 value: currentissue.fields.priority.name
