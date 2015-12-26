@@ -9,8 +9,6 @@ Page
     property string key: ""
     property bool showAttachments: false
 
-    Component.onCompleted: fetchissue(key)
-
     SilicaFlickable
     {
         id: flick
@@ -92,6 +90,20 @@ Page
             {
                 id: pageHeader
                 title: key
+                rightMargin: Theme.horizontalPageMargin + projectavatar.width + Theme.paddingMedium
+                extraContent.anchors.left: undefined
+                extraContent.anchors.leftMargin: 0
+                extraContent.anchors.right: pageHeader.right
+                extraContent.anchors.rightMargin: projectavatar.width
+                extraContent.anchors.verticalCenter: pageHeader._titleItem.verticalCenter
+
+                Image
+                {
+                    id: projectavatar
+                    source: currentissue.fields.project.avatarUrls["48x48"]
+                    anchors.centerIn: parent
+                    Component.onCompleted: parent = pageHeader.extraContent
+                }
             }
 
             DetailUserItem

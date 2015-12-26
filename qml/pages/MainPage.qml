@@ -130,7 +130,11 @@ Page
                 {
                     width: column.width
                     height: Theme.itemSizeLarge
-                    onClicked: pageStack.push(Qt.resolvedUrl("IssueView.qml"), {key: key})
+                    onClicked:
+                    {
+                        fetchissue(key)
+                        pageStack.push(Qt.resolvedUrl("IssueView.qml"), {key: key})
+                    }
                     Column
                     {
                         width: parent.width - Theme.itemSizeExtraSmall - Theme.paddingMedium
