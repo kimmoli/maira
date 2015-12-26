@@ -30,6 +30,15 @@ Page
                 text: "Settings"
                 onClicked: pageStack.push(Qt.resolvedUrl("Settings.qml"))
             }
+            MenuItem
+            {
+                text: "Activity"
+                onClicked:
+                {
+                    activitystream.update()
+                    pageStack.push(Qt.resolvedUrl("ActivityStream.qml"))
+                }
+            }
         }
 
         contentHeight: column.height + Theme.paddingLarge
