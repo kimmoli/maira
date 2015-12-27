@@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
 import org.nemomobile.configuration 1.0
 import org.nemomobile.notifications 1.0
 import QtQuick.LocalStorage 2.0
+import QtQuick.XmlListModel 2.0
 import "components"
 
 ApplicationWindow
@@ -65,6 +66,7 @@ ApplicationWindow
             loggedin = true
             getserverinfo()
             jqlsearch(0)
+            activitystream.source = Qt.atob(accounts.current.host) + "activity"
         })
     }
 
@@ -260,75 +262,31 @@ ApplicationWindow
         }
     }
 
-    ListModel
+    XmlListModel
     {
         id: activitystream
+        query: "/feed/entry"
+        namespaceDeclarations: "declare default element namespace 'http://www.w3.org/2005/Atom';
+                                declare namespace activity='http://activitystrea.ms/spec/1.0/';"
 
-        signal newstreamentries(var amount)
+        XmlRole { name: "id"; query: "id/string()"; isKey: true; }
+        XmlRole { name: "title"; query: "title/string()"; }
+        XmlRole { name: "content"; query: "content/string()"; }
+        XmlRole { name: "objecttitle"; query: "activity:object/title/string()"; }
+        XmlRole { name: "targettitle"; query: "activity:target/title/string()"; }
+        XmlRole { name: "published"; query: "published/string()"; }
 
-        function update()
+        onStatusChanged:
         {
-            var check = activitystream.count > 0
-
-            request(Qt.atob(accounts.current.host) + "activity", function(o)
-            {
-                var rootElement = o.responseXML.documentElement
-                var cNodes = rootElement.childNodes
-                var gotnew = 0
-
-                for(var i = 0; i < cNodes.length; i++)
-                {
-                    if(cNodes[i].nodeName === "entry")
-                    {
-                        var ccNodes = rootElement.childNodes[i].childNodes
-                        var entry = {}
-                        for (var j = 0 ; j < ccNodes.length ; j++)
-                        {
-                            if (ccNodes[j].childNodes.length == 1)
-                            {
-                                entry[ccNodes[j].nodeName] = ccNodes[j].firstChild.nodeValue
-                            }
-                            else if (ccNodes[j].childNodes.length > 1)
-                            {
-                                entry[ccNodes[j].nodeName] = {}
-                                var cccNodes = rootElement.childNodes[i].childNodes[j].childNodes
-                                for (var m = 0 ; m < cccNodes.length ; m++)
-                                {
-                                    if (cccNodes[m].childNodes.length == 1)
-                                    {
-                                        entry[ccNodes[j].nodeName][cccNodes[m].nodeName]= cccNodes[m].firstChild.nodeValue
-                                    }
-                                }
-                            }
-                        }
-                        if (check)
-                        {
-                            var found = false
-                            for (var n=0 ; n<count ; n++)
-                                if (get(n).id == entry.id)
-                                {
-                                    found = true
-                                    break
-                                }
-                            if (!found)
-                            {
-                                logjson(entry, "stream entry")
-                                gotnew++
-                                insert(0, entry)
-                            }
-                        }
-                        else
-                        {
-                            logjson(entry, "stream entry")
-                            append(entry)
-                            gotnew++
-                        }
-                    }
-                }
-                if (gotnew > 0)
-                    newstreamentries(gotnew)
-            })
+            log(errorString(), "xmllistmodel status " + status)
+            if (status == XmlListModel.Loading)
+                bi.start()
+            else
+                bi.stop()
+            if (status == XmlListModel.Error)
+                msgbox.showError("Activity stream failed")
         }
+        onCountChanged: log(count, "xmllistmode count")
     }
 
     Timer
@@ -338,7 +296,7 @@ ApplicationWindow
         running: loggedin
         repeat: loggedin
         interval: 300000
-        onTriggered: activitystream.update()
+        onTriggered: activitystream.reload()
     }
 
     Notification
@@ -348,17 +306,22 @@ ApplicationWindow
 
     Connections
     {
+        property var prevcount: 0
         target: activitystream
-        onNewstreamentries:
+        onCountChanged:
         {
-            log("triggerin notification")
-            notification.category = "x-nemo.messaging.im.preview"
-            notification.previewBody = serverinfo !== undefined ? serverinfo.serverTitle : "Maira"
-            notification.previewSummary = "New activity (" + amount + ")"
-            notification.replacesId = 0
-            notification.appIcon = imagelocation
-            notification.close()
-            notification.publish()
+            if (prevcount > 0)
+            {
+                log("triggerin notification")
+                notification.category = "x-nemo.messaging.im.preview"
+                notification.previewBody = serverinfo !== undefined ? serverinfo.serverTitle : "Maira"
+                notification.previewSummary = "New activity"
+                notification.replacesId = 0
+                notification.appIcon = imagelocation
+                notification.close()
+                notification.publish()
+            }
+            prevcount = activitystream.count
         }
     }
 

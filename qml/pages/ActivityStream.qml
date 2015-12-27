@@ -15,7 +15,7 @@ Page
             MenuItem
             {
                 text: "Refresh"
-                onClicked: activitystream.update()
+                onClicked: activitystream.reload()
             }
         }
 
@@ -40,6 +40,7 @@ Page
                 delegate: BackgroundItem
                 {
                     width: parent.width
+                    clip: true
                     height: col.height + Theme.paddingLarge
                     Column
                     {
@@ -64,37 +65,43 @@ Page
                             textFormat: Text.PlainText
                             font.pixelSize: Theme.fontSizeSmall
                         }
-                        Label
+                        Row
                         {
-                            visible: (content != undefined)
-                            text: (content != undefined) ? content.replace(/<(?:.|\n)*?>/gm, '').replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ') : ""
                             width: parent.width
-                            wrapMode: Text.Wrap
-                            textFormat: Text.PlainText
-                            font.italic: true
-                            font.pixelSize: Theme.fontSizeSmall
+                            visible: content.length > 0
+                            spacing: 0
+                            Label
+                            {
+                                id: contentlabel
+                                text: content.replace(/<(?:.|\n)*?>/gm, '').replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ')
+                                width: parent.width - Theme.paddingLarge
+                                clip: true
+                                textFormat: Text.RichText
+                                font.italic: true
+                                font.pixelSize: Theme.fontSizeSmall
+                            }
+                            Label
+                            {
+                                visible: contentlabel.paintedWidth > contentlabel.width
+                                text: "..."
+                                font.italic: true
+                                font.pixelSize: Theme.fontSizeSmall
+                            }
                         }
                         Image
                         {
-                            visible: (content != undefined)
-                            source: (content != undefined) ? content.match(new RegExp("<img.*src=\\\"(" + Qt.atob(accounts.current.host) + ".*?)\\\""))[1] : ""
+                            source: content.match(new RegExp("<img.*src=\\\"(" + Qt.atob(accounts.current.host) + ".*?)\\\""))[1]
                         }
                     }
                     onClicked:
                     {
                         var key
-                        if (object != undefined)
-                        {
-                            if (object.title != undefined)
-                                if (object.title.match(/^[A-Z]+-\d+$/))
-                                    key = object.title
-                        }
-                        if (key == undefined && activitystream.get(index).target != undefined)
-                        {
-                            if (activitystream.get(index).target.title != undefined)
-                                if (activitystream.get(index).target.title.match(/^[A-Z]+-\d+$/))
-                                    key = activitystream.get(index).target.title
-                        }
+
+                        if (objecttitle.match(/^[A-Z]+-\d+$/))
+                            key = objecttitle
+                        else if (targettitle.match(/^[A-Z]+-\d+$/))
+                            key = targettitle
+
                         if (key != undefined)
                         {
                             fetchissue(key)

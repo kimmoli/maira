@@ -6,7 +6,7 @@ Name:       harbour-maira
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 
 Summary:    Sailfish application for JIRA
-Version:    0.0.2
+Version:    0.0.devel
 Release:    1
 Group:      Qt/Qt
 License:    LICENSE
@@ -15,6 +15,8 @@ Source0:    %{name}-%{version}.tar.bz2
 Requires:   sailfishsilica-qt5 >= 0.10.9
 Requires:   nemo-qml-plugin-notifications-qt5
 Requires:   nemo-qml-plugin-configuration-qt5
+Requires:   qt5-qtdeclarative-import-xmllistmodel
+Requires:   qt5-qtdeclarative-import-localstorageplugin
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
