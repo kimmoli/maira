@@ -29,7 +29,9 @@ OTHER_FILES += qml/maira.qml \
     qml/pages/TransitionSelector.qml \
     qml/pages/Fields.qml \
     qml/pages/ActivityStream.qml \
-    qml/pages/EditAccount.qml
+    qml/pages/EditAccount.qml \
+    qml/pages/ProjectSelector.qml \
+    qml/pages/IssuetypeSelector.qml
 
 SOURCES += \
     src/main.cpp \

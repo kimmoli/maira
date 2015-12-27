@@ -5,7 +5,7 @@ Page
 {
     id: page
 
-    property string username: ""
+    property var issuetypeindex
     signal selected
 
     SilicaListView
@@ -15,20 +15,14 @@ Page
 
         VerticalScrollDecorator { flickable: flick }
 
-        header: SearchField
+        header: PageHeader
         {
-            width: parent.width
-            placeholderText: "Search user"
-
-            onTextChanged:
-            {
-                users.update(text)
-            }
+            title: "Select issue type"
         }
 
         currentIndex: -1
 
-        model: users
+        model: issuetypes
         delegate: ListItem
         {
             height: Theme.itemSizeSmall
@@ -45,15 +39,28 @@ Page
 
                 Image
                 {
-                    source: avatarurl
+                    id: avatarimage
+                    source: iconurl
+                    width: 48
+                    height: 48
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
-                Label
+                Column
                 {
                     anchors.verticalCenter: parent.verticalCenter
-                    text: name
-                    font.pixelSize: Theme.fontSizeMedium
+                    Label
+                    {
+                        text: name
+                        font.pixelSize: Theme.fontSizeSmall
+                    }
+                    Label
+                    {
+                        text: description
+                        width: flick.width - 2* Theme.paddingLarge - avatarimage.width - Theme.paddingSmall
+                        font.pixelSize: Theme.fontSizeExtraSmall
+                        elide: Text.ElideRight
+                    }
                 }
             }
             BackgroundItem
@@ -61,7 +68,7 @@ Page
                 anchors.fill: parent
                 onClicked:
                 {
-                    page.username = key
+                    issuetypeindex = index
                     selected()
                 }
             }

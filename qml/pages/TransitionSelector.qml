@@ -15,7 +15,7 @@ Page
 
         Component.onCompleted:
         {
-            users.update("")
+            users.update("", "issueKey=" + currentissue.key)
             issuetransitions.update()
         }
 
@@ -60,15 +60,17 @@ Page
             onClicked:
             {
                 transitionid = id
-
+                var contentin = {}
+                var fieldsin = {}
                 var f = Object.keys(fields).map(function (key)
                 {
+                    fieldsin[key] = currentissue.fields[key]
                     return fields[key]
                 })
-
+                contentin.fields = fieldsin
                 if (f.length > 0)
                 {
-                    var fielddialog = pageStack.push(Qt.resolvedUrl("Fields.qml"), { fields: f })
+                    var fielddialog = pageStack.push(Qt.resolvedUrl("Fields.qml"), { fields: f, content: contentin })
                     fielddialog.accepted.connect(function()
                     {
                         var content
@@ -77,6 +79,7 @@ Page
                         transition.id = transitionid
                         content.transition = transition
                         maketransition(content)
+                        pageStack.pop(pageStack.find( function(page){ return (page._depth === 1) }))
                     })
                 }
                 else

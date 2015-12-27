@@ -5,7 +5,7 @@ Page
 {
     id: page
 
-    property string username: ""
+    property var projectindex
     signal selected
 
     SilicaListView
@@ -18,17 +18,17 @@ Page
         header: SearchField
         {
             width: parent.width
-            placeholderText: "Search user"
+            placeholderText: "Search project"
 
             onTextChanged:
             {
-                users.update(text)
+                projects.update(text)
             }
         }
 
         currentIndex: -1
 
-        model: users
+        model: projects
         delegate: ListItem
         {
             height: Theme.itemSizeSmall
@@ -45,15 +45,26 @@ Page
 
                 Image
                 {
+                    id: avatarimage
                     source: avatarurl
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
-                Label
+                Column
                 {
                     anchors.verticalCenter: parent.verticalCenter
-                    text: name
-                    font.pixelSize: Theme.fontSizeMedium
+                    Label
+                    {
+                        text: key
+                        font.pixelSize: Theme.fontSizeSmall
+                    }
+                    Label
+                    {
+                        text: name
+                        width: flick.width - 2* Theme.paddingLarge - avatarimage.width - Theme.paddingSmall
+                        font.pixelSize: Theme.fontSizeExtraSmall
+                        elide: Text.ElideRight
+                    }
                 }
             }
             BackgroundItem
@@ -61,7 +72,7 @@ Page
                 anchors.fill: parent
                 onClicked:
                 {
-                    page.username = key
+                    projectindex = index
                     selected()
                 }
             }

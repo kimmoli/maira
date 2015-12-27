@@ -33,7 +33,14 @@ Page
             MenuItem
             {
                 enabled: loggedin
-                text: "Activity"
+                text: "Create new issue"
+                onClicked: newissue()
+
+            }
+            MenuItem
+            {
+                enabled: loggedin
+                text: "Activity stream"
                 onClicked:
                 {
                     activitystream.reload()

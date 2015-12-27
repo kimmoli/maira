@@ -37,11 +37,13 @@ Page
                 text: "Assign issue"
                 onClicked:
                 {
+                    users.update("", "issueKey=" + currentissue.key)
                     var user = pageStack.push("UserSelector.qml")
-                    user.changeUser.connect(function()
+                    user.selected.connect(function()
                     {
                         if (user.username.length > 0)
-                        assignissue(key, user.username)
+                            assignissue(key, user.username)
+                        pageStack.pop()
                     })
                 }
             }

@@ -20,6 +20,7 @@ ApplicationWindow
 
     property int searchtotalcount: 0
     property var currentissue
+    property var currentproject
     property bool loggedin: false
     property var serverinfo
 
@@ -168,12 +169,18 @@ ApplicationWindow
     {
         id: users
         property var allusers
-        function update(searchtext)
+        property string _searchterm
+
+        function update(searchtext, searchterm)
         {
+            searchtext = (typeof searchtext === "undefined") ? "" : searchtext
+            if (typeof searchterm !== "undefined")
+                _searchterm = searchterm
+
             clear()
             if (searchtext === "")
             {
-                request(Qt.atob(accounts.current.host) + "rest/api/2/user/assignable/search?issueKey=" + currentissue.key,
+                request(Qt.atob(accounts.current.host) + "rest/api/2/user/assignable/search?" + _searchterm,
                 function (o)
                 {
                     allusers = JSON.parse(o.responseText)
@@ -260,6 +267,57 @@ ApplicationWindow
                 }
             })
         }
+    }
+
+    ListModel
+    {
+        id: projects
+        property var allprojects
+        function update(searchtext)
+        {
+            searchtext = (typeof searchtext === "undefined") ? "" : searchtext
+            clear()
+            if (searchtext === "")
+            {
+                request(Qt.atob(accounts.current.host) + "rest/api/2/project",
+                function (o)
+                {
+                    allprojects = JSON.parse(o.responseText)
+                    logjson(allprojects, "projects update()")
+
+                    for (var i=0 ; i<allprojects.length ; i++)
+                    {
+                        append({ id: allprojects[i].id,
+                                 key: allprojects[i].key,
+                                 name: allprojects[i].name,
+                                 avatarurl: allprojects[i].avatarUrls["48x48"]
+                                 })
+                    }
+                })
+            }
+            else
+            {
+                var r = new RegExp(searchtext, "i")
+                for (var i=0 ; i<allprojects.length ; i++)
+                {
+                    if (allprojects[i].name.search(r) > -1 || allprojects[i].key.search(r) > -1)
+                    {
+                        log(allprojects[i].key, "append filtered")
+                        append({ id: allprojects[i].id,
+                                 key: allprojects[i].key,
+                                 name: allprojects[i].name,
+                                 avatarurl: allprojects[i].avatarUrls["48x48"]
+                                 })
+                    }
+                }
+
+            }
+        }
+    }
+
+    ListModel
+    {
+        id: issuetypes
     }
 
     XmlListModel
@@ -472,6 +530,28 @@ ApplicationWindow
         return (val === undefined || val == null || val.length <= 0) ? "" : val.iconUrl
     }
 
+    function fetchproject(projectkey)
+    {
+        request(Qt.atob(accounts.current.host) + "rest/api/2/project/" + projectkey,
+        function (o)
+        {
+            currentproject = JSON.parse(o.responseText)
+
+            logjson(currentproject, "fetchproject")
+
+            issuetypes.clear()
+            for (var i=0 ; i < currentproject.issueTypes.length; i++)
+            {
+                issuetypes.append({
+                    id: currentproject.issueTypes[i].id,
+                    name: currentproject.issueTypes[i].name,
+                    description: currentproject.issueTypes[i].description,
+                    iconurl: currentproject.issueTypes[i].iconUrl,
+                })
+            }
+        })
+    }
+
     function fetchissue(issuekey)
     {
         request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey,
@@ -621,6 +701,48 @@ ApplicationWindow
         post(Qt.atob(accounts.current.host) + "rest/api/2/filter/" + id, "", "DELETE", function(o) { filters.update() } )
     }
 
+    function newissue()
+    {
+        var projectkey
+        var issuetype
+        projects.update()
+        var proj = pageStack.push(Qt.resolvedUrl("pages/ProjectSelector.qml"))
+        proj.selected.connect(function()
+        {
+            projectkey = projects.get(proj.projectindex).key
+            fetchproject(projectkey)
+            var it = pageStack.push("pages/IssuetypeSelector.qml")
+            it.selected.connect(function()
+            {
+                users.update("", "project=" + projectkey)
+                request(Qt.atob(accounts.current.host) + "rest/api/2/issue/createmeta?projectKeys=" + projectkey + "&issuetypeIds=" + issuetypes.get(it.issuetypeindex).id + "&expand=projects.issuetypes.fields", function(o)
+                {
+                    var meta = JSON.parse(o.responseText)
+                    logjson(meta, "createmeta")
+                    var t = meta.projects[0].issuetypes[0].fields
+                    var f = Object.keys(t).map(function (key)
+                    {
+                        console.log(key)
+                        return t[key]
+                    })
+
+                    var contentin = { fields: {
+                                        issuetype: { name: issuetypes.get(it.issuetypeindex).name },
+                                        assignee: { name: currentproject.lead.key}
+                                    } }
+
+                    var fielddialog = pageStack.push(Qt.resolvedUrl("pages/Fields.qml"), { fields: f, content: contentin })
+                    fielddialog.accepted.connect(function()
+                    {
+                        console.log(JSON.stringify(fielddialog.content, null, 4))
+                    })
+                })
+            })
+        })
+    }
+
+    /* Helpers */
+
     function stringStartsWith (string, prefix)
     {
         return string.slice(0, prefix.length) == prefix
@@ -649,5 +771,3 @@ ApplicationWindow
             console.log(JSON.stringify(obj, null, 4))
     }
 }
-
-
