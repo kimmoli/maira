@@ -8,21 +8,6 @@ Dialog
     property var fields
     property var content
 
-    Component.onCompleted:
-    {
-        content = {}
-        var fields = {}
-        content.fields = fields
-    }
-
-    onDone:
-    {
-        if (result === DialogResult.Accepted)
-        {
-            pageStack.pop(pageStack.find( function(page){ return (page._depth === 1) }))
-        }
-    }
-
     SilicaFlickable
     {
         id: flick
@@ -49,6 +34,7 @@ Dialog
 
             Component.onCompleted:
             {
+                logjson(content, "content before")
                 for (var i=0 ; i<fields.length ; i++)
                 {
                     var s = "
@@ -62,8 +48,7 @@ import Sailfish.Silica 1.0
 ComboBox
 {
     width: parent.width
-    label: \"" + fields[i].name + "\" + (changed ? \"*\" : \"\")
-    property bool changed: false
+    label: \"" + fields[i].name + "\"
     menu: ContextMenu
     {
         Repeater
@@ -72,30 +57,23 @@ ComboBox
             delegate: MenuItem
             {
                 text: name
-"
-                        if (fields[i].name === "Assignee")
-                            s = s + "
                 onClicked:
                 {
-                    var assignee = {}
-                    assignee.name = key
-                    content.fields.assignee = assignee
-                    changed = (key !== currentissue.fields.assignee.name)
+                    var _user = {}
+                    _user.name = key
+                    content.fields." + fields[i].schema.system + " = _user
                 }
-"
-                        s = s + "
             }
         }
     }
-"
-                        if (fields[i].name === "Assignee")
-                            s = s + "
-    currentIndex:
+    Component.onCompleted:
     {
         for (var i=0; i<users.count; i++)
-            if (users.get(i).key === currentissue.fields.assignee.name)
-                return i
-        return 0
+            if (users.get(i).key === content.fields." + fields[i].schema.system + ".name)
+            {
+                currentIndex = i
+                break
+            }
     }
 "
                         s = s + "
@@ -104,6 +82,7 @@ ComboBox
                     }
                     else if (fields[i].allowedValues !== undefined && fields[i].schema.type !== "array")
                     {
+                        var ci = ""
                         s  = s + "
 ComboBox
 {
@@ -116,36 +95,66 @@ ComboBox
                         {
                             if (fields[i].allowedValues[u].name !== undefined)
                             {
+                                if (content.fields[fields[i].schema.system] != null && fields[i].allowedValues[u].name == content.fields[fields[i].schema.system].name)
+                                    ci = "
+    currentIndex: " + u + "
+"
                                 s = s + "
         MenuItem {
             text: \"" + fields[i].allowedValues[u].name + "\"
             onClicked:
             {
-                var " + fields[i].schema.system + " = {}
-                " + fields[i].schema.system + ".name = text
-                content.fields." + fields[i].schema.system + " = " + fields[i].schema.system + "
+                var _name = {}
+                _name.name = text
+                content.fields." + fields[i].schema.system + " = _name
             }
         }
 "
                             }
                             else if (fields[i].allowedValues[u].value !== undefined)
                             {
+                                if (content.fields[fields[i].schema.system] != null && fields[i].allowedValues[u].value == content.fields[fields[i].schema.system].value)
+                                    ci = "
+    currentIndex: " + u + "
+"
                                 s = s + "
         MenuItem
         {
             text: \"" + fields[i].allowedValues[u].value + "\"
             onClicked:
             {
-                var " + fields[i].schema.system + " = {}
-                " + fields[i].schema.system + ".value = text
-                content.fields." + fields[i].schema.system + " = " + fields[i].schema.system + "
+                var _value = {}
+                _value.value = text
+                content.fields." + fields[i].schema.system + " = _value
             }
         }
 "
                             }
                         }
-                        s = s + "
+                        if (content.fields[fields[i].schema.system] == null)
+                        {
+                            if (fields[i].allowedValues[0].name !== undefined)
+                                ci = "
+    Component.onCompleted:
+    {
+        var _name = {}
+        _name.name = \"" + fields[i].allowedValues[0].name + "\"
+        content.fields." + fields[i].schema.system + " = _name
     }
+"
+                            else if (fields[i].allowedValues[0].value !== undefined)
+                                ci = "
+    Component.onCompleted:
+    {
+        var _value = {}
+        _value.value = \"" + fields[i].allowedValues[0].value + "\"
+        content.fields." + fields[i].schema.system + " = _value
+    }
+"
+                        }
+
+                        s = s + "
+    }" + ci + "
 }
 "
                     }
@@ -157,11 +166,13 @@ Label
     text: \""+ fields[i].name + " (Not implemented)\"
 }
 "
+                        if (content.fields[fields[i].schema.system] != undefined)
+                            delete content.fields[fields[i].schema.system]
                     }
                     log(s, "createQmlObject")
                     var newObject = Qt.createQmlObject(s, col, "dynfield" + i)
                 }
-
+                logjson(content, "content after")
             }
         }
     }
