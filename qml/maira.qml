@@ -312,13 +312,10 @@ ApplicationWindow
         {
             if (prevcount > 0)
             {
-                log("triggerin notification")
-                notification.category = "x-nemo.messaging.im.preview"
+                log("triggering notification")
+                notification.category = "x-nemo.messaging.sms.preview"
                 notification.previewBody = serverinfo !== undefined ? serverinfo.serverTitle : "Maira"
                 notification.previewSummary = "New activity"
-                notification.replacesId = 0
-                notification.appIcon = imagelocation
-                notification.close()
                 notification.publish()
             }
             prevcount = activitystream.count

@@ -103,8 +103,8 @@ Page
                                 x.executeSql("DELETE FROM accounts WHERE id=?",[accounts.get(index).id])
                                 log("account deleted")
                             })
-                            accounts.reload()
                             activeaccount.value = accounts.get(0).id
+                            accounts.reload()
                         })
                     }
 

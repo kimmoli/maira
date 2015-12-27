@@ -1,20 +1,18 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
-Rectangle
+Item
 {
-    id: messagebox
-    z: 20
-    width: opacity != 0.0 ? parent.width : 0
-    height: Theme.itemSizeSmall
-    opacity: 0.0
-    anchors.top: parent.top
-    anchors.horizontalCenter: parent.horizontalCenter
-    color: Theme.highlightBackgroundColor
+    anchors.centerIn: parent
+    width: pageStack.verticalOrientation ? parent.width : parent.height
+    height: pageStack.verticalOrientation ? parent.height : parent.width
+    rotation: pageStack.currentOrientation === Orientation.Landscape ? 90
+              : pageStack.currentOrientation === Orientation.PortraitInverted ? 180
+                : pageStack.currentOrientation === Orientation.LandscapeInverted ? 270 : 0
 
     function showError(message, delay)
     {
-        color = "red"
+        messagebox.color = "red"
         messageboxText.text = message
         messagebox.opacity = 0.9
         messageboxVisibility.interval = (delay>0) ? delay : 2000
@@ -23,44 +21,55 @@ Rectangle
 
     function showMessage(message, delay)
     {
-        color = Theme.highlightBackgroundColor
+        messagebox.color = Theme.highlightBackgroundColor
         messageboxText.text = message
         messagebox.opacity = 0.9
         messageboxVisibility.interval = (delay>0) ? delay : 2000
         messageboxVisibility.restart()
     }
 
-    Label
+    Rectangle
     {
-        id: messageboxText
-        text: ""
-        anchors.centerIn: parent
-        color: "black"
-        font.pixelSize: Theme.fontSizeSmall
-        textFormat: Text.RichText
-    }
+        id: messagebox
+        z: 20
+        width: opacity != 0.0 ? parent.width : 0
+        height: Theme.itemSizeSmall
+        opacity: 0.0
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        color: Theme.highlightBackgroundColor
 
-    Behavior on opacity
-    {
-        FadeAnimation {}
-    }
-
-    Timer
-    {
-        id: messageboxVisibility
-        interval: 3000
-        onTriggered: messagebox.opacity = 0.0
-    }
-
-    BackgroundItem
-    {
-
-        anchors.fill: parent
-        onClicked:
+        Label
         {
-            messageboxVisibility.stop()
-            messagebox.opacity = 0.0
+            id: messageboxText
+            text: ""
+            anchors.centerIn: parent
+            color: "black"
+            font.pixelSize: Theme.fontSizeSmall
+            textFormat: Text.RichText
+        }
+
+        Behavior on opacity
+        {
+            FadeAnimation {}
+        }
+
+        Timer
+        {
+            id: messageboxVisibility
+            interval: 3000
+            onTriggered: messagebox.opacity = 0.0
+        }
+
+        BackgroundItem
+        {
+
+            anchors.fill: parent
+            onClicked:
+            {
+                messageboxVisibility.stop()
+                messagebox.opacity = 0.0
+            }
         }
     }
 }
-
