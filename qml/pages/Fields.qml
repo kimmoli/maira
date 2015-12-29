@@ -42,6 +42,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 "
+                    /* User selector */
                     if (fields[i].schema.type === "user")
                     {
                         s  = s + "
@@ -75,6 +76,7 @@ ComboBox
 }
 "
                     }
+                    /* ComboBox, only one value can be selected */
                     else if (fields[i].allowedValues !== undefined && fields[i].schema.type !== "array")
                     {
                         var ci = ""
@@ -116,7 +118,7 @@ ComboBox
 "
                             }
                         }
-                        if (content.fields[fields[i].schema.system] == null)
+                        if (content.fields[fields[i].schema.system] == null && fields[i].allowedValues.length > 0)
                         {
                             if (fields[i].allowedValues[0].name !== undefined)
                                 ci = "
@@ -129,6 +131,49 @@ ComboBox
                         }
 
                         s = s + "
+    }" + ci + "
+}
+"
+                    }
+                    /* ComboBox, multiple selectalble values (output is array) - TODO multiselect-combobox ? */
+                    else if (fields[i].allowedValues !== undefined && fields[i].schema.type === "array")
+                    {
+                        var ci = ""
+                        s  = s + "
+ComboBox
+{
+    width: parent.width
+    label: \"" + fields[i].name + "\"
+    menu: ContextMenu
+    {
+"
+                        for (var u=0 ; u<fields[i].allowedValues.length ; u++)
+                            if (fields[i].allowedValues[u].name !== undefined)
+                            {
+                                if (content.fields[fields[i].schema.system] != null && fields[i].allowedValues[u].name == content.fields[fields[i].schema.system].name)
+                                    ci = "
+    currentIndex: " + u + "
+"
+                                s = s + "
+        MenuItem {
+            text: \"" + fields[i].allowedValues[u].name + "\"
+            onClicked: content.fields." + fields[i].schema.system + " = [ { " + fields[i].schema.items + " : text } ]
+        }
+"
+                            }
+
+                        if (content.fields[fields[i].schema.system] == null && fields[i].allowedValues.length > 0)
+                        {
+                            ci = "
+    Component.onCompleted: content.fields." + fields[i].schema.system + " = []
+    currentIndex: " + fields[i].allowedValues.length + "
+"
+                        }
+                        s = s + "
+        MenuItem {
+            text: \"None\"
+            onClicked: content.fields." + fields[i].schema.system + " = []
+        }
     }" + ci + "
 }
 "
