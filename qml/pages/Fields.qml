@@ -57,12 +57,7 @@ ComboBox
             delegate: MenuItem
             {
                 text: name
-                onClicked:
-                {
-                    var _user = {}
-                    _user.name = key
-                    content.fields." + fields[i].schema.system + " = _user
-                }
+                onClicked: content.fields." + fields[i].schema.system + " = { name: key }
             }
         }
     }
@@ -102,12 +97,7 @@ ComboBox
                                 s = s + "
         MenuItem {
             text: \"" + fields[i].allowedValues[u].name + "\"
-            onClicked:
-            {
-                var _name = {}
-                _name.name = text
-                content.fields." + fields[i].schema.system + " = _name
-            }
+            onClicked: content.fields." + fields[i].schema.system + " = { name: text }
         }
 "
                             }
@@ -121,12 +111,7 @@ ComboBox
         MenuItem
         {
             text: \"" + fields[i].allowedValues[u].value + "\"
-            onClicked:
-            {
-                var _value = {}
-                _value.value = text
-                content.fields." + fields[i].schema.system + " = _value
-            }
+            onClicked: content.fields." + fields[i].schema.system + " = { value: text }
         }
 "
                             }
@@ -135,21 +120,11 @@ ComboBox
                         {
                             if (fields[i].allowedValues[0].name !== undefined)
                                 ci = "
-    Component.onCompleted:
-    {
-        var _name = {}
-        _name.name = \"" + fields[i].allowedValues[0].name + "\"
-        content.fields." + fields[i].schema.system + " = _name
-    }
+    Component.onCompleted: content.fields." + fields[i].schema.system + " = { name: \"" + fields[i].allowedValues[0].name + "\" }
 "
                             else if (fields[i].allowedValues[0].value !== undefined)
                                 ci = "
-    Component.onCompleted:
-    {
-        var _value = {}
-        _value.value = \"" + fields[i].allowedValues[0].value + "\"
-        content.fields." + fields[i].schema.system + " = _value
-    }
+    Component.onCompleted: content.fields." + fields[i].schema.system + " = { value: \"" + fields[i].allowedValues[0].value + "\" }
 "
                         }
 

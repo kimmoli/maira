@@ -55,9 +55,8 @@ ApplicationWindow
 
         var url = Qt.atob(accounts.current.host) + "rest/auth/1/session"
 
-        var content = {}
-        content.username = Qt.atob(accounts.current.auth).split(":")[0]
-        content.password = Qt.atob(accounts.current.auth).split(":")[1]
+        var content = { username: Qt.atob(accounts.current.auth).split(":")[0],
+                        password: Qt.atob(accounts.current.auth).split(":")[1] }
 
         post(url, JSON.stringify(content), "POST", function(o)
         {
@@ -642,8 +641,7 @@ ApplicationWindow
 
     function managecomment(issuekey, body, id)
     {
-        var content = {}
-        content.body = body
+        var content = { body: body }
         logjson(content, issuekey)
         if (id > 0)
             post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/comment/" + id, JSON.stringify(content), "PUT", function() { fetchissue(currentissue.key) })
@@ -666,8 +664,7 @@ ApplicationWindow
 
     function assignissue(issuekey, name)
     {
-        var content = {}
-        content.name = name
+        var content = { name: name }
         logjson(content, issuekey)
         post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/assignee", JSON.stringify(content), "PUT", function() { fetchissue(currentissue.key) })
     }
@@ -684,11 +681,10 @@ ApplicationWindow
 
     function managefilter(name, description, jql, id)
     {
-        var content = {}
-        content.name = name
-        content.description = description
-        content.jql = jql
-        content.favourite = true
+        var content = { name: name,
+                        description: description,
+                        jql: jql,
+                        favourite: true }
         logjson(content, "managefilter")
         if (id > 0)
             post(Qt.atob(accounts.current.host) + "rest/api/2/filter/" + id, JSON.stringify(content), "PUT", function(o) { filters.update() } )
