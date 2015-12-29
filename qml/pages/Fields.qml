@@ -34,7 +34,6 @@ Dialog
 
             Component.onCompleted:
             {
-                logjson(content, "content before")
                 for (var i=0 ; i<fields.length ; i++)
                 {
                     var s = "
@@ -46,33 +45,22 @@ import Sailfish.Silica 1.0
                     if (fields[i].schema.type === "user")
                     {
                         s  = s + "
-ComboBox
+ValueButton
 {
     width: parent.width
     label: \"" + fields[i].name + "\"
-    menu: ContextMenu
+    value: content.fields." + fields[i].schema.system + ".displayName
+    onClicked:
     {
-        Repeater
+        var user = pageStack.push(Qt.resolvedUrl(\"UserSelector.qml\"))
+        user.selected.connect(function()
         {
-            model: users
-            delegate: MenuItem
-            {
-                text: name
-                onClicked: content.fields." + fields[i].schema.system + " = { name: key }
-            }
-        }
+            content.fields." + fields[i].schema.system + ".name = user.username
+            content.fields." + fields[i].schema.system + ".displayName = user.displayname
+            value = user.displayname
+            pageStack.pop()
+        })
     }
-    Component.onCompleted:
-    {
-        for (var i=0; i<users.count; i++)
-            if (users.get(i).key === content.fields." + fields[i].schema.system + ".name)
-            {
-                currentIndex = i
-                break
-            }
-    }
-"
-                        s = s + "
 }
 "
                     }
@@ -99,7 +87,7 @@ ComboBox
                                 s = s + "
         MenuItem {
             text: \"" + fields[i].allowedValues[u].name + "\"
-            onClicked: content.fields." + fields[i].schema.system + " = { name: text }
+            onClicked: content.fields." + fields[i].schema.system + " = { name: text, id: \"" + fields[i].allowedValues[u].id + "\" }
         }
 "
                             }
@@ -113,7 +101,7 @@ ComboBox
         MenuItem
         {
             text: \"" + fields[i].allowedValues[u].value + "\"
-            onClicked: content.fields." + fields[i].schema.system + " = { value: text }
+            onClicked: content.fields." + fields[i].schema.system + " = { value: text, id: \"" + fields[i].allowedValues[u].id + "\" }
         }
 "
                             }
@@ -122,11 +110,11 @@ ComboBox
                         {
                             if (fields[i].allowedValues[0].name !== undefined)
                                 ci = "
-    Component.onCompleted: content.fields." + fields[i].schema.system + " = { name: \"" + fields[i].allowedValues[0].name + "\" }
+    Component.onCompleted: content.fields." + fields[i].schema.system + " = { name: \"" + fields[i].allowedValues[0].name + "\", id: \"" + fields[i].allowedValues[0].id + "\" }
 "
                             else if (fields[i].allowedValues[0].value !== undefined)
                                 ci = "
-    Component.onCompleted: content.fields." + fields[i].schema.system + " = { value: \"" + fields[i].allowedValues[0].value + "\" }
+    Component.onCompleted: content.fields." + fields[i].schema.system + " = { value: \"" + fields[i].allowedValues[0].value + "\", id: \"" + fields[i].allowedValues[0].id + "\" }
 "
                         }
 
@@ -178,6 +166,26 @@ ComboBox
 }
 "
                     }
+                    /* Free text fields */
+                    else if (fields[i].schema.type === "string")
+                    {
+                        s = s + "
+ValueButton
+{
+    label: \""+ fields[i].name + "\"
+    value: content.fields." + fields[i].schema.system + "
+    onClicked:
+    {
+        var editor = pageStack.push(Qt.resolvedUrl(\"Editor.qml\"), { text: value } )
+        editor.accepted.connect(function()
+        {
+            content.fields." + fields[i].schema.system + " = editor.text
+            value = editor.text
+        })
+    }
+}
+"
+                    }
                     else
                     {
                         s  = s + "
@@ -192,7 +200,6 @@ Label
                     log(s, "createQmlObject")
                     var newObject = Qt.createQmlObject(s, col, "dynfield" + i)
                 }
-                logjson(content, "content after")
             }
         }
     }

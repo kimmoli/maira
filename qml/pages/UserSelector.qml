@@ -6,6 +6,7 @@ Page
     id: page
 
     property string username: ""
+    property string displayname: ""
     signal selected
 
     SilicaListView
@@ -62,6 +63,7 @@ Page
                 onClicked:
                 {
                     page.username = key
+                    page.displayname = name
                     selected()
                 }
             }

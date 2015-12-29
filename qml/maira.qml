@@ -21,6 +21,7 @@ ApplicationWindow
     property int searchtotalcount: 0
     property var currentissue
     property var currentproject
+    property var currentuser
     property bool loggedin: false
     property var serverinfo
 
@@ -64,6 +65,7 @@ ApplicationWindow
             logjson(ar, "auth")
             msgbox.showMessage("Login ok")
             loggedin = true
+            getcurrentuserinfo()
             getserverinfo()
             jqlsearch(0)
             activitystream.source = Qt.atob(accounts.current.host) + "activity"
@@ -75,6 +77,14 @@ ApplicationWindow
         request(Qt.atob(accounts.current.host) + "rest/api/2/serverInfo", function(o)
         {
             serverinfo = JSON.parse(o.responseText)
+        })
+    }
+
+    function getcurrentuserinfo()
+    {
+        request(Qt.atob(accounts.current.host) + "rest/api/2/user?key=" + Qt.atob(accounts.current.auth).split(":")[0], function(o)
+        {
+            currentuser = JSON.parse(o.responseText)
         })
     }
 
@@ -729,22 +739,33 @@ ApplicationWindow
                 {
                     var meta = JSON.parse(o.responseText)
                     logjson(meta, "createmeta")
+
+                    var contentin = { fields: {} }
+
                     var t = meta.projects[0].issuetypes[0].fields
                     var f = Object.keys(t).map(function (key)
                     {
-                        console.log(key)
+                        if (t[key].schema.type == "string")
+                            contentin.fields[key] = ""
+
+                        if (t[key].schema.type == "user" && contentin.fields[key] == undefined)
+                            contentin.fields[key] = { name: currentproject.lead.key, displayName: currentproject.lead.displayName }
+
+                        if (t[key].schema.system == undefined)
+                            t[key].schema.system = key
+
                         return t[key]
                     })
-
-                    var contentin = { fields: {
-                                        issuetype: { name: issuetypes.get(it.issuetypeindex).name },
-                                        assignee: { name: currentproject.lead.key}
-                                    } }
 
                     var fielddialog = pageStack.push(Qt.resolvedUrl("pages/Fields.qml"), { fields: f, content: contentin })
                     fielddialog.accepted.connect(function()
                     {
-                        console.log(JSON.stringify(fielddialog.content, null, 4))
+                        logjson(fielddialog.content, "new issue content")
+                        post(Qt.atob(accounts.current.host) + "rest/api/2/issue", JSON.stringify(fielddialog.content), "POST", function(o)
+                        {
+                            jqlsearch(0)
+                            pageStack.pop(pageStack.find( function(page){ return (page._depth === 0) }))
+                        })
                     })
                 })
             })
