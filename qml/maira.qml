@@ -111,6 +111,20 @@ ApplicationWindow
         defaultValue: 0
     }
 
+    ConfigurationValue
+    {
+        id: lastactivitystreamupdate
+        key: "/apps/harbour-maira/lastactivitystreamupdate"
+        defaultValue: 0
+    }
+
+    ConfigurationValue
+    {
+        id: activitystreamupdateinterval
+        key: "/apps/harbour-maira/activitystreamupdateinterval"
+        defaultValue: 300000
+    }
+
     ListModel
     {
         id: accounts
@@ -342,17 +356,22 @@ ApplicationWindow
                 bi.stop()
             if (status == XmlListModel.Error)
                 msgbox.showError("Activity stream failed")
+            if (status == XmlListModel.Ready)
+            {
+                if (new Date(get(0).published).getTime() > lastactivitystreamupdate.value)
+                    newactivity()
+                lastactivitystreamupdate.value = new Date().getTime()
+            }
         }
-        onCountChanged: log(count, "xmllistmode count")
+        signal newactivity
     }
 
     Timer
     {
-        /* Update stream every 5 mins */
         id: activitystreamtimer
         running: loggedin
         repeat: loggedin
-        interval: 300000
+        interval: Math.max(activitystreamupdateinterval.value, 10000)
         onTriggered: activitystream.reload()
     }
 
@@ -363,19 +382,14 @@ ApplicationWindow
 
     Connections
     {
-        property var prevcount: 0
         target: activitystream
-        onCountChanged:
+        onNewactivity:
         {
-            if (prevcount > 0)
-            {
-                log("triggering notification")
-                notification.category = "x-nemo.messaging.sms.preview"
-                notification.previewBody = serverinfo !== undefined ? serverinfo.serverTitle : "Maira"
-                notification.previewSummary = "New activity"
-                notification.publish()
-            }
-            prevcount = activitystream.count
+            log("triggering notification")
+            notification.category = "x-nemo.messaging.sms.preview"
+            notification.previewBody = serverinfo !== undefined ? serverinfo.serverTitle : "Maira"
+            notification.previewSummary = "New activity"
+            notification.publish()
         }
     }
 
