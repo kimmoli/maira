@@ -145,7 +145,28 @@ ComboBox
                                 s = s + "
         MenuItem {
             text: \"" + fields[i].allowedValues[u].name + "\"
-            onClicked: content.fields." + fields[i].schema.system + " = [ { " + fields[i].schema.items + " : text } ]
+            onClicked:
+            {
+                content.fields." + fields[i].schema.system + " = [ { " + fields[i].schema.items + " : text, id: \"" + fields[i].allowedValues[u].id + "\" } ]
+                " /* child selector here */ + (fields[i].allowedValues[u].children !== undefined ? "pageStack.push(Qt.resolvedUrl(\"About.qml\"))" : "") + "
+            }
+        }
+"
+                            }
+                            else if (fields[i].allowedValues[u].value !== undefined)
+                            {
+                                if (content.fields[fields[i].schema.system] != null && fields[i].allowedValues[u].value == content.fields[fields[i].schema.system].value)
+                                    ci = "
+    currentIndex: " + u + "
+"
+                                s = s + "
+        MenuItem {
+            text: \"" + fields[i].allowedValues[u].value + "\"
+            onClicked:
+            {
+                content.fields." + fields[i].schema.system + " = [ { " + fields[i].schema.items + " : text, id: \"" + fields[i].allowedValues[u].id + "\" } ]
+                " /* child selector here */ + (fields[i].allowedValues[u].children !== undefined ? "pageStack.push(Qt.resolvedUrl(\"About.qml\"))" : "") + "
+            }
         }
 "
                             }
@@ -188,17 +209,17 @@ ValueButton
                     }
                     else
                     {
-                        s  = s + "
-Label
-{
-    text: \""+ fields[i].name + " (Not implemented)\"
-}
-"
+                        log(fields[i].schema.system + " " + fields[i].name + " type:" + fields[i].schema.type, "Field not implemented")
                         if (content.fields[fields[i].schema.system] != undefined)
                             delete content.fields[fields[i].schema.system]
+                        s = ""
                     }
-                    log(s, "createQmlObject")
-                    var newObject = Qt.createQmlObject(s, col, "dynfield" + i)
+
+                    if (s.length > 0)
+                    {
+                        log(s, "createQmlObject")
+                        var newObject = Qt.createQmlObject(s, col, "dynfield_" + i + "_"  + fields[i].schema.system)
+                    }
                 }
             }
         }

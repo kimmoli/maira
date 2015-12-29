@@ -745,7 +745,7 @@ ApplicationWindow
                     var t = meta.projects[0].issuetypes[0].fields
                     var f = Object.keys(t).map(function (key)
                     {
-                        if (t[key].schema.type == "string")
+                        if (t[key].schema.type == "string" && t[key].allowedValues == undefined)
                             contentin.fields[key] = ""
 
                         if (t[key].schema.type == "user" && contentin.fields[key] == undefined)
@@ -755,6 +755,11 @@ ApplicationWindow
                             t[key].schema.system = key
 
                         return t[key]
+                    })
+
+                    f.sort(function(a, b)
+                    {
+                        return (a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0)
                     })
 
                     var fielddialog = pageStack.push(Qt.resolvedUrl("pages/Fields.qml"), { fields: f, content: contentin })
