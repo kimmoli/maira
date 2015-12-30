@@ -1,13 +1,23 @@
 TARGET = harbour-maira
-QT += network
-CONFIG += sailfishapp
+QT += network dbus
+CONFIG += sailfishapp link_pkgconfig
+PKGCONFIG += sailfishapp nemonotifications-qt5
 
 DEFINES += "APPVERSION=\\\"$${SPECVERSION}\\\""
 DEFINES += "APPNAME=\\\"$${TARGET}\\\""
 
 icons.files = icons/*
 icons.path = /usr/share/icons/hicolor/
-INSTALLS += icons
+
+config.files = config/icon-lock-harbour-maira.png
+config.path = /usr/share/$${TARGET}/config/
+
+notificationCategories.path = /usr/share/lipstick/notificationcategories
+notificationCategories.files = config/x-harbour.maira.activity.*
+
+INSTALLS += icons config notificationCategories
+
+
 
 OTHER_FILES += qml/maira.qml \
     qml/cover/CoverPage.qml \
@@ -31,14 +41,19 @@ OTHER_FILES += qml/maira.qml \
     qml/pages/ActivityStream.qml \
     qml/pages/EditAccount.qml \
     qml/pages/ProjectSelector.qml \
-    qml/pages/IssuetypeSelector.qml
+    qml/pages/IssuetypeSelector.qml \
+    config/icon-lock-harbour-maira.png \
+    config/x-harbour.maira.activity.conf \
+    config/x-harbour.maira.activity.preview.conf
 
 SOURCES += \
     src/main.cpp \
     src/filedownloader.cpp \
-    src/fileuploader.cpp
+    src/fileuploader.cpp \
+    src/notifications.cpp
 
 HEADERS += \
     src/filedownloader.h \
-    src/fileuploader.h
+    src/fileuploader.h \
+    src/notifications.h
 

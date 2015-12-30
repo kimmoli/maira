@@ -1,7 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import org.nemomobile.configuration 1.0
-import org.nemomobile.notifications 1.0
 import QtQuick.LocalStorage 2.0
 import QtQuick.XmlListModel 2.0
 import "components"
@@ -368,12 +367,30 @@ ApplicationWindow
                 msgbox.showError("Activity stream failed")
             if (status == XmlListModel.Ready)
             {
-                if (new Date(get(0).published).getTime() > lastactivitystreamupdate.value)
-                    newactivity()
+                var newitems = 0
+                for (var i=count ; i>0 ; i--)
+                {
+                    if (new Date(get(i-1).published).getTime() > lastactivitystreamupdate.value)
+                    {
+                        logjson(get(i-1), i-1)
+                        var key = ""
+                        if (get(i-1).objecttitle != undefined && get(i-1).objecttitle.match(/^[A-Z]+-\d+$/))
+                            key = get(i-1).objecttitle
+                        else if (get(i-1).targettitle != undefined && get(i-1).targettitle.match(/^[A-Z]+-\d+$/))
+                            key = get(i-1).targettitle
+
+                        Notifications.notify(serverinfo.serverTitle,
+                                             ((key.length > 0) ? key : serverinfo.serverTitle),
+                                             get(i-1).title.replace(/<(?:.|\n)*?>/gm, '').replace(/[\n\r]/g, ' ').replace(/\s+/g, ' '),
+                                             false, get(i-1).published, key)
+                        newitems++
+                    }
+                }
+                if (newitems > 0)
+                    Notifications.notify("", serverinfo.serverTitle, newitems + " new activity", true, "", "")
                 lastactivitystreamupdate.value = new Date().getTime()
             }
         }
-        signal newactivity
     }
 
     Timer
@@ -383,24 +400,6 @@ ApplicationWindow
         repeat: loggedin
         interval: Math.max(activitystreamupdateinterval.value, 10000)
         onTriggered: activitystream.reload()
-    }
-
-    Notification
-    {
-        id: notification
-    }
-
-    Connections
-    {
-        target: activitystream
-        onNewactivity:
-        {
-            log("triggering notification")
-            notification.category = "x-nemo.messaging.sms.preview"
-            notification.previewBody = serverinfo !== undefined ? serverinfo.serverTitle : "Maira"
-            notification.previewSummary = "New activity"
-            notification.publish()
-        }
     }
 
     Messagebox
