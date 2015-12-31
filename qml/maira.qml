@@ -760,7 +760,7 @@ ApplicationWindow
             projectkey = projects.get(proj.projectindex).key
             fetchproject(projectkey)
             users.update("", "project=" + projectkey)
-            var it = pageStack.push("pages/IssuetypeSelector.qml")
+            var it = pageStack.push(Qt.resolvedUrl("pages/IssuetypeSelector.qml"))
             it.selected.connect(function()
             {
                 request(Qt.atob(accounts.current.host) + "rest/api/2/issue/createmeta?projectKeys=" + projectkey + "&issuetypeIds=" + issuetypes.get(it.issuetypeindex).id + "&expand=projects.issuetypes.fields", function(o)

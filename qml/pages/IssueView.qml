@@ -23,7 +23,7 @@ Page
                 text: "Transition"
                 onClicked:
                 {
-                    var tr = pageStack.push("TransitionSelector.qml")
+                    var tr = pageStack.push(Qt.resolvedUrl("TransitionSelector.qml"))
                     tr.maketransition.connect(function(content)
                     {
                         logjson(content, "transition content")
@@ -38,7 +38,7 @@ Page
                 onClicked:
                 {
                     users.update("", "issueKey=" + currentissue.key)
-                    var user = pageStack.push("UserSelector.qml")
+                    var user = pageStack.push(Qt.resolvedUrl("UserSelector.qml"))
                     user.selected.connect(function()
                     {
                         if (user.username.length > 0)
