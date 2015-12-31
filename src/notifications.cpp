@@ -36,9 +36,9 @@ void Notifications::notify(QString appName, QString summary, QString body, bool 
 
         notif.setRemoteAction(Notification::remoteAction("default",
                                                          QString(),
-                                                         "com.kimmoli.maira",
-                                                         "/com/kimmoli/maira",
-                                                         "com.kimmoli.maira",
+                                                         "com.kimmoli.harbour.maira",
+                                                         "/",
+                                                         "com.kimmoli.harbour.maira",
                                                          "showissue",
                                                           args));
     }

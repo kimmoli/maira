@@ -53,4 +53,6 @@ desktop-file-install --delete-original \
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 %{_datadir}/lipstick/notificationcategories/x-harbour.maira.*
+%{_datadir}/dbus-1/interfaces/com.kimmoli.harbour.maira.*
+%{_datadir}/dbus-1/services/com.kimmoli.harbour.maira.*
 

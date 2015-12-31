@@ -1,1 +1,3 @@
 qml/version.json
+src/dbusAdaptor.cpp
+src/dbusAdaptor.h

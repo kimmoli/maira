@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=com.kimmoli.harbour.maira
+Exec=/usr/bin/invoker --type=silica-qt5 --desktop-file=harbour-maira.desktop -s -n /usr/bin/harbour-maira

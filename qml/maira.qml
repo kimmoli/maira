@@ -452,6 +452,35 @@ ApplicationWindow
         }
     }
 
+    Connections
+    {
+        target: Dbus
+        onViewissue:
+        {
+            showissuetimer.keytoshow = key
+            showissuetimer.start()
+        }
+    }
+    Timer
+    {
+        property var keytoshow
+        id: showissuetimer
+        interval: 100
+        onTriggered:
+        {
+            if (!loggedin)
+            {
+                restart()
+            }
+            else
+            {
+                fetchissue(keytoshow)
+                pageStack.push(Qt.resolvedUrl("pages/IssueView.qml"), {key: keytoshow})
+                activate()
+            }
+        }
+    }
+
     /************************************************************************************/
 
     function request(url, callback)

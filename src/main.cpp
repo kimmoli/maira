@@ -10,6 +10,7 @@
 #include "filedownloader.h"
 #include "fileuploader.h"
 #include "notifications.h"
+#include "dbus.h"
 
 class MyNetworkCookieJar : public QNetworkCookieJar
 {
@@ -106,6 +107,9 @@ int main(int argc, char *argv[])
 
     Notifications *no = new Notifications();
     view->rootContext()->setContextProperty("Notifications", no);
+
+    Dbus *dbus = new Dbus();
+    view->rootContext()->setContextProperty("Dbus", dbus);
 
     view->setSource(SailfishApp::pathTo("qml/maira.qml"));
     view->show();

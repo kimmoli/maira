@@ -6,6 +6,8 @@ PKGCONFIG += sailfishapp nemonotifications-qt5
 DEFINES += "APPVERSION=\\\"$${SPECVERSION}\\\""
 DEFINES += "APPNAME=\\\"$${TARGET}\\\""
 
+system(qdbusxml2cpp config/com.kimmoli.harbour.maira.xml -i dbus.h -a src/dbusAdaptor)
+
 icons.files = icons/*
 icons.path = /usr/share/icons/hicolor/
 
@@ -15,7 +17,13 @@ config.path = /usr/share/$${TARGET}/config/
 notificationCategories.path = /usr/share/lipstick/notificationcategories
 notificationCategories.files = config/x-harbour.maira.activity.*
 
-INSTALLS += icons config notificationCategories
+dbus_services.path = /usr/share/dbus-1/services/
+dbus_services.files = config/com.kimmoli.harbour.maira.service
+
+interfaces.path = /usr/share/dbus-1/interfaces/
+interfaces.files = config/com.kimmoli.harbour.maira.xml
+
+INSTALLS += icons config notificationCategories dbus_services interfaces
 
 
 
@@ -44,16 +52,22 @@ OTHER_FILES += qml/maira.qml \
     qml/pages/IssuetypeSelector.qml \
     config/icon-lock-harbour-maira.png \
     config/x-harbour.maira.activity.conf \
-    config/x-harbour.maira.activity.preview.conf
+    config/x-harbour.maira.activity.preview.conf \
+    config/com.kimmoli.harbour.maira.service \
+    config/com.kimmoli.harbour.maira.xml
 
 SOURCES += \
     src/main.cpp \
     src/filedownloader.cpp \
     src/fileuploader.cpp \
-    src/notifications.cpp
+    src/notifications.cpp \
+    src/dbusAdaptor.cpp \
+    src/dbus.cpp
 
 HEADERS += \
     src/filedownloader.h \
     src/fileuploader.h \
-    src/notifications.h
+    src/notifications.h \
+    src/dbusAdaptor.h \
+    src/dbus.h
 
