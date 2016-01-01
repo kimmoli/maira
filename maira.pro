@@ -61,7 +61,8 @@ OTHER_FILES += qml/maira.qml \
     qml/fields/MultiSelectField.qml \
     qml/components/MultiItemPicker.qml \
     qml/components/SingleItemPicker.qml \
-    qml/fields/CascadeSelectField.qml
+    qml/fields/CascadeSelectField.qml \
+    qml/fields/DateSelectField.qml
 
 SOURCES += \
     src/main.cpp \

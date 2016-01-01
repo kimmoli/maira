@@ -43,7 +43,7 @@ Column
             tmpchild.id = childrens.get(childselector.childvalue).id
             tmp.child = tmpchild
         }
-        content.fields[fields[fieldnumber].schema.system] = [ { set: tmp } ]
+        content.fields[fields[fieldnumber].schema.system] = tmp
     }
 
     ComboBox

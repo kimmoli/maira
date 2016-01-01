@@ -779,6 +779,9 @@ ApplicationWindow
                         if (t[key].schema.type == "string" && t[key].allowedValues == undefined)
                             contentin.fields[key] = ""
 
+                        if (t[key].schema.type == "date")
+                            contentin.fields[key] = Qt.formatDate(new Date(), "yyyy-MM-dd")
+
                         if (t[key].schema.type == "user" && contentin.fields[key] == undefined)
                             contentin.fields[key] = { name: currentproject.lead.key, displayName: currentproject.lead.displayName }
 

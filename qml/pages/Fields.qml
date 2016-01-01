@@ -21,8 +21,8 @@ Dialog
         DialogHeader
         {
             id: dialogHeader
-            acceptText: "Submit"
-            cancelText: "Cancel"
+            acceptText: "Create"
+            cancelText: "Back"
         }
 
         Column
@@ -79,6 +79,15 @@ Dialog
                         if (component.status == Component.Ready)
                             component.createObject(col, { fieldnumber: i, obj: obj } )
                         log("cascadeselectfield \"" + fields[i].name + "\"", i)
+                    }
+
+                    /* date picker */
+                    else if (fields[i].schema.type == "date")
+                    {
+                        var component = Qt.createComponent(Qt.resolvedUrl("../fields/DateSelectField.qml"))
+                        if (component.status == Component.Ready)
+                            component.createObject(col, { fieldnumber: i} )
+                        log("dateselectfield \"" + fields[i].name + "\"", i)
                     }
 
                     else
