@@ -42,7 +42,7 @@ Dialog
                         var component = Qt.createComponent(Qt.resolvedUrl("../fields/UserField.qml"))
                         if (component.status == Component.Ready)
                             component.createObject(col, { fieldnumber: i } )
-                        log("userfield ", i)
+                        log("userfield \"" + fields[i].name + "\"", i)
                     }
 
                     /* Free text field */
@@ -51,7 +51,7 @@ Dialog
                         var component = Qt.createComponent(Qt.resolvedUrl("../fields/TextEditField.qml"))
                         if (component.status == Component.Ready)
                             component.createObject(col, { fieldnumber: i } )
-                        log("texteditfield ", i)
+                        log("texteditfield \"" + fields[i].name + "\"", i)
                     }
 
                     /* Item selector with predefined values */
@@ -65,7 +65,7 @@ Dialog
                                                                                                            : "../fields/SingleSelectField.qml"))
                         if (component.status == Component.Ready)
                             component.createObject(col, { fieldnumber: i, obj: obj } )
-                        log((fields[i].schema.type == "array") ? "multiselectfield" : "singelselectfield", i)
+                        log(((fields[i].schema.type == "array") ? "multiselectfield" : "singelselectfield") +  " \"" + fields[i].name + "\"", i)
                     }
 
                     /* cascading field selector */
@@ -78,7 +78,7 @@ Dialog
                         var component = Qt.createComponent(Qt.resolvedUrl("../fields/CascadeSelectField.qml"))
                         if (component.status == Component.Ready)
                             component.createObject(col, { fieldnumber: i, obj: obj } )
-                        log("cascadeselectfield", i)
+                        log("cascadeselectfield \"" + fields[i].name + "\"", i)
                     }
 
                     else

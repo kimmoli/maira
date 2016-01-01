@@ -295,44 +295,47 @@ ApplicationWindow
     {
         id: projects
         property var allprojects
-        function update(searchtext)
+        property string prevsearchtext: ""
+        property string sortedby: "name"
+
+        function sortby(by)
         {
-            searchtext = (typeof searchtext === "undefined") ? "" : searchtext
+            sortedby = by
+            allprojects.sort(function(a, b)
+            {
+                return (a[by] < b[by]) ? -1 : ((a[by] > b[by]) ? 1 : 0)
+            })
+            filter(prevsearchtext)
+        }
+
+        function update()
+        {
+            request(Qt.atob(accounts.current.host) + "rest/api/2/project",
+            function (o)
+            {
+                allprojects = JSON.parse(o.responseText)
+                logjson(allprojects, "projects update()")
+                prevsearchtext = ""
+                sortby(sortedby)
+            })
+        }
+        function filter(searchtext)
+        {
             clear()
-            if (searchtext === "")
-            {
-                request(Qt.atob(accounts.current.host) + "rest/api/2/project",
-                function (o)
-                {
-                    allprojects = JSON.parse(o.responseText)
-                    logjson(allprojects, "projects update()")
+            prevsearchtext = searchtext
 
-                    for (var i=0 ; i<allprojects.length ; i++)
-                    {
-                        append({ id: allprojects[i].id,
-                                 key: allprojects[i].key,
-                                 name: allprojects[i].name,
-                                 avatarurl: allprojects[i].avatarUrls["48x48"]
-                                 })
-                    }
-                })
-            }
-            else
+            var r = new RegExp(searchtext, "i")
+
+            for (var i=0 ; i<allprojects.length ; i++)
             {
-                var r = new RegExp(searchtext, "i")
-                for (var i=0 ; i<allprojects.length ; i++)
+                if (allprojects[i].name.search(r) > -1 || allprojects[i].key.search(r) > -1)
                 {
-                    if (allprojects[i].name.search(r) > -1 || allprojects[i].key.search(r) > -1)
-                    {
-                        log(allprojects[i].key, "append filtered")
-                        append({ id: allprojects[i].id,
-                                 key: allprojects[i].key,
-                                 name: allprojects[i].name,
-                                 avatarurl: allprojects[i].avatarUrls["48x48"]
-                                 })
-                    }
+                    append({ id: allprojects[i].id,
+                             key: allprojects[i].key,
+                             name: allprojects[i].name,
+                             avatarurl: allprojects[i].avatarUrls["48x48"]
+                             })
                 }
-
             }
         }
     }
@@ -794,11 +797,11 @@ ApplicationWindow
                     fielddialog.accepted.connect(function()
                     {
                         logjson(fielddialog.content, "new issue content")
-//                        post(Qt.atob(accounts.current.host) + "rest/api/2/issue", JSON.stringify(fielddialog.content), "POST", function(o)
-//                        {
-//                            jqlsearch(0)
-//                            pageStack.pop(pageStack.find( function(page){ return (page._depth === 0) }))
-//                        })
+                        post(Qt.atob(accounts.current.host) + "rest/api/2/issue", JSON.stringify(fielddialog.content), "POST", function(o)
+                        {
+                            jqlsearch(0)
+                            pageStack.pop(pageStack.find( function(page){ return (page._depth === 0) }))
+                        })
                     })
                 })
             })

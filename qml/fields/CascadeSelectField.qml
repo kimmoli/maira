@@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
 
 Column
 {
+    id: cb
     property int fieldnumber
     property string obj
 
@@ -30,6 +31,21 @@ Column
         mainselector.currentIndex = items.count-1
     }
 
+    function update()
+    {
+        var tmp = {}
+        tmp[obj] = items.get(mainselector.currentIndex).name
+        tmp.id = items.get(mainselector.currentIndex).id
+        if (childrens.count > 0)
+        {
+            var tmpchild = {}
+            tmpchild[obj] = childrens.get(childselector.childvalue).name
+            tmpchild.id = childrens.get(childselector.childvalue).id
+            tmp.child = tmpchild
+        }
+        content.fields[fields[fieldnumber].schema.system] = [ { set: tmp } ]
+    }
+
     ComboBox
     {
         id: mainselector
@@ -47,6 +63,7 @@ Column
                     onClicked:
                     {
                         childselector.childmodel = index
+                        cb.update()
                     }
                 }
             }
@@ -76,6 +93,7 @@ Column
                 console.log(it.index)
                 childselector.childvalue = it.index
                 childselector.value = childrens.get(childselector.childvalue).name
+                cb.update()
                 pageStack.pop()
             })
         }

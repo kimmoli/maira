@@ -18,7 +18,7 @@ Dialog
         anchors.fill: parent
         model: items
 
-        VerticalScrollDecorator {}
+        VerticalScrollDecorator { flickable: view }
 
         header: DialogHeader
         {

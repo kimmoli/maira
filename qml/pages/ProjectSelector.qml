@@ -22,7 +22,16 @@ Page
 
             onTextChanged:
             {
-                projects.update(text)
+                projects.filter(text)
+            }
+        }
+
+        PullDownMenu
+        {
+            MenuItem
+            {
+                text: "Sort projects by " + ((projects.sortedby == "name") ? "key" : "name")
+                onClicked: projects.sortby((projects.sortedby == "name") ? "key" : "name")
             }
         }
 

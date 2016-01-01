@@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
 
 ComboBox
 {
+    id: cb
     property int fieldnumber
     property string obj
 
@@ -14,6 +15,7 @@ ComboBox
     Component.onCompleted:
     {
         items.clear()
+        currentIndex = -1
         for (var u=0 ; u<fields[fieldnumber].allowedValues.length ; u++)
         {
             items.append( {id: fields[fieldnumber].allowedValues[u].id,
@@ -23,6 +25,27 @@ ComboBox
                     fields[fieldnumber].allowedValues[u][obj] == content.fields[fields[fieldnumber].schema.system].name)
                 currentIndex = u
         }
+        if (!fields[fieldnumber].hasDefaultValue && !fields[fieldnumber].required)
+        {
+            items.append( { id: null, name: "None"} )
+            if (currentIndex < 0)
+                currentIndex = items.count-1
+        }
+        else
+        {
+            if (currentIndex < 0)
+                currentIndex = 0
+            update(currentIndex)
+        }
+    }
+
+    function update(i)
+    {
+        log(i + " " + items.get(i).name, "update")
+        var tmp = {}
+        tmp.id = items.get(i).id
+        tmp[obj] = items.get(i).name
+        content.fields[fields[fieldnumber].schema.system] = tmp
     }
 
     width: parent.width
@@ -36,13 +59,7 @@ ComboBox
             delegate: MenuItem
             {
                 text: name
-                onClicked:
-                {
-                    var tmp = {}
-                    tmp.id = id
-                    tmp[obj] = name
-                    content.fields[fields[fieldnumber].schema.system] = tmp
-                }
+                onClicked: cb.update(index)
             }
         }
     }

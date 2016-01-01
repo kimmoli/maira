@@ -36,12 +36,21 @@ ValueButton
             if (indexes.length == 0)
             {
                 value = "None"
+                delete content.fields[fields[fieldnumber].schema.system]
             }
             else
             {
                 value = ""
+                var tmp = []
                 for (var i=0 ; i<indexes.length ; i++)
+                {
                     value = value + ((i>0) ? ", " : "") + items.get(indexes[i]).name
+                    var tmpitem = {}
+                    tmpitem[obj] = items.get(indexes[i]).name
+                    tmpitem.id = items.get(indexes[i]).id
+                    tmp.push(tmpitem)
+                }
+                content.fields[fields[fieldnumber].schema.system] = tmp
             }
         })
     }
