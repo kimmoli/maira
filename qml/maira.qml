@@ -794,11 +794,11 @@ ApplicationWindow
                     fielddialog.accepted.connect(function()
                     {
                         logjson(fielddialog.content, "new issue content")
-                        post(Qt.atob(accounts.current.host) + "rest/api/2/issue", JSON.stringify(fielddialog.content), "POST", function(o)
-                        {
-                            jqlsearch(0)
-                            pageStack.pop(pageStack.find( function(page){ return (page._depth === 0) }))
-                        })
+//                        post(Qt.atob(accounts.current.host) + "rest/api/2/issue", JSON.stringify(fielddialog.content), "POST", function(o)
+//                        {
+//                            jqlsearch(0)
+//                            pageStack.pop(pageStack.find( function(page){ return (page._depth === 0) }))
+//                        })
                     })
                 })
             })

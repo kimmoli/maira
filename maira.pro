@@ -54,7 +54,14 @@ OTHER_FILES += qml/maira.qml \
     config/x-harbour.maira.activity.conf \
     config/x-harbour.maira.activity.preview.conf \
     config/com.kimmoli.harbour.maira.service \
-    config/com.kimmoli.harbour.maira.xml
+    config/com.kimmoli.harbour.maira.xml \
+    qml/fields/UserField.qml \
+    qml/fields/SingleSelectField.qml \
+    qml/fields/TextEditField.qml \
+    qml/fields/MultiSelectField.qml \
+    qml/components/MultiItemPicker.qml \
+    qml/components/SingleItemPicker.qml \
+    qml/fields/CascadeSelectField.qml
 
 SOURCES += \
     src/main.cpp \
