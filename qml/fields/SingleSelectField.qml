@@ -40,7 +40,8 @@ ComboBox
             update(newci)
         }
 
-        Qt.createComponent(Qt.resolvedUrl("../components/jstimer.qml")).createObject(cb, { delay: 100, callback: function() { cb.currentIndex = newci } } )
+        cb._updating = false
+        cb.currentIndex = newci
     }
 
     function update(i)

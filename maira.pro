@@ -64,8 +64,7 @@ OTHER_FILES += qml/maira.qml \
     qml/fields/CascadeSelectField.qml \
     qml/fields/DateSelectField.qml \
     qml/fields/TimeTrackingField.qml \
-    qml/pages/DurationAdjust.qml \
-    qml/components/jstimer.qml
+    qml/pages/DurationAdjust.qml
 
 SOURCES += \
     src/main.cpp \

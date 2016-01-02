@@ -37,7 +37,8 @@ Column
         if (newci < 0)
             newci = items.count-1
 
-        Qt.createComponent(Qt.resolvedUrl("../components/jstimer.qml")).createObject(cb, { delay: 100, callback: function() { mainselector.currentIndex = newci } } )
+        mainselector._updating = false
+        mainselector.currentIndex = newci
     }
 
     function update()
