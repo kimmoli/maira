@@ -13,8 +13,8 @@ ValueButton
         var ds = pageStack.push("Sailfish.Silica.DatePickerDialog", { date: new Date(value) } )
         ds.accepted.connect(function()
         {
-            content.fields[fields[fieldnumber].schema.system] = Qt.formatDate(new Date(ds.dateText), "yyyy-MM-dd")
-            value = Qt.formatDate(new Date(ds.dateText), "yyyy-MM-dd")
+            content.fields[fields[fieldnumber].schema.system] = Qt.formatDate(new Date(ds.date), "yyyy-MM-dd")
+            value = Qt.formatDate(new Date(ds.date), "yyyy-MM-dd")
         })
     }
 }
