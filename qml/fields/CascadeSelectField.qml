@@ -22,13 +22,22 @@ Column
     Component.onCompleted:
     {
         items.clear()
+        var newci = -1
         for (var u=0 ; u<fields[fieldnumber].allowedValues.length ; u++)
         {
             items.append( {id: fields[fieldnumber].allowedValues[u].id,
                            name: fields[fieldnumber].allowedValues[u][obj] })
+
+            if (content.fields[fields[fieldnumber].schema.system] != null &&
+                    fields[fieldnumber].allowedValues[u].id == content.fields[fields[fieldnumber].schema.system].id)
+                newci = u
         }
         items.append( { id: null, name: "None" } )
-        mainselector.currentIndex = items.count-1
+
+        if (newci < 0)
+            newci = items.count-1
+
+        Qt.createComponent(Qt.resolvedUrl("../components/jstimer.qml")).createObject(cb, { delay: 100, callback: function() { mainselector.currentIndex = newci } } )
     }
 
     function update()
@@ -100,14 +109,25 @@ Column
 
         function updatechildren()
         {
+            var newci = -1
             childrens.clear()
             if (modeldata[childmodel] != undefined && modeldata[childmodel].children != undefined)
             {
                 for (var i=0; i<modeldata[childmodel].children.length ; i++)
+                {
                     childrens.append( { id: modeldata[childmodel].children[i].id,
                                         name: modeldata[childmodel].children[i][obj] })
+                    if (content.fields[fields[fieldnumber].schema.system] != undefined &&
+                            content.fields[fields[fieldnumber].schema.system].child != undefined &&
+                            modeldata[childmodel].children[i].id == content.fields[fields[fieldnumber].schema.system].child.id)
+                        newci = i
+                }
                 childrens.append( { id: null, name: "None"} )
-                childvalue = childrens.count-1
+
+                if (newci < 0)
+                    childvalue = childrens.count-1
+                else
+                    childvalue = newci
                 value = childrens.get(childvalue).name
             }
         }

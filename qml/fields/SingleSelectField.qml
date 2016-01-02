@@ -15,28 +15,32 @@ ComboBox
     Component.onCompleted:
     {
         items.clear()
-        currentIndex = -1
+        var newci = -1
+
         for (var u=0 ; u<fields[fieldnumber].allowedValues.length ; u++)
         {
             items.append( {id: fields[fieldnumber].allowedValues[u].id,
                            name: fields[fieldnumber].allowedValues[u][obj] })
 
             if (content.fields[fields[fieldnumber].schema.system] != null &&
-                    fields[fieldnumber].allowedValues[u][obj] == content.fields[fields[fieldnumber].schema.system].name)
-                currentIndex = u
+                    fields[fieldnumber].allowedValues[u].id == content.fields[fields[fieldnumber].schema.system].id)
+                newci = u
         }
+
         if (!fields[fieldnumber].hasDefaultValue && !fields[fieldnumber].required)
         {
             items.append( { id: null, name: "None"} )
-            if (currentIndex < 0)
-                currentIndex = items.count-1
+            if (newci < 0)
+                newci = items.count-1
         }
         else
         {
-            if (currentIndex < 0)
-                currentIndex = 0
-            update(currentIndex)
+            if (newci < 0)
+                newci = 0
+            update(newci)
         }
+
+        Qt.createComponent(Qt.resolvedUrl("../components/jstimer.qml")).createObject(cb, { delay: 100, callback: function() { cb.currentIndex = newci } } )
     }
 
     function update(i)
@@ -50,6 +54,8 @@ ComboBox
 
     width: parent.width
     label: fields[fieldnumber].name
+
+    onCurrentIndexChanged: log(currentIndex, label + " ci changed")
 
     menu: ContextMenu
     {

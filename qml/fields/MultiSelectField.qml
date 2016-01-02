@@ -15,13 +15,27 @@ ValueButton
 
     Component.onCompleted:
     {
+        value = "None"
+        indexes = []
         items.clear()
+
         for (var u=0 ; u<fields[fieldnumber].allowedValues.length ; u++)
         {
             items.append( {id: fields[fieldnumber].allowedValues[u].id,
                            name: fields[fieldnumber].allowedValues[u][obj] })
+
+            if (content.fields[fields[fieldnumber].schema.system] != undefined)
+                for (var i=0 ; i<content.fields[fields[fieldnumber].schema.system].length ; i++)
+                    if (fields[fieldnumber].allowedValues[u].id == content.fields[fields[fieldnumber].schema.system][i].id)
+                        indexes.push(u)
         }
-        value = "None"
+
+        if (indexes.length > 0)
+        {
+            value = ""
+            for (var i=0 ; i<indexes.length ; i++)
+                value = value + ((i>0) ? ", " : "") + items.get(indexes[i]).name
+        }
     }
 
     width: parent.width
