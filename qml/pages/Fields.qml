@@ -93,6 +93,8 @@ Dialog
                     else
                     {
                         log("field not implemented \"" + fields[i].name + "\"", i)
+                        if (content.fields[fields[i].schema.system] != undefined)
+                            delete content.fields[fields[i].schema.system]
                     }
                 }
             }
