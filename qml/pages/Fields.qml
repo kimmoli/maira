@@ -36,6 +36,9 @@ Dialog
             {
                 for (var i=0 ; i<fields.length ; i++)
                 {
+                    logjson(fields[i], "fields " + i)
+                    logjson(content.fields[fields[i].schema.system], "content " + i)
+
                     /* User selector */
                     if (fields[i].schema.type === "user")
                     {
@@ -55,7 +58,7 @@ Dialog
                     }
 
                     /* Item selector with predefined values */
-                    else if (fields[i].allowedValues != undefined && !(fields[i].schema.custom != undefined && fields[i].schema.custom.split(":")[1] == "cascadingselect"))
+                    else if (fields[i].allowedValues != undefined && fields[i].allowedValues.length > 0 && !(fields[i].schema.custom != undefined && fields[i].schema.custom.split(":")[1] == "cascadingselect"))
                     {
                         var obj = "name"
                         if (fields[i].allowedValues[0].value != undefined)
@@ -69,7 +72,7 @@ Dialog
                     }
 
                     /* cascading field selector */
-                    else if (fields[i].allowedValues != undefined && fields[i].schema.custom != undefined && fields[i].schema.custom.split(":")[1] == "cascadingselect")
+                    else if (fields[i].allowedValues != undefined && fields[i].allowedValues.length > 0 && fields[i].schema.custom != undefined && fields[i].schema.custom.split(":")[1] == "cascadingselect")
                     {
                         var obj = "name"
                         if (fields[i].allowedValues[0].value != undefined)
@@ -85,6 +88,15 @@ Dialog
                     else if (fields[i].schema.type == "date")
                     {
                         var component = Qt.createComponent(Qt.resolvedUrl("../fields/DateSelectField.qml"))
+                        if (component.status == Component.Ready)
+                            component.createObject(col, { fieldnumber: i} )
+                        log("dateselectfield \"" + fields[i].name + "\"", i)
+                    }
+
+                    /* time tracking*/
+                    else if (fields[i].schema.type == "timetracking")
+                    {
+                        var component = Qt.createComponent(Qt.resolvedUrl("../fields/TimeTrackingField.qml"))
                         if (component.status == Component.Ready)
                             component.createObject(col, { fieldnumber: i} )
                         log("dateselectfield \"" + fields[i].name + "\"", i)

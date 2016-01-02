@@ -62,7 +62,9 @@ OTHER_FILES += qml/maira.qml \
     qml/components/MultiItemPicker.qml \
     qml/components/SingleItemPicker.qml \
     qml/fields/CascadeSelectField.qml \
-    qml/fields/DateSelectField.qml
+    qml/fields/DateSelectField.qml \
+    qml/fields/TimeTrackingField.qml \
+    qml/pages/DurationAdjust.qml
 
 SOURCES += \
     src/main.cpp \

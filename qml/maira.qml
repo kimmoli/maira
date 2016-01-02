@@ -776,6 +776,9 @@ ApplicationWindow
                     var t = meta.projects[0].issuetypes[0].fields
                     var f = Object.keys(t).map(function (key)
                     {
+                        if (t[key].schema.system == undefined)
+                            t[key].schema.system = key
+
                         if (t[key].schema.type == "string" && t[key].allowedValues == undefined)
                             contentin.fields[key] = ""
 
@@ -785,8 +788,10 @@ ApplicationWindow
                         if (t[key].schema.type == "user" && contentin.fields[key] == undefined)
                             contentin.fields[key] = { name: currentproject.lead.key, displayName: currentproject.lead.displayName }
 
-                        if (t[key].schema.system == undefined)
-                            t[key].schema.system = key
+                        if (t[key].schema.type == "timetracking")
+                        {
+                            contentin.fields[key] = { originalEstimate: "1m", remainingEstimate: "1m" }
+                        }
 
                         return t[key]
                     })
