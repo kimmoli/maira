@@ -16,6 +16,8 @@ Page
 
         VerticalScrollDecorator { flickable: flick }
 
+        Component.onCompleted: users.update("", "issueKey=" + key)
+
         PullDownMenu
         {
             MenuItem

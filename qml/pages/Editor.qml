@@ -32,6 +32,26 @@ Dialog
             cancelText: "Cancel"
         }
 
+        PullDownMenu
+        {
+            MenuItem
+            {
+                text: "Mention user"
+                onClicked:
+                {
+                    users.update()
+                    var user = pageStack.push(Qt.resolvedUrl("../pages/UserSelector.qml"))
+                    user.selected.connect(function()
+                    {
+                        var acp = area.cursorPosition
+                        area.text = area.text.slice(0, acp) + "[~" + user.username + "]" + area.text.slice(acp)
+                        area.cursorPosition = acp + user.username.length + 3
+                        pageStack.pop()
+                    })
+                }
+            }
+        }
+
         Column
         {
             id: col
