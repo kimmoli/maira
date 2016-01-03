@@ -5,5 +5,6 @@
             <annotation name="org.freedesktop.DBus.Method.NoReply" value="true" />
             <arg name="key" type="as" direction="in" />
         </method>
+        <method name="openapp" />
     </interface>
 </node>

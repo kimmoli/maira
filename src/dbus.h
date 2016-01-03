@@ -19,10 +19,12 @@ public:
     void registerDBus();
 
 public Q_SLOTS:
-   Q_NOREPLY void showissue(const QStringList &key);
+    Q_NOREPLY void showissue(const QStringList &key);
+    Q_NOREPLY void openapp();
 
 signals:
     void viewissue(QString key);
+    void activateapp();
 
 private:
     bool m_dbusRegistered;

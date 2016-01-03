@@ -20,6 +20,12 @@ Page
         {
             MenuItem
             {
+                text: "Edit issue"
+                onClicked: editissue()
+            }
+
+            MenuItem
+            {
                 text: "Transition"
                 onClicked:
                 {
@@ -34,26 +40,10 @@ Page
 
             MenuItem
             {
-                text: "Assign issue"
-                onClicked:
-                {
-                    users.update("", "issueKey=" + currentissue.key)
-                    var user = pageStack.push(Qt.resolvedUrl("UserSelector.qml"))
-                    user.selected.connect(function()
-                    {
-                        if (user.username.length > 0)
-                            assignissue(key, user.username)
-                        pageStack.pop()
-                    })
-                }
-            }
-
-            MenuItem
-            {
                 text: "Add attachment"
                 onClicked:
                 {
-                    var filePicker = pageStack.push("Sailfish.Pickers.ContentPickerPage", { "allowedOrientations" : Orientation.All });
+                    var filePicker = pageStack.push("Sailfish.Pickers.ContentPickerPage", { title: "Select attachment", allowedOrientations : Orientation.All });
                     filePicker.selectedContentChanged.connect(function()
                     {
                         var filename = filePicker.selectedContent
@@ -172,19 +162,6 @@ Page
                 wrapMode: Text.Wrap
                 font.pixelSize: Theme.fontSizeSmall
                 text: currentissue.fields.summary
-                BackgroundItem
-                {
-                    anchors.fill: parent
-                    onClicked:
-                    {
-                        var ed = pageStack.push(Qt.resolvedUrl("Editor.qml"), { text: currentissue.fields.summary})
-                        ed.accepted.connect(function()
-                        {
-                            if (ed.text.length > 0)
-                                manageissue(currentissue.key, ed.text, "")
-                        })
-                    }
-                }
             }
 
             SectionHeader
@@ -198,19 +175,6 @@ Page
                 wrapMode: Text.Wrap
                 font.pixelSize: Theme.fontSizeSmall
                 text: currentissue.fields.description
-                BackgroundItem
-                {
-                    anchors.fill: parent
-                    onClicked:
-                    {
-                        var ed = pageStack.push(Qt.resolvedUrl("Editor.qml"), { text: currentissue.fields.description})
-                        ed.accepted.connect(function()
-                        {
-                            if (ed.text.length > 0)
-                                manageissue(currentissue.key, "", ed.text)
-                        })
-                    }
-                }
             }
 
             SectionHeader

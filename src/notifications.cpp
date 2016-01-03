@@ -9,6 +9,8 @@ void Notifications::notify(QString appName, QString summary, QString body, bool 
 {
     Notification notif;
 
+    QVariantList remoteactions;
+
     if (preview)
     {
         notif.setPreviewSummary(summary);
@@ -22,6 +24,13 @@ void Notifications::notify(QString appName, QString summary, QString body, bool 
         notif.setBody(body);
         notif.setItemCount(1);
         notif.setCategory("x-harbour.maira.activity");
+        remoteactions << Notification::remoteAction("app",
+                                                    QString(),
+                                                    "com.kimmoli.harbour.maira",
+                                                    "/",
+                                                    "com.kimmoli.harbour.maira",
+                                                    "openapp",
+                                                     QVariantList());
     }
 
     notif.setReplacesId(0);
@@ -34,14 +43,17 @@ void Notifications::notify(QString appName, QString summary, QString body, bool 
         QList<QVariant> args;
         args.append(QStringList() << issuekey);
 
-        notif.setRemoteAction(Notification::remoteAction("default",
-                                                         QString(),
-                                                         "com.kimmoli.harbour.maira",
-                                                         "/",
-                                                         "com.kimmoli.harbour.maira",
-                                                         "showissue",
-                                                          args));
+        remoteactions << Notification::remoteAction("default",
+                                                    QString(),
+                                                    "com.kimmoli.harbour.maira",
+                                                    "/",
+                                                    "com.kimmoli.harbour.maira",
+                                                    "showissue",
+                                                     args);
     }
+
+    if (remoteactions.count() > 0)
+        notif.setRemoteActions(remoteactions);
 
     notif.publish();
 }

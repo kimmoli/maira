@@ -46,3 +46,8 @@ void Dbus::showissue(const QStringList &key)
     emit viewissue(key.at(0));
 }
 
+void Dbus::openapp()
+{
+    emit activateapp();
+}
+

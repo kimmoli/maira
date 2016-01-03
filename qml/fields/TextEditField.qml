@@ -6,11 +6,17 @@ ValueButton
     property int fieldnumber
 
     label: fields[fieldnumber].name
-    value: content.fields[fields[fieldnumber].schema.system]
+    value: (content.fields[fields[fieldnumber].schema.system] != undefined)
+           ? content.fields[fields[fieldnumber].schema.system].replace(/[\n\r]/g, ' ')
+           : ""
 
     onClicked:
     {
-        var editor = pageStack.push(Qt.resolvedUrl("../pages/Editor.qml"), { text: value } )
+        var editor = pageStack.push(Qt.resolvedUrl("../pages/Editor.qml"),
+                                    { text: (content.fields[fields[fieldnumber].schema.system] != undefined)
+                                            ? content.fields[fields[fieldnumber].schema.system]
+                                            : ""
+                                    } )
         editor.accepted.connect(function()
         {
             content.fields[fields[fieldnumber].schema.system] = editor.text

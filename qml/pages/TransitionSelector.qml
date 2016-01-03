@@ -60,18 +60,16 @@ Page
             onClicked:
             {
                 transitionid = id
-                var contentin = {}
-                var fieldsin = {}
+                var contentin = { fields: {} }
                 var f = Object.keys(fields).map(function (key)
                 {
-                    fieldsin[key] = currentissue.fields[key]
+                    if (currentissue.fields[key] != undefined && currentissue.fields[key] != null)
+                        contentin.fields[key] = currentissue.fields[key]
 
                     if (key == "timetracking")
                     {
-                        if (currentissue.fields[key].originalEstimate == undefined)
-                            fieldsin[key].originalEstimate = "1m"
-                        if (currentissue.fields[key].remainingEstimate == undefined)
-                            fieldsin[key].remainingEstimate = "1m"
+                        if (currentissue.fields[key].originalEstimate == undefined || currentissue.fields[key].remainingEstimate == undefined)
+                            contentin.fields[key] = { originalEstimate: "0m", remainingEstimate: "0m" }
                     }
 
                     if (fields[key].schema.system == undefined)
@@ -79,12 +77,11 @@ Page
 
                     return fields[key]
                 })
-                contentin.fields = fieldsin
                 logjson(f, "fields")
                 logjson(contentin, "content to fields")
                 if (f.length > 0)
                 {
-                    var fielddialog = pageStack.push(Qt.resolvedUrl("Fields.qml"), { fields: f, content: contentin })
+                    var fielddialog = pageStack.push(Qt.resolvedUrl("Fields.qml"), { fields: f, content: contentin, acceptText: "Transit" })
                     fielddialog.accepted.connect(function()
                     {
                         var content

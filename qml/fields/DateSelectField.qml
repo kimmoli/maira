@@ -6,11 +6,13 @@ ValueButton
     property int fieldnumber
 
     label: fields[fieldnumber].name
-    value: content.fields[fields[fieldnumber].schema.system]
+    value: (content.fields[fields[fieldnumber].schema.system] != undefined)
+           ? content.fields[fields[fieldnumber].schema.system]
+           : ""
 
     onClicked:
     {
-        var ds = pageStack.push("Sailfish.Silica.DatePickerDialog", { date: new Date(value) } )
+        var ds = pageStack.push("Sailfish.Silica.DatePickerDialog", { date: new Date(value), allowedOrientations : Orientation.All } )
         ds.accepted.connect(function()
         {
             content.fields[fields[fieldnumber].schema.system] = Qt.formatDate(new Date(ds.date), "yyyy-MM-dd")

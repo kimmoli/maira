@@ -463,11 +463,16 @@ ApplicationWindow
             showissuetimer.keytoshow = key
             showissuetimer.start()
         }
+        onActivateapp:
+        {
+            pageStack.pop(pageStack.find( function(page){ return (page._depth === 0) }))
+            activate()
+        }
     }
     Timer
     {
-        property var keytoshow
         id: showissuetimer
+        property var keytoshow
         interval: 100
         onTriggered:
         {
@@ -704,26 +709,6 @@ ApplicationWindow
             post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content), "POST", function() { fetchissue(currentissue.key) })
     }
 
-    function manageissue(issuekey, summary, description)
-    {
-        var content = {}
-        var fields = {}
-        if (summary.length > 0)
-            fields.summary = summary.replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ')
-        if (description.length > 0)
-            fields.description = description
-        content.fields = fields
-        logjson(content, issuekey)
-        post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey, JSON.stringify(content), "PUT", function() { fetchissue(currentissue.key) })
-    }
-
-    function assignissue(issuekey, name)
-    {
-        var content = { name: name }
-        logjson(content, issuekey)
-        post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/assignee", JSON.stringify(content), "PUT", function() { fetchissue(currentissue.key) })
-    }
-
     function removeattachment(id)
     {
         post(Qt.atob(accounts.current.host) + "rest/api/2/attachment/" + id, "", "DELETE", function() { fetchissue(currentissue.key) })
@@ -790,7 +775,7 @@ ApplicationWindow
 
                         if (t[key].schema.type == "timetracking")
                         {
-                            contentin.fields[key] = { originalEstimate: "1m", remainingEstimate: "1m" }
+                            contentin.fields[key] = { originalEstimate: "0m", remainingEstimate: "0m" }
                         }
 
                         return t[key]
@@ -801,7 +786,7 @@ ApplicationWindow
                         return (a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0)
                     })
 
-                    var fielddialog = pageStack.push(Qt.resolvedUrl("pages/Fields.qml"), { fields: f, content: contentin })
+                    var fielddialog = pageStack.push(Qt.resolvedUrl("pages/Fields.qml"), { fields: f, content: contentin, acceptText: "Create" })
                     fielddialog.accepted.connect(function()
                     {
                         logjson(fielddialog.content, "new issue content")
@@ -811,6 +796,50 @@ ApplicationWindow
                             pageStack.pop(pageStack.find( function(page){ return (page._depth === 0) }))
                         })
                     })
+                })
+            })
+        })
+    }
+
+    function editissue()
+    {
+        users.update("", "issueKey=" + currentissue.key)
+        request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key + "/editmeta", function(o)
+        {
+            var contentin = { fields: {} }
+            var meta = JSON.parse(o.responseText)
+            logjson(meta, "editmeta")
+
+            var t = meta.fields
+            var f = Object.keys(t).map(function (key)
+            {
+                if (t[key].schema.system == undefined)
+                    t[key].schema.system = key
+
+                if (currentissue.fields[key] != undefined && currentissue.fields[key] != null)
+                    contentin.fields[key] = currentissue.fields[key]
+
+                if (key == "timetracking")
+                {
+                    if (currentissue.fields[key].originalEstimate == undefined || currentissue.fields[key].remainingEstimate == undefined)
+                        contentin.fields[key] = { originalEstimate: "0m", remainingEstimate: "0m" }
+                }
+
+                return t[key]
+            })
+
+            f.sort(function(a, b)
+            {
+                return (a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0)
+            })
+
+            var fielddialog = pageStack.push(Qt.resolvedUrl("pages/Fields.qml"), { fields: f, content: contentin, acceptText: "Save" })
+            fielddialog.accepted.connect(function()
+            {
+                logjson(fielddialog.content, "edit issue content")
+                post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key, JSON.stringify(fielddialog.content), "PUT", function(o)
+                {
+                    fetchissue(currentissue.key)
                 })
             })
         })

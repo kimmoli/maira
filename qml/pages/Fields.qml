@@ -7,6 +7,7 @@ Dialog
 
     property var fields
     property var content
+    property alias acceptText: dialogHeader.acceptText
 
     SilicaFlickable
     {
@@ -21,7 +22,7 @@ Dialog
         DialogHeader
         {
             id: dialogHeader
-            acceptText: "Create"
+            acceptText: "Submit"
             cancelText: "Back"
         }
 
