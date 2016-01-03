@@ -79,7 +79,6 @@ Dialog
                 label: "JQL"
                 width: parent.width
                 text: jql
-                //height: implicitHeight
                 wrapMode: Text.WrapAnywhere
                 inputMethodHints: Qt.ImhUrlCharactersOnly | Qt.ImhNoAutoUppercase
                 EnterKey.iconSource: "image://theme/icon-m-enter-accept"

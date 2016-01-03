@@ -460,11 +460,13 @@ ApplicationWindow
         target: Dbus
         onViewissue:
         {
+            log(key, "dbus show issue")
             showissuetimer.keytoshow = key
             showissuetimer.start()
         }
         onActivateapp:
         {
+            log ("dbus activate app")
             pageStack.pop(pageStack.find( function(page){ return (page._depth === 0) }))
             activate()
         }
