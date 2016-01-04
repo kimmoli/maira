@@ -79,6 +79,9 @@ Page
                     {
                         if (currentissue.fields[key].originalEstimate == undefined || currentissue.fields[key].remainingEstimate == undefined)
                             contentin.fields[key] = { originalEstimate: "0m", remainingEstimate: "0m" }
+                        else
+                            contentin.fields[key] = { originalEstimate: currentissue.fields[key].originalEstimate,
+                                                      remainingEstimate: currentissue.fields[key].remainingEstimate }
                     }
 
                     if (fields[key].schema.system == undefined)
