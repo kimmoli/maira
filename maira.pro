@@ -73,7 +73,8 @@ OTHER_FILES += qml/maira.qml \
     qml/fields/CascadeSelectField.qml \
     qml/fields/DateSelectField.qml \
     qml/fields/TimeTrackingField.qml \
-    qml/pages/DurationAdjust.qml
+    qml/pages/DurationAdjust.qml \
+    qml/components/CommentEditField.qml
 
 SOURCES += \
     src/main.cpp \

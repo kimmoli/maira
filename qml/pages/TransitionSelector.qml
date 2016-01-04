@@ -89,31 +89,29 @@ Page
 
                     return fields[key]
                 })
+
+                f.sort(function(a, b)
+                {
+                    return (a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0)
+                })
+
                 logjson(f, "fields")
                 logjson(contentin, "content to fields")
-                if (f.length > 0)
+                var fielddialog = pageStack.push(Qt.resolvedUrl("Fields.qml"), { fields: f, content: contentin, acceptText: "Transit", addcomment: true })
+                fielddialog.accepted.connect(function()
                 {
-                    var fielddialog = pageStack.push(Qt.resolvedUrl("Fields.qml"), { fields: f, content: contentin, acceptText: "Transit" })
-                    fielddialog.accepted.connect(function()
-                    {
-                        var content
-                        content = fielddialog.content
-                        var transition = {}
-                        transition.id = transitionid
-                        content.transition = transition
-                        maketransition(content)
-                        pageStack.pop(pageStack.find( function(page){ return (page._depth === 1) }))
-                    })
-                }
-                else
-                {
-                    var content = {}
+                    var content
+                    content = fielddialog.content
                     var transition = {}
                     transition.id = transitionid
                     content.transition = transition
+                    if (fielddialog.commenttext.length > 0)
+                    {
+                        content.update = { comment: [ { add: { body: fielddialog.commenttext } } ] }
+                    }
                     maketransition(content)
-                    pageStack.pop()
-                }
+                    pageStack.pop(pageStack.find( function(page){ return (page._depth === 1) }))
+                })
             }
         }
     }

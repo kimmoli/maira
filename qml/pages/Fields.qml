@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "../components"
 
 Dialog
 {
@@ -7,6 +8,8 @@ Dialog
 
     property var fields
     property var content
+    property bool addcomment: false
+    property alias commenttext: commentfield.commenttext
     property alias acceptText: dialogHeader.acceptText
 
     SilicaFlickable
@@ -32,6 +35,12 @@ Dialog
             spacing: Theme.paddingSmall
             anchors.top: dialogHeader.bottom
             width: parent.width
+
+            CommentEditField
+            {
+                id: commentfield
+                visible: addcomment
+            }
 
             Component.onCompleted:
             {
@@ -110,6 +119,8 @@ Dialog
                             delete content.fields[fields[i].schema.system]
                     }
                 }
+                commentfield.parent = null
+                commentfield.parent = col
             }
         }
     }
