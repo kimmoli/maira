@@ -77,6 +77,7 @@ ApplicationWindow
             getserverinfo()
             jqlsearch(0)
             activitystream.source = Qt.atob(accounts.current.host) + "activity"
+            acdata.update()
         })
     }
 
@@ -352,6 +353,94 @@ ApplicationWindow
     ListModel
     {
         id: issuetypes
+    }
+
+    ListModel
+    {
+        id: acdata
+        property var allacdata
+
+        function update()
+        {
+            request(Qt.atob(accounts.current.host) + "rest/api/2/jql/autocompletedata",
+            function (o)
+            {
+                allacdata = JSON.parse(o.responseText)
+
+                for (var i=0 ; i<allacdata.jqlReservedWords.length ; i++)
+                    allacdata.jqlReservedWords[i] = allacdata.jqlReservedWords[i].toUpperCase()
+
+                log("autocomplete data updated")
+                filter("")
+            })
+        }
+
+        function filter(searchtext, operators)
+        {
+            clear()
+            var tmp = []
+
+            if (typeof searchtext == "undefined")
+                searchtext = ""
+
+            searchtext.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
+
+            if (operators)
+            {
+                var r = new RegExp("^" + searchtext + "$", "i")
+                for (var i=0 ; i<allacdata.visibleFieldNames.length ; i++)
+                {
+                    if (allacdata.visibleFieldNames[i].displayName.match(r))
+                    {
+                        for (var u=0 ; u<allacdata.visibleFieldNames[i].operators.length ; u++)
+                            tmp.push( { name: allacdata.visibleFieldNames[i].operators[u]} )
+                        break
+                    }
+                }
+            }
+
+            if (!operators || tmp.length == 0)
+            {
+                var r = new RegExp("^" + searchtext, "i")
+                for (var i=0 ; i<allacdata.jqlReservedWords.length ; i++)
+                {
+                    if (allacdata.jqlReservedWords[i].match(r))
+                        tmp.push({ name: allacdata.jqlReservedWords[i] })
+                }
+                for (var i=0 ; i<allacdata.visibleFieldNames.length ; i++)
+                {
+                    if (allacdata.visibleFieldNames[i].displayName.match(r))
+                        tmp.push({ name: allacdata.visibleFieldNames[i].displayName })
+                }
+                for (var i=0 ; i<allacdata.visibleFunctionNames.length ; i++)
+                {
+                    if (allacdata.visibleFunctionNames[i].displayName.match(r))
+                        tmp.push({ name: allacdata.visibleFunctionNames[i].displayName })
+                }
+            }
+
+            if (tmp.length == 0)
+            {
+                for (var i=0 ; i<allacdata.jqlReservedWords.length ; i++)
+                {
+                    tmp.push({ name: allacdata.jqlReservedWords[i] })
+                }
+                for (var i=0 ; i<allacdata.visibleFieldNames.length ; i++)
+                {
+                    tmp.push({ name: allacdata.visibleFieldNames[i].displayName })
+                }
+                for (var i=0 ; i<allacdata.visibleFunctionNames.length ; i++)
+                {
+                    tmp.push({ name: allacdata.visibleFunctionNames[i].displayName })
+                }
+            }
+            tmp.sort(function(a, b)
+            {
+                return (a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0)
+            })
+            for (var i=0; i<tmp.length; i++)
+                append(tmp[i])
+        }
     }
 
     XmlListModel
