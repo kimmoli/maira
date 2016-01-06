@@ -45,6 +45,24 @@ Dialog
         {
             MenuItem
             {
+                enabled: attachments.count > 0
+                text: "Link attachment"
+                onClicked:
+                {
+                    var att = pageStack.push(Qt.resolvedUrl("../pages/AttachmentSelector.qml"), { selector: true })
+                    att.selected.connect(function()
+                    {
+                        var acp = area.cursorPosition
+                        var attlnk = ((stringStartsWith(att.attachment.mime, "image") ? ("!" + att.attachment.filename + "|thumbnail!") : ("[^" + att.attachment.filename + "]")))
+                        area.text = area.text.slice(0, acp) + attlnk + area.text.slice(acp)
+                        area.cursorPosition = acp + attlnk.length
+                        pageStack.pop()
+                    })
+                }
+            }
+
+            MenuItem
+            {
                 text: "Mention user"
                 onClicked:
                 {

@@ -841,6 +841,10 @@ ApplicationWindow
     {
         var projectkey
         var issuetype
+        currentissue = {}
+        attachments.clear()
+        comments.clear()
+        customfields.clear()
         projects.update()
         var proj = pageStack.push(Qt.resolvedUrl("pages/ProjectSelector.qml"))
         proj.selected.connect(function()

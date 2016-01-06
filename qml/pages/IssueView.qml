@@ -16,7 +16,6 @@ Page
     id: page
 
     property string key: ""
-    property bool showAttachments: false
 
     SilicaFlickable
     {
@@ -192,15 +191,15 @@ Page
             {
                 text: "Attachments (" + currentissue.fields.attachment.length + ")"
             }
+
             Repeater
             {
                 model: attachments
                 delegate: BackgroundItem
                 {
+                    visible: index <3
                     width: column.width
-                    height: (!showAttachments && (index > 2)) ? 0 : Theme.itemSizeExtraSmall
-                    Behavior on height { SmoothedAnimation { duration: 500 } }
-                    visible: height > 0
+                    height: Theme.itemSizeExtraSmall
                     clip: true
 
                     onClicked: pageStack.push(Qt.resolvedUrl("AttachmentView.qml"), {attachment: attachments.get(index)})
@@ -241,8 +240,12 @@ Page
             {
                 visible: currentissue.fields.attachment.length > 3
                 width: parent.width
-                height: Theme.itemSizeSmall/2
-                onClicked: showAttachments = !showAttachments
+                height: Theme.itemSizeExtraSmall
+                onClicked:
+                {
+                    pageStack.push(Qt.resolvedUrl("AttachmentSelector.qml"))
+                }
+
                 Image
                 {
                     source: "image://Theme/icon-lock-more"

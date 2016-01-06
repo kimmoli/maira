@@ -39,7 +39,7 @@ Page
             }
             MenuItem
             {
-                text: "Mention in comment"
+                text: "Link in new comment"
                 onClicked:
                 {
                     var newcomment = pageStack.push(Qt.resolvedUrl("Editor.qml"), {text: (stringStartsWith(attachment.mime, "image") ? ("!" + attachment.filename + "|thumbnail!") : ("[^" + attachment.filename + "]"))})

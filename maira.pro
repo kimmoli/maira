@@ -75,7 +75,8 @@ OTHER_FILES += qml/maira.qml \
     qml/fields/TimeTrackingField.qml \
     qml/pages/DurationAdjust.qml \
     qml/components/CommentEditField.qml \
-    qml/components/AutoCompleteJQL.qml
+    qml/components/AutoCompleteJQL.qml \
+    qml/pages/AttachmentSelector.qml
 
 SOURCES += \
     src/main.cpp \
