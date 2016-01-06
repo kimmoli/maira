@@ -49,7 +49,8 @@ Page
         model: projects
         delegate: ListItem
         {
-            height: Theme.itemSizeSmall
+            id: pli
+            contentHeight: Theme.itemSizeSmall
             width: flick.width
             clip: true
 
@@ -66,6 +67,15 @@ Page
                     id: avatarimage
                     source: avatarurl
                     anchors.verticalCenter: parent.verticalCenter
+                    Image
+                    {
+                        visible: favourite == "yes"
+                        anchors.left: parent.left
+                        anchors.leftMargin: -width/2
+                        anchors.top: parent.top
+                        anchors.topMargin: -height/2
+                        source: "image://theme/icon-s-favorite?" + Theme.highlightColor
+                    }
                 }
 
                 Column
@@ -92,6 +102,26 @@ Page
                 {
                     projectindex = index
                     selected()
+                }
+                onPressAndHold: pli.showMenu()
+            }
+
+            menu: ContextMenu
+            {
+                MenuItem
+                {
+                    text: favourite == "yes" ? "Remove from favourites" : "Favourite"
+                    onClicked:
+                    {
+                        var tmp = favouriteprojects.value.split(",")
+                        if (favourite == "yes")
+                            tmp.splice(tmp.indexOf(key), 1)
+                        else
+                            tmp.push(key)
+                        favouriteprojects.value = tmp.join(",")
+                        log(tmp, "new favourites")
+                        projects.sortby(projects.sortedby)
+                    }
                 }
             }
         }
