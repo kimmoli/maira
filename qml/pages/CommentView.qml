@@ -16,14 +16,26 @@ Page
     id: page
 
     property var comment
-    signal commentupdated
+    property string renderedcommenttext
 
     RemorsePopup { id: remorse }
+
+    function getrenderedcomment()
+    {
+        request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + comment.issuekey + "/comment/" + comment.id + "?expand=renderedBody", function(o)
+        {
+            var tmp = JSON.parse(o.responseText)
+            logjson(tmp, "comment")
+            renderedcommenttext = tmp.renderedBody
+        })
+    }
 
     SilicaFlickable
     {
         id: flick
         anchors.fill: parent
+
+        Component.onCompleted: getrenderedcomment()
 
         VerticalScrollDecorator { flickable: flick }
 
@@ -50,7 +62,7 @@ Page
                         {
                             managecomment(comment.issuekey, editcomment.text, comment.id)
                             comment.body = editcomment.text
-                            commentupdated()
+                            getrenderedcomment()
                         }
                     })
                 }
@@ -90,7 +102,8 @@ Page
                 width: parent.width - 2* Theme.paddingSmall
                 wrapMode: Text.Wrap
                 font.pixelSize: Theme.fontSizeSmall
-                text: comment.body
+                textFormat: Text.RichText
+                text: renderedcommenttext.length > 0 ? renderedcommenttext : comment.body
             }
         }
     }

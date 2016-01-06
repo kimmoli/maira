@@ -43,7 +43,10 @@ Page
                     tr.maketransition.connect(function(content)
                     {
                         logjson(content, "transition content")
-                        post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key + "/transitions", JSON.stringify(content), "POST", function() { fetchissue(currentissue.key) })
+                        post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key + "/transitions", JSON.stringify(content), "POST", function()
+                        {
+                            fetchissue(currentissue.key)
+                        })
                     })
                 }
             }
@@ -58,7 +61,7 @@ Page
                     {
                         var filename = filePicker.selectedContent
                         FileUploader.uploadFile(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + key + "/attachments", filename)
-                    });
+                    })
                 }
             }
 
@@ -183,8 +186,11 @@ Page
                 x: Theme.paddingSmall
                 width: parent.width - 2* Theme.paddingSmall
                 wrapMode: Text.Wrap
+                textFormat: Text.RichText
                 font.pixelSize: Theme.fontSizeSmall
-                text: currentissue.fields.description
+                text: currentissue.rendereddescription.length > 0
+                      ? currentissue.rendereddescription
+                      : currentissue.fields.description
             }
 
             SectionHeader

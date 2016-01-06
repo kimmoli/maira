@@ -711,7 +711,7 @@ ApplicationWindow
         })
     }
 
-    function fetchissue(issuekey)
+    function fetchissue(issuekey, callback)
     {
         request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey,
         function (o)
@@ -763,7 +763,16 @@ ApplicationWindow
                             }
                         }
                     }
+                })
 
+                request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "?fields=description&expand=renderedFields", function(o)
+                {
+                    var tmp = JSON.parse(o.responseText)
+                    logjson(tmp, "description")
+                    currentissue.rendereddescription = tmp.renderedFields.description
+
+                    if (typeof callback === "function")
+                        callback()
                 })
             })
 
