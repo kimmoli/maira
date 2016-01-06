@@ -15,7 +15,9 @@ PKGCONFIG += sailfishapp nemonotifications-qt5
 DEFINES += "APPVERSION=\\\"$${SPECVERSION}\\\""
 DEFINES += "APPNAME=\\\"$${TARGET}\\\""
 
-system(qdbusxml2cpp config/com.kimmoli.harbour.maira.xml -i dbus.h -a src/dbusAdaptor)
+!exists( src/dbusAdaptor.h ) {
+    system(qdbusxml2cpp config/com.kimmoli.harbour.maira.xml -i dbus.h -a src/dbusAdaptor)
+}
 
 icons.files = icons/*
 icons.path = /usr/share/icons/hicolor/
