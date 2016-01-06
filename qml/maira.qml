@@ -582,8 +582,10 @@ ApplicationWindow
             }
             else
             {
-                fetchissue(keytoshow)
-                pageStack.push(Qt.resolvedUrl("pages/IssueView.qml"), {key: keytoshow})
+                fetchissue(keytoshow, function()
+                {
+                    pageStack.push(Qt.resolvedUrl("pages/IssueView.qml"), {key: keytoshow})
+                })
                 activate()
             }
         }
