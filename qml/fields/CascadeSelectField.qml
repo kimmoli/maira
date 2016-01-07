@@ -109,7 +109,7 @@ Column
             var it = pageStack.push(Qt.resolvedUrl("../components/SingleItemPicker.qml"), { items: childrens, label: mainselector.value, index: childvalue } )
             it.selected.connect(function()
             {
-                console.log(it.index)
+                log(it.index, "singleitem selected")
                 childselector.childvalue = it.index
                 childselector.value = childrens.get(childselector.childvalue).name
                 cb.update()

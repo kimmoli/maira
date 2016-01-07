@@ -19,8 +19,6 @@ SilicaListView
     orientation: ListView.Horizontal
     boundsBehavior: Flickable.StopAtBounds
 
-    onDraggingChanged: console.log("dragging " + dragging)
-
     model:acdata
 
     delegate: BackgroundItem

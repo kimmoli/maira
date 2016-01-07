@@ -117,7 +117,6 @@ Page
                             if (loggedin && !aclchange)
                             {
                                 var currentword = text.slice(0, cursorPosition).split(" ").filter(function(e) {return e.length > 0}).pop()
-                                console.log(currentword + " cp \"" + text.charAt(cursorPosition-1) + "\"")
                                 acdata.filter(currentword, text.charAt(cursorPosition-1) === " ")
                             }
                         }
