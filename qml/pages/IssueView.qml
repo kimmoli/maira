@@ -153,6 +153,13 @@ Page
                 value: Qt.formatDateTime(new Date(currentissue.fields.created), "hh:mm dd.MM.yyyy")
             }
 
+            DetailItem
+            {
+                visible: currentissue.fields.watches.isWatching
+                label: "Watching"
+                value: currentissue.fields.watches.watchCount > 1 ? ("Yes, and " + (currentissue.fields.watches.watchCount-1) + " others") : "Yes"
+            }
+
             Repeater
             {
                 model: customfields
