@@ -387,6 +387,8 @@ ApplicationWindow
     {
         id: acdata
         property var allacdata
+        property var reservedwords: [ "ORDER BY", "ASC", "DESC", "EMPTY", "AND", "OR",
+                                      "CHANGED", "AFTER", "BEFORE"]
 
         function update()
         {
@@ -394,10 +396,6 @@ ApplicationWindow
             function (o)
             {
                 allacdata = JSON.parse(o.responseText)
-
-                for (var i=0 ; i<allacdata.jqlReservedWords.length ; i++)
-                    allacdata.jqlReservedWords[i] = allacdata.jqlReservedWords[i].toUpperCase()
-
                 log("autocomplete data updated")
                 filter("")
             })
@@ -418,7 +416,7 @@ ApplicationWindow
                 var r = new RegExp("^" + searchtext + "$", "i")
                 for (var i=0 ; i<allacdata.visibleFieldNames.length ; i++)
                 {
-                    if (allacdata.visibleFieldNames[i].displayName.match(r))
+                    if (allacdata.visibleFieldNames[i].value.match(r))
                     {
                         for (var u=0 ; u<allacdata.visibleFieldNames[i].operators.length ; u++)
                             tmp.push( { name: allacdata.visibleFieldNames[i].operators[u]} )
@@ -430,36 +428,36 @@ ApplicationWindow
             if (!operators || tmp.length == 0)
             {
                 var r = new RegExp("^" + searchtext, "i")
-                for (var i=0 ; i<allacdata.jqlReservedWords.length ; i++)
+                for (var i=0 ; i<reservedwords.length ; i++)
                 {
-                    if (allacdata.jqlReservedWords[i].match(r))
-                        tmp.push({ name: allacdata.jqlReservedWords[i] })
+                    if (reservedwords[i].match(r))
+                        tmp.push({ name: reservedwords[i] })
                 }
                 for (var i=0 ; i<allacdata.visibleFieldNames.length ; i++)
                 {
-                    if (allacdata.visibleFieldNames[i].displayName.match(r))
-                        tmp.push({ name: allacdata.visibleFieldNames[i].displayName })
+                    if (allacdata.visibleFieldNames[i].value.match(r))
+                        tmp.push({ name: allacdata.visibleFieldNames[i].value })
                 }
                 for (var i=0 ; i<allacdata.visibleFunctionNames.length ; i++)
                 {
-                    if (allacdata.visibleFunctionNames[i].displayName.match(r))
-                        tmp.push({ name: allacdata.visibleFunctionNames[i].displayName })
+                    if (allacdata.visibleFunctionNames[i].value.match(r))
+                        tmp.push({ name: allacdata.visibleFunctionNames[i].value })
                 }
             }
 
             if (tmp.length == 0)
             {
-                for (var i=0 ; i<allacdata.jqlReservedWords.length ; i++)
+                for (var i=0 ; i<reservedwords.length ; i++)
                 {
-                    tmp.push({ name: allacdata.jqlReservedWords[i] })
+                    tmp.push({ name: reservedwords[i] })
                 }
                 for (var i=0 ; i<allacdata.visibleFieldNames.length ; i++)
                 {
-                    tmp.push({ name: allacdata.visibleFieldNames[i].displayName })
+                    tmp.push({ name: allacdata.visibleFieldNames[i].value })
                 }
                 for (var i=0 ; i<allacdata.visibleFunctionNames.length ; i++)
                 {
-                    tmp.push({ name: allacdata.visibleFunctionNames[i].displayName })
+                    tmp.push({ name: allacdata.visibleFunctionNames[i].value })
                 }
             }
             tmp.sort(function(a, b)
