@@ -20,6 +20,7 @@
 #include "fileuploader.h"
 #include "notifications.h"
 #include "dbus.h"
+#include "consolemodel.h"
 
 class MyNetworkCookieJar : public QNetworkCookieJar
 {
@@ -97,6 +98,8 @@ QNetworkAccessManager *MyNetworkAccessManagerFactory::create(QObject *parent)
 
 int main(int argc, char *argv[])
 {
+    qmlRegisterType<ConsoleModel>("harbour.maira.ConsoleModel", 1, 0, "ConsoleModel");
+
     QScopedPointer<QGuiApplication> app(SailfishApp::application(argc, argv));
 
     app->setApplicationName(APPNAME);

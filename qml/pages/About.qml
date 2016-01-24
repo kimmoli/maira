@@ -9,10 +9,22 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import harbour.maira.ConsoleModel 1.0
 
 Page
 {
     id: page
+
+    onStatusChanged:
+    {
+        if (status === PageStatus.Activating)
+            consoleModel.executeCommand("rpm", [ "-q", "--changelog", "harbour-maira" ])
+    }
+
+    ConsoleModel
+    {
+        id: consoleModel
+    }
 
     SilicaFlickable
     {
@@ -88,6 +100,32 @@ Page
                 font.pixelSize: Theme.fontSizeMedium
                 anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignHCenter
+            }
+            SectionHeader
+            {
+                text: "Changelog"
+            }
+            Column
+            {
+                width: parent.width - Theme.horizontalPageMargin
+                x: Theme.horizontalPageMargin
+                spacing: -Theme.fontSizeExtraSmall
+                Repeater
+                {
+                    width: parent.width
+                    model: consoleModel
+                    delegate: Text
+                    {
+                        width: parent.width
+                        text: modelData
+                        textFormat: Text.PlainText
+                        color: Theme.secondaryColor
+                        wrapMode: Text.Wrap
+                        font.pixelSize: Theme.fontSizeExtraSmall
+                        font.bold: text.charAt(0) == "*"
+                        visible: text.length > 1
+                    }
+                }
             }
         }
     }

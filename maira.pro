@@ -86,12 +86,14 @@ SOURCES += \
     src/fileuploader.cpp \
     src/notifications.cpp \
     src/dbusAdaptor.cpp \
-    src/dbus.cpp
+    src/dbus.cpp \
+    src/consolemodel.cpp
 
 HEADERS += \
     src/filedownloader.h \
     src/fileuploader.h \
     src/notifications.h \
     src/dbusAdaptor.h \
-    src/dbus.h
+    src/dbus.h \
+    src/consolemodel.h
 
