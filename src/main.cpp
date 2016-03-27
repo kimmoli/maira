@@ -22,6 +22,7 @@
 #include "notifications.h"
 #include "dbus.h"
 #include "consolemodel.h"
+#include "cookiemonster.h"
 #include "crypter.h"
 
 class MyNetworkCookieJar : public QNetworkCookieJar
@@ -121,6 +122,9 @@ int main(int argc, char *argv[])
 
     Notifications *no = new Notifications();
     view->rootContext()->setContextProperty("Notifications", no);
+
+    CookieMonster *cm = new CookieMonster(engine);
+    view->rootContext()->setContextProperty("CookieMonster", cm);
 
     Dbus *dbus = new Dbus();
     view->rootContext()->setContextProperty("Dbus", dbus);

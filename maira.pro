@@ -8,7 +8,7 @@
 #
 
 TARGET = harbour-maira
-QT += network dbus
+QT += network dbus sql
 CONFIG += sailfishapp link_pkgconfig
 PKGCONFIG += sailfishapp nemonotifications-qt5 Qt5SystemInfo
 
@@ -66,12 +66,22 @@ DISTFILES += \
     qml/pages/IssuetypeSelector.qml \
     qml/pages/DurationAdjust.qml \
     qml/pages/AttachmentSelector.qml \
+    qml/pages/DurationAdjust.qml \
+    qml/pages/AttachmentSelector.qml \
+    qml/pages/WebviewLogin.qml \
     qml/components/MultiItemPicker.qml \
     qml/components/SingleItemPicker.qml \
     qml/components/Messagebox.qml \
     qml/components/DetailUserItem.qml \
     qml/components/CommentEditField.qml \
     qml/components/AutoCompleteJQL.qml \
+    qml/components/CommentEditField.qml \
+    qml/components/AutoCompleteJQL.qml \
+    qml/components/MainListDelegate.qml \
+    qml/components/CommentDelegate.qml \
+    qml/components/AttachmentDelegate.qml \
+    qml/components/CreatedByItem.qml \
+    qml/components/LinkDelegate.qml \
     qml/fields/UserField.qml \
     qml/fields/SingleSelectField.qml \
     qml/fields/TextEditField.qml \
@@ -82,12 +92,7 @@ DISTFILES += \
     icons/86x86/apps/harbour-maira.png \
     icons/108x108/apps/harbour-maira.png \
     icons/128x128/apps/harbour-maira.png \
-    icons/256x256/apps/harbour-maira.png \
-    qml/components/MainListDelegate.qml \
-    qml/components/CommentDelegate.qml \
-    qml/components/AttachmentDelegate.qml \
-    qml/components/CreatedByItem.qml \
-    qml/components/LinkDelegate.qml
+    icons/256x256/apps/harbour-maira.png
 
 SOURCES += \
     src/main.cpp \
@@ -97,6 +102,7 @@ SOURCES += \
     src/dbusAdaptor.cpp \
     src/dbus.cpp \
     src/consolemodel.cpp \
+    src/cookiemonster.cpp \
     src/simplecrypt.cpp \
     src/crypter.cpp
 
@@ -107,6 +113,6 @@ HEADERS += \
     src/dbusAdaptor.h \
     src/dbus.h \
     src/consolemodel.h \
+    src/cookiemonster.h \
     src/simplecrypt.h \
     src/crypter.h
-

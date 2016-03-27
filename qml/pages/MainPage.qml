@@ -47,6 +47,16 @@ Page
             }
             MenuItem
             {
+                text: "Retry login"
+                onClicked:
+                {
+                    accounts.reload()
+                    accounts.findaccount()
+                    auth()
+                }
+            }
+            MenuItem
+            {
                 text: "Settings"
                 onClicked: pageStack.push(Qt.resolvedUrl("Settings.qml"))
             }

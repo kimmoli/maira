@@ -72,16 +72,38 @@ ApplicationWindow
 
         post(url, JSON.stringify(content), "POST", function(o)
         {
-            var ar = JSON.parse(o.responseText)
-            logjson(ar, "auth")
-            msgbox.showMessage("Login ok")
-            loggedin = true
-            getserverinfo()
-            getcurrentuserinfo()
-            jqlsearch(0)
-            activitystream.source = accounts.current.host + "activity"
-            acdata.update()
+            if (o.responseText.trim().charAt(0) == "{")
+            {
+                var ar = JSON.parse(o.responseText)
+                logjson(ar, "auth")
+                msgbox.showMessage("Login ok")
+                loggedin = true
+                getserverinfo()
+                getcurrentuserinfo()
+                jqlsearch(0)
+                activitystream.source = accounts.current.host + "activity"
+                acdata.update()
+            }
+            else
+            {
+                log("Response was not JSON, opening a webview to the host")
+                msgbox.showMessage("Webpage login")
+                var loginpage = pageStack.push(Qt.resolvedUrl("pages/WebviewLogin.qml"), {url: url, content: content})
+                loginpage.success.connect(function()
+                {
+                    console.log("login success")
+                    pageStack.pop()
+                    reAuthTimer.restart()
+                })
+            }
         })
+    }
+
+    Timer
+    {
+        id: reAuthTimer
+        interval: 500
+        onTriggered: auth()
     }
 
     function getserverinfo()
