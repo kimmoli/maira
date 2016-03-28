@@ -53,7 +53,7 @@ Page
                 text: "Activity stream"
                 onClicked:
                 {
-                    activitystream.reload()
+                    activitystream.update()
                     pageStack.push(Qt.resolvedUrl("ActivityStream.qml"))
                 }
             }

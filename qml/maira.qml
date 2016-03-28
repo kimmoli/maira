@@ -153,6 +153,13 @@ ApplicationWindow
         defaultValue: ""
     }
 
+    ConfigurationValue
+    {
+        id: filteractivitystream
+        key: "/apps/harbour-maira/filteractivitystream"
+        defaultValue: 0
+    }
+
     ListModel
     {
         id: accounts
@@ -484,6 +491,34 @@ ApplicationWindow
     {
         id: activitystream
         query: "/feed/entry"
+
+        Component.onCompleted: update()
+
+        function update()
+        {
+            if (filteractivitystream.value)
+            {
+                var xpath = "/feed/entry[*["
+                var fp = favouriteprojects.value.split(",")
+                for (var fpn=0 ; fpn < fp.length; fpn++)
+                {
+                    if (fp[fpn].length > 0)
+                        xpath = xpath + "contains(text(),\'" + fp[fpn] +"\') or "
+                }
+
+                if (xpath === "/feed/entry[*[")
+                    query = "/feed/entry"
+                else
+                    query = xpath.slice(0, -4) + "]]"
+            }
+            else
+            {
+                query = "/feed/entry"
+            }
+
+            log(query, "new query")
+        }
+
         namespaceDeclarations: "declare default element namespace 'http://www.w3.org/2005/Atom';
                                 declare namespace activity='http://activitystrea.ms/spec/1.0/';"
 
@@ -537,7 +572,7 @@ ApplicationWindow
         running: loggedin
         repeat: loggedin
         interval: Math.max(activitystreamupdateinterval.value, 10000)
-        onTriggered: activitystream.reload()
+        onTriggered: activitystream.update()
     }
 
     Messagebox

@@ -24,7 +24,7 @@ Page
             MenuItem
             {
                 text: "Refresh"
-                onClicked: activitystream.reload()
+                onClicked: activitystream.update()
             }
         }
 

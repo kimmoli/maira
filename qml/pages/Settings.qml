@@ -53,6 +53,16 @@ Page
                 checked: verbosejson.value === 1
                 onClicked: verbosejson.value = (checked ? 0 : 1)
             }
+            TextSwitch
+            {
+                width: parent.width
+                x: Theme.paddingMedium
+                text: "Filter activity stream"
+                description: "Shows only favorited projects in stream"
+                automaticCheck: false
+                checked: filteractivitystream.value === 1
+                onClicked: filteractivitystream.value = (checked ? 0 : 1)
+            }
 
             SectionHeader
             {
