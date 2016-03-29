@@ -69,6 +69,7 @@ Item {
         anchors.centerIn: parent
         height: Theme.paddingLarge * 1.5
         width: height
+        fillMode: Image.PreserveAspectFit
     }
 
     Text {

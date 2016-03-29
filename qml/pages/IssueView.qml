@@ -107,7 +107,19 @@ Page
                     id: projectavatar
                     source: currentissue.fields.project.avatarUrls["48x48"]
                     anchors.centerIn: parent
+                    height: Theme.itemSizeSmall - Theme.paddingLarge
+                    width: height
+                    fillMode: Image.PreserveAspectFit
                     Component.onCompleted: parent = pageHeader.extraContent
+                    Image
+                    {
+                        visible: favouriteprojects.value.split(",").indexOf(currentissue.fields.project.key) > -1
+                        anchors.left: parent.left
+                        anchors.leftMargin: -Theme.paddingMedium/2
+                        anchors.top: parent.top
+                        anchors.topMargin: -Theme.paddingMedium/2
+                        source: "image://theme/icon-s-favorite?" + Theme.highlightColor
+                    }
                 }
             }
 

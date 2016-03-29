@@ -41,6 +41,7 @@ Page
         model: users
         delegate: ListItem
         {
+            id: uli
             height: Theme.itemSizeSmall
             width: flick.width
             clip: true
@@ -57,6 +58,9 @@ Page
                 {
                     source: avatarurl
                     anchors.verticalCenter: parent.verticalCenter
+                    height: uli.height - Theme.paddingMedium
+                    width: height
+                    fillMode: Image.PreserveAspectFit
                 }
 
                 Label

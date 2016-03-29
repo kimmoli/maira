@@ -67,13 +67,16 @@ Page
                     id: avatarimage
                     source: avatarurl
                     anchors.verticalCenter: parent.verticalCenter
+                    height: pli.height - Theme.paddingMedium
+                    width: height
+                    fillMode: Image.PreserveAspectFit
                     Image
                     {
                         visible: favourite == "yes"
                         anchors.left: parent.left
-                        anchors.leftMargin: -width/2
+                        anchors.leftMargin: -Theme.paddingMedium/2
                         anchors.top: parent.top
-                        anchors.topMargin: -height/2
+                        anchors.topMargin: -Theme.paddingMedium/2
                         source: "image://theme/icon-s-favorite?" + Theme.highlightColor
                     }
                 }
