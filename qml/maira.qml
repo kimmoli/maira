@@ -73,8 +73,8 @@ ApplicationWindow
             logjson(ar, "auth")
             msgbox.showMessage("Login ok")
             loggedin = true
-            getcurrentuserinfo()
             getserverinfo()
+            getcurrentuserinfo()
             jqlsearch(0)
             activitystream.source = Qt.atob(accounts.current.host) + "activity"
             acdata.update()
@@ -797,7 +797,7 @@ ApplicationWindow
                 {
                     var tmp = JSON.parse(o.responseText)
                     logjson(tmp, "description")
-                    currentissue.rendereddescription = tmp.renderedFields.description
+                    currentissue.rendereddescription = tmp.renderedFields.description.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host))
 
                     if (typeof callback === "function")
                         callback()
@@ -986,6 +986,24 @@ ApplicationWindow
                     fetchissue(currentissue.key)
                 })
             })
+        })
+    }
+
+    function getrenderedcomment(comment, callback)
+    {
+        request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + comment.issuekey + "/comment/" + comment.id + "?expand=renderedBody", function(o)
+        {
+            var tmp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+            logjson(tmp, "comment")
+            callback(tmp.renderedBody.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host)))
+        })
+    }
+
+    function maketransition(content)
+    {
+        post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key + "/transitions", JSON.stringify(content), "POST", function()
+        {
+            fetchissue(currentissue.key)
         })
     }
 

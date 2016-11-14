@@ -43,10 +43,7 @@ Page
                     tr.maketransition.connect(function(content)
                     {
                         logjson(content, "transition content")
-                        post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key + "/transitions", JSON.stringify(content), "POST", function()
-                        {
-                            fetchissue(currentissue.key)
-                        })
+                        maketransition(content)
                     })
                 }
             }
