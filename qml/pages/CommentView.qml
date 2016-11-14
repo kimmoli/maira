@@ -24,7 +24,7 @@ Page
     {
         request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + comment.issuekey + "/comment/" + comment.id + "?expand=renderedBody", function(o)
         {
-            var tmp = JSON.parse(o.responseText)
+            var tmp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
             logjson(tmp, "comment")
             renderedcommenttext = tmp.renderedBody
         })

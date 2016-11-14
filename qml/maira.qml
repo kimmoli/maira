@@ -93,7 +93,7 @@ ApplicationWindow
     {
         request(Qt.atob(accounts.current.host) + "rest/api/2/user?key=" + Qt.atob(accounts.current.auth).split(":")[0], function(o)
         {
-            currentuser = JSON.parse(o.responseText)
+            currentuser = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
         })
     }
 
@@ -222,7 +222,7 @@ ApplicationWindow
                 request(Qt.atob(accounts.current.host) + "rest/api/2/user/assignable/search?" + _searchterm,
                 function (o)
                 {
-                    allusers = JSON.parse(o.responseText)
+                    allusers = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
                     logjson(allusers, "users update()")
 
                     for (var i=0 ; i<allusers.length ; i++)
@@ -347,7 +347,7 @@ ApplicationWindow
             request(Qt.atob(accounts.current.host) + "rest/api/2/project",
             function (o)
             {
-                allprojects = JSON.parse(o.responseText)
+                allprojects = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
                 logjson(allprojects, "projects update()")
                 prevsearchtext = ""
                 sortby(sortedby)
@@ -690,7 +690,7 @@ ApplicationWindow
         request(Qt.atob(accounts.current.host) + "rest/api/2/search?jql=" + jqlstring.value.replace(/ /g, "+") + "&startAt=" + startat + "&maxResults=10",
         function (o)
         {
-            var d = JSON.parse(o.responseText)
+            var d = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
             logjson(d, "jqlsearch")
 
             if (startat === 0)
@@ -722,7 +722,7 @@ ApplicationWindow
         request(Qt.atob(accounts.current.host) + "rest/api/2/project/" + projectkey,
         function (o)
         {
-            currentproject = JSON.parse(o.responseText)
+            currentproject = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
 
             logjson(currentproject, "fetchproject")
 
@@ -744,7 +744,7 @@ ApplicationWindow
         request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey,
         function (o)
         {
-            currentissue = JSON.parse(o.responseText)
+            currentissue = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
 
             logjson(currentissue, "fetchissue")
 
