@@ -209,9 +209,7 @@ Page
                 wrapMode: Text.Wrap
                 textFormat: Text.RichText
                 font.pixelSize: Theme.fontSizeSmall
-                text: linkTheme + (rendereddescriptiontext.length > 0
-                      ? rendereddescriptiontext
-                      : currentissue.fields.description)
+                text: rendereddescriptiontext.length > 0 ? rendereddescriptiontext : currentissue.fields.description
                 onLinkActivated: openLink(link)
             }
 

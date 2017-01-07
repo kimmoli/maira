@@ -1034,7 +1034,7 @@ ApplicationWindow
         {
             var tmp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
             logjson(tmp, "description")
-            callback(tmp.renderedFields.description.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host)))
+            callback(linkTheme + tmp.renderedFields.description.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host)))
         })
     }
 
@@ -1044,7 +1044,7 @@ ApplicationWindow
         {
             var tmp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
             logjson(tmp, "comment")
-            callback(tmp.renderedBody.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host)))
+            callback(linkTheme + tmp.renderedBody.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host)))
         })
     }
 
