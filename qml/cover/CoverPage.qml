@@ -23,7 +23,7 @@ CoverBackground
         anchors.top: icon.bottom
         anchors.topMargin: Theme.paddingMedium
         anchors.horizontalCenter: parent.horizontalCenter
-        text: "Maira"
+        text: serverinfo !== undefined ? serverinfo.serverTitle : "Maira"
         font.bold: true
     }
 }
