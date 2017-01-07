@@ -113,8 +113,10 @@ Page
 
                         if (key != undefined)
                         {
-                            fetchissue(key)
-                            pageStack.push(Qt.resolvedUrl("IssueView.qml"), {key: key})
+                            fetchissue(key, function()
+                            {
+                                pageStack.push(Qt.resolvedUrl("IssueView.qml"), {key: key})
+                            } )
                         }
                     }
                 }
