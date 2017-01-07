@@ -806,7 +806,7 @@ ApplicationWindow
 
                 request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "?fields=description&expand=renderedFields", function(o)
                 {
-                    var tmp = JSON.parse(o.responseText)
+                    var tmp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
                     logjson(tmp, "description")
                     currentissue.rendereddescription = tmp.renderedFields.description.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host))
 
