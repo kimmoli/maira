@@ -93,7 +93,7 @@ Page
                 wrapMode: Text.Wrap
                 font.pixelSize: Theme.fontSizeSmall
                 textFormat: Text.RichText
-                text: renderedcommenttext.length > 0 ? renderedcommenttext : comment.body
+                text: linkTheme + (renderedcommenttext.length > 0 ? renderedcommenttext : comment.body)
             }
         }
     }

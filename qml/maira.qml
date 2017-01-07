@@ -26,6 +26,8 @@ ApplicationWindow
 
     property string imagelocation: "/usr/share/icons/hicolor/86x86/apps/harbour-maira.png"
 
+    property string linkTheme: "<style>a:link { color: " + Theme.highlightColor + "; }</style>"
+
     property int searchtotalcount: 0
     property var currentissue
     property var currentproject

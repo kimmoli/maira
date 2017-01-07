@@ -204,9 +204,9 @@ Page
                 wrapMode: Text.Wrap
                 textFormat: Text.RichText
                 font.pixelSize: Theme.fontSizeSmall
-                text: currentissue.rendereddescription.length > 0
+                text: linkTheme + (currentissue.rendereddescription.length > 0
                       ? currentissue.rendereddescription
-                      : currentissue.fields.description
+                      : currentissue.fields.description)
             }
 
             SectionHeader
