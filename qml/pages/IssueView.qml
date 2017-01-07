@@ -16,6 +16,7 @@ Page
     id: page
 
     property string key: ""
+    property string rendereddescriptiontext
 
     SilicaFlickable
     {
@@ -24,14 +25,18 @@ Page
 
         VerticalScrollDecorator { flickable: flick }
 
-        Component.onCompleted: users.update("", "issueKey=" + key)
+        Component.onCompleted:
+        {
+            getrendereddescription(key, function (o) { rendereddescriptiontext = o })
+            users.update("", "issueKey=" + key)
+        }
 
         PullDownMenu
         {
             MenuItem
             {
                 text: "Edit issue"
-                onClicked: editissue()
+                onClicked: editissue( function () { getrendereddescription(key, function (o) { rendereddescriptiontext = o }) })
             }
 
             MenuItem
@@ -204,8 +209,8 @@ Page
                 wrapMode: Text.Wrap
                 textFormat: Text.RichText
                 font.pixelSize: Theme.fontSizeSmall
-                text: linkTheme + (currentissue.rendereddescription.length > 0
-                      ? currentissue.rendereddescription
+                text: linkTheme + (rendereddescriptiontext.length > 0
+                      ? rendereddescriptiontext
                       : currentissue.fields.description)
                 onLinkActivated: openLink(link)
             }

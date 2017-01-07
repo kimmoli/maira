@@ -804,15 +804,8 @@ ApplicationWindow
                     }
                 })
 
-                request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "?fields=description&expand=renderedFields", function(o)
-                {
-                    var tmp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
-                    logjson(tmp, "description")
-                    currentissue.rendereddescription = tmp.renderedFields.description.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host))
-
-                    if (typeof callback === "function")
-                        callback()
-                })
+                if (typeof callback === "function")
+                    callback()
             })
 
             comments.clear()
@@ -953,7 +946,7 @@ ApplicationWindow
         })
     }
 
-    function editissue()
+    function editissue(callback)
     {
         users.update("", "issueKey=" + currentissue.key)
         request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key + "/editmeta", function(o)
@@ -994,9 +987,19 @@ ApplicationWindow
                 logjson(fielddialog.content, "edit issue content")
                 post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key, JSON.stringify(fielddialog.content), "PUT", function(o)
                 {
-                    fetchissue(currentissue.key)
+                    fetchissue(currentissue.key, callback)
                 })
             })
+        })
+    }
+
+    function getrendereddescription(issuekey, callback)
+    {
+        request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "?fields=description&expand=renderedFields", function(o)
+        {
+            var tmp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+            logjson(tmp, "description")
+            callback(tmp.renderedFields.description.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host)))
         })
     }
 
