@@ -50,9 +50,11 @@ Page
                     {
                         if (editcomment.text.length > 0)
                         {
-                            managecomment(comment.issuekey, editcomment.text, comment.id)
-                            comment.body = editcomment.text
-                            getrenderedcomment(comment, function (o) { renderedcommenttext = o })
+                            managecomment(comment.issuekey, editcomment.text, comment.id, function ()
+                            {
+                                comment.body = editcomment.text
+                                getrenderedcomment(comment, function (o) { renderedcommenttext = o })
+                            })
                         }
                     })
                 }

@@ -72,7 +72,7 @@ Page
                     {
                         if (newcomment.text.length > 0)
                         {
-                            managecomment(key, newcomment.text)
+                            managecomment(key, newcomment.text, function() { fetchissue(currentissue.key) })
                         }
                     })
                 }

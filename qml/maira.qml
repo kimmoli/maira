@@ -633,7 +633,7 @@ ApplicationWindow
     function request(url, callback)
     {
         bi.start()
-        log(url)
+        log(url, "request")
         var xhr = new XMLHttpRequest()
         xhr.onreadystatechange = (function(myxhr)
         {
@@ -665,7 +665,7 @@ ApplicationWindow
     {
         bi.start()
         reqtype = typeof reqtype === 'undefined' ? "POST" : reqtype
-        log(url)
+        log(url, "post")
         var xhr = new XMLHttpRequest()
         xhr.onreadystatechange = (function(myxhr)
         {
@@ -847,14 +847,14 @@ ApplicationWindow
         })
     }
 
-    function managecomment(issuekey, body, id)
+    function managecomment(issuekey, body, id, callback)
     {
         var content = { body: body }
         logjson(content, issuekey)
         if (id > 0)
-            post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/comment/" + id, JSON.stringify(content), "PUT", function() { fetchissue(currentissue.key) })
+            post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/comment/" + id, JSON.stringify(content), "PUT", callback)
         else
-            post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content), "POST", function() { fetchissue(currentissue.key) })
+            post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content), "POST", callback)
     }
 
     function removeattachment(id)

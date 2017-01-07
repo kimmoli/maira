@@ -47,7 +47,7 @@ Page
                     {
                         if (newcomment.text.length > 0)
                         {
-                            managecomment(attachment.issuekey, newcomment.text)
+                            managecomment(attachment.issuekey, newcomment.text, function() { fetchissue(currentissue.key) })
                         }
                     })
                 }
