@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 kimmoli <kimmo.lindholm@eke.fi>
+ * Copyright (C) 2015-2017 kimmoli <kimmo.lindholm@eke.fi>
  * All rights reserved.
  *
  * This file is part of Maira
@@ -69,7 +69,7 @@ Page
 
             Label
             {
-                text: "(C) 2015 kimmoli"
+                text: "(C) 2015-2017 kimmoli"
                 color: Theme.primaryColor
                 font.pixelSize: Theme.fontSizeMedium
                 anchors.horizontalCenter: parent.horizontalCenter
