@@ -109,7 +109,11 @@ Page
                                 msgbox.showError("You're not logged in")
                         }
 
-                        onTextChanged: processacl()
+                        onTextChanged:
+                        {
+                            text = text.replace(/\n/g, "")
+                            processacl()
+                        }
 
                         property bool aclchange: false
                         function processacl()
