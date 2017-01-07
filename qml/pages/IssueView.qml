@@ -207,6 +207,7 @@ Page
                 text: linkTheme + (currentissue.rendereddescription.length > 0
                       ? currentissue.rendereddescription
                       : currentissue.fields.description)
+                onLinkActivated: openLink(link)
             }
 
             SectionHeader

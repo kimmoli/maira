@@ -94,6 +94,7 @@ Page
                 font.pixelSize: Theme.fontSizeSmall
                 textFormat: Text.RichText
                 text: linkTheme + (renderedcommenttext.length > 0 ? renderedcommenttext : comment.body)
+                onLinkActivated: openLink(link)
             }
         }
     }

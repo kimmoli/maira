@@ -204,6 +204,15 @@ ApplicationWindow
     ListModel
     {
         id: attachments
+
+        function getById(id)
+        {
+            for (var i = 0 ; i < count ; i++)
+            {
+                if (get(i).id === id)
+                    return get(i)
+            }
+        }
     }
 
     ListModel
@@ -1009,11 +1018,50 @@ ApplicationWindow
         })
     }
 
+    function openLink(link)
+    {
+        log(link, "link")
+
+        if (stringContains(link, serverinfo.baseUrl))
+        {
+            var linkkey = link.split("/").pop()
+
+            if (linkkey.match(/^[A-Z]+-\d+$/))
+            {
+                fetchissue(linkkey, function()
+                {
+                    pageStack.replaceAbove(pageStack.previousPage(),
+                        Qt.resolvedUrl("pages/IssueView.qml"), {key: linkkey})
+                })
+            }
+        }
+        else if (stringContains(link, "/attachment/"))
+        {
+            var lafn = link.split("/")
+            var attachmentId = 0
+
+            for (var i=0 ; i < lafn.length ; i++ )
+                if (lafn[i] == "attachment")
+                    attachmentId = lafn[i+1]
+
+            pageStack.push(Qt.resolvedUrl("pages/AttachmentView.qml"), { attachment: attachments.getById(attachmentId) })
+        }
+        else
+        {
+            Qt.openUrlExternally(link)
+        }
+    }
+
     /* Helpers */
 
     function stringStartsWith (string, prefix)
     {
         return string.slice(0, prefix.length) == prefix
+    }
+
+    function stringContains(string, anotherString)
+    {
+        return string.indexOf(anotherString) !== -1
     }
 
     function bytesToSize(bytes)
