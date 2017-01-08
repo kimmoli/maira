@@ -335,28 +335,25 @@ ApplicationWindow
 
         function sortby(by)
         {
+            log(by, "sort projects")
+
             sortedby = by
+            var fp = favouriteprojects.value.split(",")
+
+            for (var i=0 ; i<allprojects.length ; i++)
+            {
+                allprojects[i].favourite = (fp.indexOf(allprojects[i].key) > -1) ? "yes" : "no"
+            }
+
             allprojects.sort(function(a, b)
             {
+                var aisf = (a.favourite === "yes")
+                var bisf = (b.favourite === "yes")
+                if (aisf && !bisf) return -1
+                if (!aisf && bisf) return 1
                 return (a[by] < b[by]) ? -1 : ((a[by] > b[by]) ? 1 : 0)
             })
 
-            var fp = favouriteprojects.value.split(",")
-            var n = 0
-
-            for (var i=allprojects.length ; i>n ; )
-            {
-                if (fp.indexOf(allprojects[i-1].key) > -1)
-                {
-                    log(allprojects[i-1].key, "moving")
-                    allprojects.splice(0, 0, allprojects.splice(i-1, 1)[0])
-                    n++
-                }
-                else
-                {
-                    i--
-                }
-            }
             filter(prevsearchtext)
         }
 
@@ -371,25 +368,25 @@ ApplicationWindow
                 sortby(sortedby)
             })
         }
+
         function filter(searchtext)
         {
+            log(searchtext, "filter projects")
+
             clear()
             prevsearchtext = searchtext
 
             var r = new RegExp(searchtext, "i")
-            var fp = favouriteprojects.value.split(",")
-            log(fp, "favourite projects")
 
             for (var i=0 ; i<allprojects.length ; i++)
             {
                 if (allprojects[i].name.search(r) > -1 || allprojects[i].key.search(r) > -1)
                 {
-                    var fav = (fp.indexOf(allprojects[i].key) > -1)
                     append({ id: allprojects[i].id,
                              key: allprojects[i].key,
                              name: allprojects[i].name,
                              avatarurl: allprojects[i].avatarUrls["48x48"],
-                             favourite: fav ? "yes":"no"
+                             favourite: allprojects[i].favourite
                              })
                 }
             }

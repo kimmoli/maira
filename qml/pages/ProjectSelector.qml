@@ -138,7 +138,7 @@ Page
                         else
                             tmp.push(key)
                         favouriteprojects.value = tmp.join(",")
-                        log(tmp, "new favourites")
+                        log(tmp, "favourites changed")
                         projects.sortby(projects.sortedby)
                     }
                 }
