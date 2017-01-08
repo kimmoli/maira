@@ -53,7 +53,7 @@ Page
             }
             Rectangle
             {
-                visible: imagelocation.length > 0
+                visible: appiconlocation.length > 0
                 anchors.horizontalCenter: parent.horizontalCenter
                 height: 120
                 width: 120
@@ -61,9 +61,11 @@ Page
 
                 Image
                 {
-                    visible: imagelocation.length > 0
-                    source: imagelocation
+                    visible: appiconlocation.length > 0
+                    source: appiconlocation
                     anchors.centerIn: parent
+                    width: Theme.iconSizeLauncher
+                    height: Theme.iconSizeLauncher
                 }
             }
 

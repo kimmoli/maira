@@ -24,7 +24,7 @@ ApplicationWindow
     allowedOrientations: Orientation.All
     _defaultPageOrientations: Orientation.All
 
-    property string imagelocation: "/usr/share/icons/hicolor/86x86/apps/harbour-maira.png"
+    property string appiconlocation: "/usr/share/icons/hicolor/256x256/apps/harbour-maira.png"
 
     property string linkTheme: "<style>a:link { color: " + Theme.highlightColor + "; }</style>"
 

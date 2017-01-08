@@ -16,7 +16,9 @@ CoverBackground
     {
         id: icon
         anchors.centerIn: parent
-        source: imagelocation
+        source: appiconlocation
+        width: Theme.iconSizeLauncher
+        height: Theme.iconSizeLauncher
     }
     Label 
     {
