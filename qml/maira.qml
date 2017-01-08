@@ -497,6 +497,11 @@ ApplicationWindow
 
         function update()
         {
+            if (status == XmlListModel.Loading)
+                return
+
+            var newquery = query
+
             if (filteractivitystream.value === 1)
             {
                 var xpath = "/feed/entry[*["
@@ -508,16 +513,24 @@ ApplicationWindow
                 }
 
                 if (xpath === "/feed/entry[*[")
-                    query = "/feed/entry"
+                    newquery = "/feed/entry"
                 else
-                    query = xpath.slice(0, -4) + "]]"
+                    newquery = xpath.slice(0, -4) + "]]"
             }
             else
             {
-                query = "/feed/entry"
+                newquery = "/feed/entry"
             }
 
-            log(query, "new query")
+            if (newquery !== query)
+            {
+                log(newquery, "new query")
+                query = newquery
+            }
+            else
+            {
+                reload()
+            }
         }
 
         namespaceDeclarations: "declare default element namespace 'http://www.w3.org/2005/Atom';
@@ -975,8 +988,9 @@ ApplicationWindow
                         logjson(fielddialog.content, "new issue content")
                         post(Qt.atob(accounts.current.host) + "rest/api/2/issue", JSON.stringify(fielddialog.content), "POST", function(o)
                         {
-                            jqlsearch(0)
-                            pageStack.pop(pageStack.find( function(page){ return (page._depth === 0) }))
+                            var nir = JSON.parse(o.responseText)
+                            logjson(nir, "new issue response")
+                            msgbox.showMessage("Issue " + nir.key + " created")
                         })
                     })
                 })
@@ -985,7 +999,7 @@ ApplicationWindow
 
         proj.filterIssues.connect(function()
         {
-            jqlstring.value = "project = " + projects.get(proj.projectindex).key
+            jqlstring.value = "project = " + projects.get(proj.projectindex).key + " ORDER BY updated DESC"
             jqlsearch(0)
             pageStack.pop(pageStack.find( function(page){ return (page._depth === 0) }))
         })

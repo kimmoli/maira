@@ -50,8 +50,8 @@ Page
                 {
                     id: avatarimage
                     source: iconurl
-                    width: 48
-                    height: 48
+                    width: Theme.itemSizeExtraSmall/2
+                    height: Theme.itemSizeExtraSmall/2
                     anchors.verticalCenter: parent.verticalCenter
                 }
 

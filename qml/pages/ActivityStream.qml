@@ -99,7 +99,21 @@ Page
                         }
                         Image
                         {
-                            source: content.match(new RegExp("<img.*src=\\\"(" + Qt.atob(accounts.current.host) + ".*?)\\\""))[1]
+                            source:
+                            {
+                                var r = new RegExp("<img.*src=\\\"(" + Qt.atob(accounts.current.host) + ".*?)\\\"")
+                                var c = r.exec(content.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+
+                                if (c && c.length > 1)
+                                {
+                                    log(c[1], "activitystream image")
+                                    return c[1]
+                                }
+                                else
+                                {
+                                    return ""
+                                }
+                            }
                         }
                     }
                     onClicked:
