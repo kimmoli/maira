@@ -14,20 +14,16 @@ CoverBackground
 {
     Image
     {
-        id: icon
+        source: "coverbackround.png"
+        opacity: 0.1
         anchors.centerIn: parent
-        source: appiconlocation
-        width: Theme.iconSizeLauncher
-        height: Theme.iconSizeLauncher
+        width: parent.width * 0.8
+        height: sourceSize.height * width / sourceSize.width
     }
     Label 
     {
-        anchors.top: icon.bottom
-        anchors.topMargin: Theme.paddingMedium
-        anchors.horizontalCenter: parent.horizontalCenter
         text: serverinfo !== undefined ? serverinfo.serverTitle : "Maira"
         font.bold: true
+        anchors.centerIn: parent
     }
 }
-
-

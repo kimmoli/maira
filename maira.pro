@@ -47,6 +47,7 @@ DISTFILES += \
     harbour-maira.desktop \
     qml/maira.qml \
     qml/cover/CoverPage.qml \
+    qml/cover/coverbackround.png \
     qml/pages/Settings.qml \
     qml/pages/IssueView.qml \
     qml/pages/MainPage.qml \
