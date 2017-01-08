@@ -15,7 +15,8 @@ Page
     id: page
 
     property var projectindex
-    signal selected
+    signal createNewIssue
+    signal filterIssues
 
     SilicaListView
     {
@@ -67,7 +68,7 @@ Page
                     id: avatarimage
                     source: avatarurl
                     anchors.verticalCenter: parent.verticalCenter
-                    height: pli.height - Theme.paddingMedium
+                    height: parent.height - Theme.paddingMedium
                     width: height
                     fillMode: Image.PreserveAspectFit
                     Image
@@ -101,16 +102,31 @@ Page
             BackgroundItem
             {
                 anchors.fill: parent
-                onClicked:
-                {
-                    projectindex = index
-                    selected()
-                }
-                onPressAndHold: pli.showMenu()
+                onClicked: pli.showMenu()
             }
 
             menu: ContextMenu
             {
+                MenuItem
+                {
+                    text: "Create new issue"
+                    onClicked:
+                    {
+                        projectindex = index
+                        createNewIssue()
+                    }
+                }
+
+                MenuItem
+                {
+                    text: "Filter issues"
+                    onClicked:
+                    {
+                        projectindex = index
+                        filterIssues()
+                    }
+                }
+
                 MenuItem
                 {
                     text: favourite == "yes" ? "Remove from favourites" : "Favourite"

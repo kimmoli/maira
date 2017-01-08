@@ -15,6 +15,16 @@ Page
 {
     id: page
 
+    Connections
+    {
+        target: jqlstring
+        onValueChanged:
+        {
+            if (jql.text !== jqlstring.value)
+                jql.text = jqlstring.value
+        }
+    }
+
     SilicaFlickable 
     {
         id: flick
@@ -43,8 +53,8 @@ Page
             MenuItem
             {
                 enabled: loggedin
-                text: "Create new issue"
-                onClicked: newissue()
+                text: "Projects"
+                onClicked: projecthandler()
 
             }
             MenuItem
@@ -167,7 +177,6 @@ Page
                             var f = pageStack.push(Qt.resolvedUrl("FilterSelector.qml"), {newjql: jql.text})
                             f.filterselected.connect(function()
                             {
-                                jql.text = f.newjql
                                 jqlstring.value = f.newjql
                                 jqlsearch(0)
                             })

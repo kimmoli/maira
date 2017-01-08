@@ -913,7 +913,7 @@ ApplicationWindow
         post(Qt.atob(accounts.current.host) + "rest/api/2/filter/" + id, "", "DELETE", function(o) { filters.update() } )
     }
 
-    function newissue()
+    function projecthandler()
     {
         var projectkey
         var issuetype
@@ -922,8 +922,10 @@ ApplicationWindow
         comments.clear()
         customfields.clear()
         projects.update()
+
         var proj = pageStack.push(Qt.resolvedUrl("pages/ProjectSelector.qml"))
-        proj.selected.connect(function()
+
+        proj.createNewIssue.connect(function()
         {
             projectkey = projects.get(proj.projectindex).key
             fetchproject(projectkey)
@@ -978,6 +980,13 @@ ApplicationWindow
                     })
                 })
             })
+        })
+
+        proj.filterIssues.connect(function()
+        {
+            jqlstring.value = "project = " + projects.get(proj.projectindex).key
+            jqlsearch(0)
+            pageStack.pop(pageStack.find( function(page){ return (page._depth === 0) }))
         })
     }
 
