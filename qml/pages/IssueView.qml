@@ -18,6 +18,16 @@ Page
     property string key: ""
     property string rendereddescriptiontext
 
+    property int showLinks: 3
+
+    function followlink(ofkey)
+    {
+        fetchissue(ofkey, function()
+        {
+            pageStack.replace(Qt.resolvedUrl("IssueView.qml"), {key: ofkey})
+        })
+    }
+
     SilicaFlickable
     {
         id: flick
@@ -215,6 +225,85 @@ Page
 
             SectionHeader
             {
+                visible: currentissue.fields.issuelinks.length > 0
+                text: "Issue links (" + currentissue.fields.issuelinks.length + ")"
+            }
+
+            Repeater
+            {
+                model: links
+                delegate: BackgroundItem
+                {
+                    visible: opacity > 0.0
+                    opacity: index < showLinks ? 1.0 : 0.0
+                    Behavior on opacity { FadeAnimation {} }
+                    width: column.width
+                    height: Theme.itemSizeExtraSmall
+                    clip: true
+
+                    Column
+                    {
+                        anchors.verticalCenter: parent.verticalCenter
+                        x: Theme.paddingSmall
+                        width: parent.width - 2*Theme.paddingSmall
+
+                        Label
+                        {
+                            height: Theme.itemSizeExtraSmall/2
+                            width: parent.width
+                            font.pixelSize: Theme.fontSizeSmall
+                            text: linktype + " " + ofkey
+                            elide: Text.ElideRight
+                        }
+                        Label
+                        {
+                            height: Theme.itemSizeExtraSmall/2
+                            width: parent.width
+                            font.pixelSize: Theme.fontSizeExtraSmall
+                            text: ofsummary
+                            elide: Text.ElideRight
+                        }
+                    }
+
+                    onClicked: followlink(ofkey)
+                }
+            }
+
+            NumberAnimation
+            {
+                id: linkAnimation
+                target: page
+                property: "showLinks"
+                duration: 40 * currentissue.fields.issuelinks.length
+                easing.type: Easing.InOutQuad
+            }
+
+            BackgroundItem
+            {
+                visible: currentissue.fields.issuelinks.length > 3
+                width: parent.width
+                height: Theme.itemSizeExtraSmall
+                onClicked:
+                {
+                    if (showLinks === 3)
+                        linkAnimation.to = currentissue.fields.issuelinks.length
+                    else
+                        linkAnimation.to = 3
+                    linkAnimation.start()
+                }
+
+                Image
+                {
+                    source: "image://Theme/icon-lock-more"
+                    anchors.right: parent.right
+                    anchors.rightMargin: Theme.paddingMedium
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            SectionHeader
+            {
+                visible: currentissue.fields.attachment.length > 0
                 text: "Attachments (" + currentissue.fields.attachment.length + ")"
             }
 

@@ -62,6 +62,7 @@ ApplicationWindow
         issues.clear()
         comments.clear()
         attachments.clear()
+        links.clear()
         loggedin = false
 
         var url = Qt.atob(accounts.current.host) + "rest/auth/1/session"
@@ -220,6 +221,11 @@ ApplicationWindow
                     return get(i)
             }
         }
+    }
+
+    ListModel
+    {
+        id: links
     }
 
     ListModel
@@ -888,6 +894,34 @@ ApplicationWindow
                     issuekey: currentissue.key
                 })
             }
+
+            links.clear()
+            for (var i=0 ; i < currentissue.fields.issuelinks.length; i++)
+            {
+                if (currentissue.fields.issuelinks[i].inwardIssue)
+                {
+                    links.append({
+                        linktype: currentissue.fields.issuelinks[i].type.inward,
+                        ofkey: currentissue.fields.issuelinks[i].inwardIssue.key,
+                        ofsummary: currentissue.fields.issuelinks[i].inwardIssue.fields.summary
+                    })
+                }
+                else if (currentissue.fields.issuelinks[i].outwardIssue)
+                {
+                    links.append({
+                        linktype: currentissue.fields.issuelinks[i].type.outward,
+                        ofkey: currentissue.fields.issuelinks[i].outwardIssue.key,
+                        ofsummary: currentissue.fields.issuelinks[i].outwardIssue.fields.summary
+                    })
+                }
+                else
+                {
+                    links.append({
+                        linktype: "unknown",
+                        ofkey: "unknown"
+                    })
+                }
+            }
         })
     }
 
@@ -1086,7 +1120,7 @@ ApplicationWindow
     {
         log(link, "link")
 
-        if (stringContains(link, serverinfo.baseUrl))
+        if (stringContains(link, serverinfo.baseUrl) || stringContains(link, Qt.atob(accounts.current.host)))
         {
             var linkkey = link.split("/").pop()
 
@@ -1094,12 +1128,14 @@ ApplicationWindow
             {
                 fetchissue(linkkey, function()
                 {
-                    pageStack.replaceAbove(pageStack.previousPage(),
-                        Qt.resolvedUrl("pages/IssueView.qml"), {key: linkkey})
+                    pageStack.replaceAbove(pageStack.find( function(page){ return (page._depth === 0) }),
+                                           Qt.resolvedUrl("pages/IssueView.qml"), {key: linkkey})
                 })
+                return
             }
         }
-        else if (stringContains(link, "/attachment/"))
+
+        if (stringStartsWith(link, "/") && stringContains(link, "/attachment/"))
         {
             var lafn = link.split("/")
             var attachmentId = 0
@@ -1109,11 +1145,10 @@ ApplicationWindow
                     attachmentId = lafn[i+1]
 
             pageStack.push(Qt.resolvedUrl("pages/AttachmentView.qml"), { attachment: attachments.getById(attachmentId) })
+            return
         }
-        else
-        {
-            Qt.openUrlExternally(link)
-        }
+
+        Qt.openUrlExternally(link)
     }
 
     /* Helpers */
