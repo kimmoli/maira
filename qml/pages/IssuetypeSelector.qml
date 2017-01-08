@@ -61,7 +61,8 @@ Page
                     Label
                     {
                         text: name
-                        font.pixelSize: Theme.fontSizeSmall
+                        width: flick.width - 2* Theme.paddingLarge - avatarimage.width - Theme.paddingSmall
+                        elide: Text.ElideRight
                     }
                     Label
                     {

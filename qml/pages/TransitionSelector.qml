@@ -38,38 +38,52 @@ Page
         model: issuetransitions
         delegate: ListItem
         {
-            id: listItem
-            contentHeight: Theme.itemSizeMedium
+            id: listitem
+            height: Theme.itemSizeSmall
+            width: flick.width
+            clip: true
 
-            Column
+            Row
             {
+                anchors.left: parent.left
+                anchors.leftMargin: Theme.paddingLarge
+                spacing: Theme.paddingLarge
                 width: parent.width
                 anchors.verticalCenter: parent.verticalCenter
 
-                Label
+                Image
                 {
-                    width: parent.width
-                    clip: true
-                    anchors.left: parent.left
-                    anchors.leftMargin: Theme.paddingMedium
-                    text: name
-                    elide: Text.ElideRight
+                    id: avatarimage
+                    source: iconurl
+                    width: Theme.itemSizeExtraSmall/2
+                    height: Theme.itemSizeExtraSmall/2
+                    anchors.verticalCenter: parent.verticalCenter
                 }
-                Label
+
+                Column
                 {
-                    width: parent.width
-                    clip: true
-                    anchors.left: parent.left
-                    anchors.leftMargin: Theme.paddingMedium
-                    text: description
-                    font.pixelSize: Theme.fontSizeExtraSmall
-                    elide: Text.ElideRight
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Label
+                    {
+                        text: name
+                        width: flick.width - 2* Theme.paddingLarge - avatarimage.width - Theme.paddingSmall
+                        elide: Text.ElideRight
+                    }
+                    Label
+                    {
+                        text: description
+                        width: flick.width - 2* Theme.paddingLarge - avatarimage.width - Theme.paddingSmall
+                        font.pixelSize: Theme.fontSizeExtraSmall
+                        elide: Text.ElideRight
+                    }
                 }
             }
             onClicked:
             {
                 transitionid = id
                 var contentin = { fields: {} }
+
                 var f = Object.keys(fields).map(function (key)
                 {
                     if (currentissue.fields[key] != undefined && currentissue.fields[key] != null)
@@ -97,6 +111,7 @@ Page
 
                 logjson(f, "fields")
                 logjson(contentin, "content to fields")
+
                 var fielddialog = pageStack.push(Qt.resolvedUrl("Fields.qml"), { fields: f, content: contentin, acceptText: "Transit", addcomment: true })
                 fielddialog.accepted.connect(function()
                 {

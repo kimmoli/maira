@@ -305,13 +305,14 @@ ApplicationWindow
     ListModel
     {
         id: issuetransitions
+
         function update()
         {
             clear()
             request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key + "/transitions?expand=transitions.fields",
             function (o)
             {
-                var d = JSON.parse(o.responseText)
+                var d = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
                 logjson(d, "update transitions")
 
                 for (var i=0 ; i<d.transitions.length ; i++)
@@ -319,7 +320,8 @@ ApplicationWindow
                     append({ id: d.transitions[i].id,
                              name: d.transitions[i].name,
                              description: d.transitions[i].to.description,
-                             fields: d.transitions[i].fields
+                             fields: d.transitions[i].fields,
+                             iconurl: d.transitions[i].to.iconUrl
                              })
                 }
             })
