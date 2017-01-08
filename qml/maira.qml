@@ -1092,9 +1092,14 @@ ApplicationWindow
     {
         request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "?fields=description&expand=renderedFields", function(o)
         {
-            var tmp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
-            logjson(tmp, "description")
-            callback(linkTheme + tmp.renderedFields.description.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host)))
+            var resp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+            logjson(resp, "description")
+
+            var tmp = resp.renderedFields.description.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host))
+            tmp = tmp.replace(/(class..emoticon.*?height..)\d+/ig, "$1" + Theme.iconSizeExtraSmall)
+            tmp = tmp.replace(/(class..emoticon.*?width..)\d+/ig, "$1" + Theme.iconSizeExtraSmall)
+
+            callback(linkTheme + tmp)
         })
     }
 
@@ -1102,9 +1107,14 @@ ApplicationWindow
     {
         request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + comment.issuekey + "/comment/" + comment.id + "?expand=renderedBody", function(o)
         {
-            var tmp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
-            logjson(tmp, "comment")
-            callback(linkTheme + tmp.renderedBody.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host)))
+            var resp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+            logjson(resp, "comment")
+
+            var tmp = resp.renderedBody.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host))
+            tmp = tmp.replace(/(class..emoticon.*?height..)\d+/ig, "$1" + Theme.iconSizeExtraSmall)
+            tmp = tmp.replace(/(class..emoticon.*?width..)\d+/ig, "$1" + Theme.iconSizeExtraSmall)
+
+            callback(linkTheme + tmp)
         })
     }
 
