@@ -40,7 +40,7 @@ Page
             PageHeader
             {
                 id: pageHeader
-                title: "Activity Stream"
+                title: "Activity Stream" + (filteractivitystream.value === 1 ? " (filtered)" : "")
             }
 
             Repeater

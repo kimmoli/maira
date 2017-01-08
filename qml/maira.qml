@@ -500,7 +500,7 @@ ApplicationWindow
 
         function update()
         {
-            if (filteractivitystream.value)
+            if (filteractivitystream.value === 1)
             {
                 var xpath = "/feed/entry[*["
                 var fp = favouriteprojects.value.split(",")
