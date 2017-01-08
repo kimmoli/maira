@@ -480,6 +480,10 @@ ApplicationWindow
             }
             tmp.sort(function(a, b)
             {
+                var aswl = a.name.charAt(0).match(/\"/)
+                var bswl = b.name.charAt(0).match(/\"/)
+                if (!aswl && bswl) return -1
+                if (aswl && !bswl) return 1;
                 return (a.name < b.name) ? -1 : ((a.name > b.name) ? 1 : 0)
             })
             for (var i=0; i<tmp.length; i++)
