@@ -248,15 +248,6 @@ Page
                             font.pixelSize: Theme.fontSizeSmall
                             elide: Text.ElideRight
                         }
-                        Label
-                        {
-                            x: Theme.paddingMedium
-                            width: parent.width
-                            text: summary
-                            font.pixelSize: Theme.fontSizeSmall
-                            font.italic: true
-                            elide: Text.ElideRight
-                        }
                     }
                     Column
                     {
@@ -275,6 +266,25 @@ Page
                             height: width
                             source: statusicon
                         }
+                    }
+                    Label
+                    {
+                        text: since
+                        font.pixelSize: Theme.fontSizeExtraSmall
+                        font.italic: true
+                        anchors.top: parent.top
+                        anchors.right: parent.right
+                        anchors.rightMargin: Theme.itemSizeExtraSmall
+                    }
+                    Label
+                    {
+                        x: Theme.paddingMedium
+                        width: parent.width - 2*Theme.paddingMedium
+                        anchors.bottom: parent.bottom
+                        text: summary
+                        font.pixelSize: Theme.fontSizeSmall
+                        font.italic: true
+                        elide: Text.ElideRight
                     }
                 }
             }
