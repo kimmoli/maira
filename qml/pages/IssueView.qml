@@ -15,7 +15,6 @@ Page
 {
     id: page
 
-    property string key: ""
     property string rendereddescriptiontext
 
     property int showLinks: 3
@@ -24,7 +23,7 @@ Page
     {
         fetchissue(ofkey, function()
         {
-            pageStack.replace(Qt.resolvedUrl("IssueView.qml"), {key: ofkey})
+            pageStack.replace(Qt.resolvedUrl("IssueView.qml"))
         })
     }
 
@@ -37,8 +36,8 @@ Page
 
         Component.onCompleted:
         {
-            getrendereddescription(key, function (o) { rendereddescriptiontext = o })
-            users.update("", "issueKey=" + key)
+            getrendereddescription(currentissue.key, function (o) { rendereddescriptiontext = o })
+            users.update("", "issueKey=" + currentissue.key)
         }
 
         PullDownMenu
@@ -46,7 +45,7 @@ Page
             MenuItem
             {
                 text: "Edit issue"
-                onClicked: editissue( function () { getrendereddescription(key, function (o) { rendereddescriptiontext = o }) })
+                onClicked: editissue( function () { getrendereddescription(currentissue.key, function (o) { rendereddescriptiontext = o }) })
             }
 
             MenuItem
@@ -72,7 +71,7 @@ Page
                     filePicker.selectedContentChanged.connect(function()
                     {
                         var filename = filePicker.selectedContent
-                        FileUploader.uploadFile(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + key + "/attachments", filename)
+                        FileUploader.uploadFile(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key + "/attachments", filename)
                     })
                 }
             }
@@ -87,7 +86,7 @@ Page
                     {
                         if (newcomment.text.length > 0)
                         {
-                            managecomment(key, newcomment.text, 0, function() { fetchissue(currentissue.key) })
+                            managecomment(currentissue.key, newcomment.text, 0, function() { fetchissue(currentissue.key) })
                         }
                     })
                 }
@@ -106,7 +105,7 @@ Page
             PageHeader
             {
                 id: pageHeader
-                title: key
+                title: currentissue.key
                 rightMargin: Theme.horizontalPageMargin + projectavatar.width + Theme.paddingMedium
                 extraContent.anchors.left: undefined
                 extraContent.anchors.leftMargin: 0

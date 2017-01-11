@@ -678,7 +678,7 @@ ApplicationWindow
             {
                 fetchissue(keytoshow, function()
                 {
-                    pageStack.push(Qt.resolvedUrl("pages/IssueView.qml"), {key: keytoshow})
+                    pageStack.push(Qt.resolvedUrl("pages/IssueView.qml"))
                 })
                 activate()
             }
@@ -1139,7 +1139,7 @@ ApplicationWindow
                 fetchissue(linkkey, function()
                 {
                     pageStack.replaceAbove(pageStack.find( function(page){ return (page._depth === 0) }),
-                                           Qt.resolvedUrl("pages/IssueView.qml"), {key: linkkey})
+                                           Qt.resolvedUrl("pages/IssueView.qml"))
                 })
                 return
             }

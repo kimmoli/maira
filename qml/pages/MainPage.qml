@@ -217,7 +217,7 @@ Page
                     {
                         fetchissue(key, function()
                         {
-                            pageStack.push(Qt.resolvedUrl("IssueView.qml"), {key: key})
+                            pageStack.push(Qt.resolvedUrl("IssueView.qml"))
                         })
                     }
                     Column
