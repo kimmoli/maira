@@ -902,16 +902,16 @@ ApplicationWindow
                 {
                     links.append({
                         linktype: currentissue.fields.issuelinks[i].type.inward,
-                        ofkey: currentissue.fields.issuelinks[i].inwardIssue.key,
-                        ofsummary: currentissue.fields.issuelinks[i].inwardIssue.fields.summary
+                        linkedissuekey: currentissue.fields.issuelinks[i].inwardIssue.key,
+                        linkedissuesummary: currentissue.fields.issuelinks[i].inwardIssue.fields.summary
                     })
                 }
                 else if (currentissue.fields.issuelinks[i].outwardIssue)
                 {
                     links.append({
                         linktype: currentissue.fields.issuelinks[i].type.outward,
-                        ofkey: currentissue.fields.issuelinks[i].outwardIssue.key,
-                        ofsummary: currentissue.fields.issuelinks[i].outwardIssue.fields.summary
+                        linkedissuekey: currentissue.fields.issuelinks[i].outwardIssue.key,
+                        linkedissuesummary: currentissue.fields.issuelinks[i].outwardIssue.fields.summary
                     })
                 }
                 else

@@ -19,9 +19,9 @@ Page
 
     property int showLinks: 3
 
-    function followlink(ofkey)
+    function followlink(linkedissuekey)
     {
-        fetchissue(ofkey, function()
+        fetchissue(linkedissuekey, function()
         {
             pageStack.replace(Qt.resolvedUrl("IssueView.qml"))
         })
@@ -251,7 +251,7 @@ Page
                             height: Theme.itemSizeExtraSmall/2
                             width: parent.width
                             font.pixelSize: Theme.fontSizeSmall
-                            text: linktype + " " + ofkey
+                            text: linktype + " " + linkedissuekey
                             elide: Text.ElideRight
                         }
                         Label
@@ -259,12 +259,12 @@ Page
                             height: Theme.itemSizeExtraSmall/2
                             width: parent.width
                             font.pixelSize: Theme.fontSizeExtraSmall
-                            text: ofsummary
+                            text: linkedissuesummary
                             elide: Text.ElideRight
                         }
                     }
 
-                    onClicked: followlink(ofkey)
+                    onClicked: followlink(linkedissuekey)
                 }
             }
 
