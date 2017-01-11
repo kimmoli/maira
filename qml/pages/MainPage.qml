@@ -52,14 +52,20 @@ Page
             }
             MenuItem
             {
-                enabled: loggedin
+                visible: loggedin
                 text: "Projects"
                 onClicked: projecthandler()
 
             }
             MenuItem
             {
-                enabled: loggedin
+                visible: !loggedin
+                text: "Retry login"
+                onClicked: auth()
+            }
+            MenuItem
+            {
+                visible: loggedin
                 text: "Activity stream"
                 onClicked:
                 {
