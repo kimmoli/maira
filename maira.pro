@@ -86,7 +86,8 @@ DISTFILES += \
     qml/components/MainListDelegate.qml \
     qml/components/CommentDelegate.qml \
     qml/components/AttachmentDelegate.qml \
-    qml/components/CreatedByItem.qml
+    qml/components/CreatedByItem.qml \
+    qml/components/LinkDelegate.qml
 
 SOURCES += \
     src/main.cpp \
