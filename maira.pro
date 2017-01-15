@@ -82,7 +82,8 @@ DISTFILES += \
     icons/86x86/apps/harbour-maira.png \
     icons/108x108/apps/harbour-maira.png \
     icons/128x128/apps/harbour-maira.png \
-    icons/256x256/apps/harbour-maira.png
+    icons/256x256/apps/harbour-maira.png \
+    qml/components/MainListDelegate.qml
 
 SOURCES += \
     src/main.cpp \
