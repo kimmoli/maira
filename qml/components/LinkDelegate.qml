@@ -12,6 +12,7 @@ import Sailfish.Silica 1.0
 
 BackgroundItem
 {
+    id: delegate
     visible: opacity > 0.0
     opacity: index < showLinks ? 1.0 : 0.0
     Behavior on opacity { FadeAnimation {} }
@@ -27,18 +28,20 @@ BackgroundItem
 
         Label
         {
+            text: linktype + " " + linkedissuekey
             height: Theme.itemSizeExtraSmall/2
             width: parent.width
             font.pixelSize: Theme.fontSizeSmall
-            text: linktype + " " + linkedissuekey
+            color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
             elide: Text.ElideRight
         }
         Label
         {
+            text: linkedissuesummary
             height: Theme.itemSizeExtraSmall/2
             width: parent.width
             font.pixelSize: Theme.fontSizeExtraSmall
-            text: linkedissuesummary
+            color: delegate.highlighted ? Theme.highlightColor : Theme.primaryColor
             elide: Text.ElideRight
         }
     }
