@@ -309,46 +309,7 @@ Page
             Repeater
             {
                 model: attachments
-                delegate: BackgroundItem
-                {
-                    visible: index <3
-                    width: column.width
-                    height: Theme.itemSizeExtraSmall
-                    clip: true
-
-                    onClicked: pageStack.push(Qt.resolvedUrl("AttachmentView.qml"), {attachment: attachments.get(index)})
-
-                    Column
-                    {
-                        x: Theme.paddingSmall
-                        width: parent.width - 2*Theme.paddingSmall
-                        Item
-                        {
-                            width: parent.width
-                            height: Theme.itemSizeExtraSmall/2
-                            Label
-                            {
-                                anchors.left: parent.left
-                                font.pixelSize: Theme.fontSizeSmall
-                                text: author
-                            }
-                            Label
-                            {
-                                anchors.right: parent.right
-                                font.pixelSize: Theme.fontSizeSmall
-                                text: Qt.formatDateTime(new Date(created), "hh:mm dd.MM.yyyy")
-                            }
-                        }
-                        Label
-                        {
-                            width: parent.width
-                            height: Theme.itemSizeExtraSmall/2
-                            font.pixelSize: Theme.fontSizeExtraSmall
-                            elide: Text.ElideRight
-                            text: filename
-                        }
-                    }
-                }
+                delegate: AttachmentDelegate {}
             }
             BackgroundItem
             {
@@ -377,46 +338,7 @@ Page
             Repeater
             {
                 model: comments
-                delegate: BackgroundItem
-                {
-                    width: column.width
-                    height: Theme.itemSizeExtraSmall
-                    onClicked:
-                    {
-                        var cv = pageStack.push(Qt.resolvedUrl("CommentView.qml"), {comment: comments.get(index)})
-                    }
-
-                    Column
-                    {
-                        x: Theme.paddingSmall
-                        width: parent.width - 2*Theme.paddingSmall
-                        Item
-                        {
-                            width: parent.width
-                            height: Theme.itemSizeExtraSmall/2
-                            Label
-                            {
-                                anchors.left: parent.left
-                                font.pixelSize: Theme.fontSizeSmall
-                                text: author
-                            }
-                            Label
-                            {
-                                anchors.right: parent.right
-                                font.pixelSize: Theme.fontSizeSmall
-                                text: Qt.formatDateTime(new Date(created), "hh:mm dd.MM.yyyy")
-                            }
-                        }
-                        Label
-                        {
-                            width: parent.width
-                            height: Theme.itemSizeExtraSmall/2
-                            font.pixelSize: Theme.fontSizeExtraSmall
-                            elide: Text.ElideRight
-                            text: body.replace(/[\n\r]/g, ' ')
-                        }
-                    }
-                }
+                delegate: CommentDelegate {}
             }
         }
     }

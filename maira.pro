@@ -83,7 +83,10 @@ DISTFILES += \
     icons/108x108/apps/harbour-maira.png \
     icons/128x128/apps/harbour-maira.png \
     icons/256x256/apps/harbour-maira.png \
-    qml/components/MainListDelegate.qml
+    qml/components/MainListDelegate.qml \
+    qml/components/CommentDelegate.qml \
+    qml/components/AttachmentDelegate.qml \
+    qml/components/CreatedByItem.qml
 
 SOURCES += \
     src/main.cpp \
