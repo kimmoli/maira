@@ -213,12 +213,13 @@ Page
             }
             Label
             {
+                text: rendereddescriptiontext.length > 0 ? rendereddescriptiontext : currentissue.fields.description
                 x: Theme.paddingSmall
                 width: parent.width - 2* Theme.paddingSmall
+                clip: true
                 wrapMode: Text.Wrap
                 textFormat: Text.RichText
                 font.pixelSize: Theme.fontSizeSmall
-                text: rendereddescriptiontext.length > 0 ? rendereddescriptiontext : currentissue.fields.description
                 onLinkActivated: openLink(link)
             }
 

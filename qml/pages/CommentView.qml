@@ -90,12 +90,13 @@ Page
 
             Label
             {
+                text: renderedcommenttext.length > 0 ? renderedcommenttext : comment.body
                 x: Theme.paddingSmall
                 width: parent.width - 2* Theme.paddingSmall
+                clip: true
                 wrapMode: Text.Wrap
-                font.pixelSize: Theme.fontSizeSmall
                 textFormat: Text.RichText
-                text: renderedcommenttext.length > 0 ? renderedcommenttext : comment.body
+                font.pixelSize: Theme.fontSizeSmall
                 onLinkActivated: openLink(link)
             }
         }
