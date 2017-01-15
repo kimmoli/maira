@@ -211,17 +211,29 @@ Page
             {
                 text: "Description"
             }
-            Label
+            SilicaFlickable
             {
-                text: rendereddescriptiontext.length > 0 ? rendereddescriptiontext : currentissue.fields.description
+                id: descriptionFlick
+                clip: true
                 x: Theme.paddingSmall
                 width: parent.width - 2* Theme.paddingSmall
-                clip: true
-                wrapMode: Text.Wrap
-                textFormat: Text.RichText
-                font.pixelSize: Theme.fontSizeSmall
-                onLinkActivated: openLink(link)
+                height: descriptionText.height
+                contentWidth: descriptionText.contentWidth
+                contentHeight: descriptionText.height
+
+                Label
+                {
+                    id: descriptionText
+                    text: rendereddescriptiontext.length > 0 ? rendereddescriptiontext : currentissue.fields.description
+                    width: column.width - 2* Theme.paddingSmall
+                    wrapMode: Text.Wrap
+                    textFormat: Text.RichText
+                    font.pixelSize: Theme.fontSizeSmall
+                    onLinkActivated: openLink(link)
+                }
             }
+
+            HorizontalScrollDecorator { flickable: descriptionFlick }
 
             SectionHeader
             {

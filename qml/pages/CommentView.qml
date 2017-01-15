@@ -88,17 +88,29 @@ Page
                 value: Qt.formatDateTime(new Date(comment.created), "hh:mm dd.MM.yyyy")
             }
 
-            Label
+            SilicaFlickable
             {
-                text: renderedcommenttext.length > 0 ? renderedcommenttext : comment.body
+                id: commentFlick
+                clip: true
                 x: Theme.paddingSmall
                 width: parent.width - 2* Theme.paddingSmall
-                clip: true
-                wrapMode: Text.Wrap
-                textFormat: Text.RichText
-                font.pixelSize: Theme.fontSizeSmall
-                onLinkActivated: openLink(link)
+                height: commentText.height
+                contentWidth: commentText.contentWidth
+                contentHeight: commentText.height
+
+                Label
+                {
+                    id: commentText
+                    text: renderedcommenttext.length > 0 ? renderedcommenttext : comment.body
+                    width: column.width - 2* Theme.paddingSmall
+                    wrapMode: Text.Wrap
+                    textFormat: Text.RichText
+                    font.pixelSize: Theme.fontSizeSmall
+                    onLinkActivated: openLink(link)
+                }
             }
+
+            HorizontalScrollDecorator { flickable: commentFlick }
         }
     }
 }
