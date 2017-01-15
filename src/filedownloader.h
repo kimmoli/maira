@@ -31,7 +31,7 @@ public:
 signals:
     void downloadStarted();
     void downloadSuccess();
-    void downloadFailed();
+    void downloadFailed(QString errorMsg);
 
 private slots:
     void fileDownloaded();

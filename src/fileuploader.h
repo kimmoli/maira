@@ -27,7 +27,7 @@ public:
 signals:
     void uploadStarted();
     void uploadSuccess();
-    void uploadFailed();
+    void uploadFailed(QString errorMsg);
 
 private slots:
     void fileUploaded();

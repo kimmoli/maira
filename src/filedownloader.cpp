@@ -51,7 +51,11 @@ void FileDownloader::fileDownloaded()
     if (httpstatus == 200)
     {
         QFile file(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation) + "/" + m_filename);
-        file.open(QIODevice::WriteOnly);
+        if (!file.open(QIODevice::WriteOnly))
+        {
+            emit downloadFailed("Download failed, can't create file");
+            return;
+        }
         file.write(m_DownloadedData);
         file.close();
         emit downloadSuccess();
@@ -59,6 +63,6 @@ void FileDownloader::fileDownloaded()
     }
     else
     {
-        emit downloadFailed();
+        emit downloadFailed(QString("Download failed, error %1").arg(httpstatus));
     }
 }

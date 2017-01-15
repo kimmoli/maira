@@ -21,7 +21,7 @@ void FileUploader::uploadFile(QUrl url, QUrl source)
 {
     emit uploadStarted();
 
-    QString filename = source.toString(QUrl::RemoveScheme);
+    QString filename = source.toLocalFile();
 
     qDebug() << "url" << url << "filename" << filename;
 
@@ -34,7 +34,12 @@ void FileUploader::uploadFile(QUrl url, QUrl source)
     filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file\"; filename=\"" + filename.split("/").last() + "\""));
 
     QFile *file = new QFile(filename);
-    file->open(QIODevice::ReadOnly);
+    if (!file->open(QIODevice::ReadOnly))
+    {
+        emit uploadFailed("Upload failed, can't read file");
+        return;
+    }
+
     filePart.setBodyDevice(file);
 
     file->setParent(multiPart);
@@ -60,7 +65,7 @@ void FileUploader::fileUploaded()
     if (httpstatus == 200)
         emit uploadSuccess();
     else
-        emit uploadFailed();
+        emit uploadFailed(QString("Upload failed, error %1").arg(httpstatus));
 
     pReply->deleteLater();
 }

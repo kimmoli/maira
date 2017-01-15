@@ -626,7 +626,7 @@ ApplicationWindow
         onDownloadFailed:
         {
             bi.stop()
-            msgbox.showError("Download failed")
+            msgbox.showError(errorMsg)
         }
     }
 
@@ -643,7 +643,7 @@ ApplicationWindow
         onUploadFailed:
         {
             bi.stop()
-            msgbox.showError("Upload failed")
+            msgbox.showError(errorMsg)
         }
     }
 
