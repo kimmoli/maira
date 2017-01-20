@@ -16,11 +16,13 @@
 #include <QQmlContext>
 #include <QCoreApplication>
 #include <QtNetwork>
+#include <QtSystemInfo/QDeviceInfo>
 #include "filedownloader.h"
 #include "fileuploader.h"
 #include "notifications.h"
 #include "dbus.h"
 #include "consolemodel.h"
+#include "crypter.h"
 
 class MyNetworkCookieJar : public QNetworkCookieJar
 {
@@ -122,6 +124,11 @@ int main(int argc, char *argv[])
 
     Dbus *dbus = new Dbus();
     view->rootContext()->setContextProperty("Dbus", dbus);
+
+    QDeviceInfo *systemDeviceInfo = new QDeviceInfo();
+
+    Crypter *crypter = new Crypter(systemDeviceInfo->uniqueDeviceID().right(16).toULongLong(0, 16));
+    view->rootContext()->setContextProperty("Crypter", crypter);
 
     view->setSource(SailfishApp::pathTo("qml/maira.qml"));
     view->show();

@@ -91,7 +91,7 @@ Page
                 id: contextmenu
                 ContextMenu
                 {
-                    property bool my: Qt.atob(accounts.current.auth).split(":")[0] === owner
+                    property bool my: accounts.current.auth.split(":")[0] === owner
                     MenuItem
                     {
                         visible: my

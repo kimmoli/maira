@@ -21,8 +21,8 @@ Dialog
     {
         if (result === DialogResult.Accepted)
         {
-            host = Qt.btoa(hosturl.text)
-            auth = Qt.btoa(authusr.text + ":" + authpwd.text)
+            host = hosturl.text
+            auth = authusr.text + ":" + authpwd.text
         }
     }
 
@@ -57,7 +57,7 @@ Dialog
                 placeholderText: "http://jiraserver:1234/"
                 width: parent.width
                 focus: false
-                text: Qt.atob(accounts.current.host)
+                text: accounts.current.host
                 inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData | Qt.ImhUrlCharactersOnly
                 EnterKey.iconSource: "image://theme/icon-m-enter-accept"
                 validator: RegExpValidator { regExp: /^https?:\/\/.*\/$/ }
@@ -73,7 +73,7 @@ Dialog
                 placeholderText: "username"
                 width: parent.width
                 focus: false
-                text: Qt.atob(accounts.current.auth).split(":")[0]
+                text: accounts.current.auth.split(":")[0]
                 inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData
                 EnterKey.iconSource: "image://theme/icon-m-enter-accept"
                 EnterKey.onClicked:
@@ -88,7 +88,7 @@ Dialog
                 placeholderText: "password"
                 width: parent.width
                 focus: false
-                text: Qt.atob(accounts.current.auth).split(":").pop()
+                text: accounts.current.auth.split(":").pop()
                 inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhSensitiveData
                 echoMode: TextInput.PasswordEchoOnEdit
                 EnterKey.iconSource: "image://theme/icon-m-enter-accept"

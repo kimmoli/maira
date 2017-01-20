@@ -10,7 +10,7 @@
 TARGET = harbour-maira
 QT += network dbus
 CONFIG += sailfishapp link_pkgconfig
-PKGCONFIG += sailfishapp nemonotifications-qt5
+PKGCONFIG += sailfishapp nemonotifications-qt5 Qt5SystemInfo
 
 DEFINES += "APPVERSION=\\\"$${SPECVERSION}\\\""
 DEFINES += "APPNAME=\\\"$${TARGET}\\\""
@@ -96,7 +96,9 @@ SOURCES += \
     src/notifications.cpp \
     src/dbusAdaptor.cpp \
     src/dbus.cpp \
-    src/consolemodel.cpp
+    src/consolemodel.cpp \
+    src/simplecrypt.cpp \
+    src/crypter.cpp
 
 HEADERS += \
     src/filedownloader.h \
@@ -104,5 +106,7 @@ HEADERS += \
     src/notifications.h \
     src/dbusAdaptor.h \
     src/dbus.h \
-    src/consolemodel.h
+    src/consolemodel.h \
+    src/simplecrypt.h \
+    src/crypter.h
 

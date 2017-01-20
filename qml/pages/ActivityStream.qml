@@ -101,8 +101,8 @@ Page
                         {
                             source:
                             {
-                                var r = new RegExp("<img.*src=\\\"(" + Qt.atob(accounts.current.host) + ".*?)\\\"")
-                                var c = r.exec(content.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+                                var r = new RegExp("<img.*src=\\\"(" + accounts.current.host + ".*?)\\\"")
+                                var c = r.exec(content.replace(new RegExp(serverinfo.baseUrl, "g"), accounts.current.host))
 
                                 if (c && c.length > 1)
                                 {

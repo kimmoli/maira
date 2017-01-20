@@ -71,7 +71,7 @@ Page
                     filePicker.selectedContentChanged.connect(function()
                     {
                         var filename = filePicker.selectedContent
-                        FileUploader.uploadFile(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key + "/attachments", filename)
+                        FileUploader.uploadFile(accounts.current.host + "rest/api/2/issue/" + currentissue.key + "/attachments", filename)
                     })
                 }
             }

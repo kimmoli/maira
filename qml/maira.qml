@@ -50,7 +50,7 @@ ApplicationWindow
             db.transaction(function(x)
             {
                 x.executeSql("CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, host TEXT, auth TEXT)")
-                x.executeSql("INSERT INTO accounts (host, auth) VALUES(?, ?)",[Qt.btoa("http://jiraserver:8080/"), Qt.btoa("username:password")])
+                x.executeSql("INSERT INTO accounts (host, auth) VALUES(?, ?)",[Crypter.encrypt("http://jiraserver:8080/"), Crypter.encrypt("username:password")])
             })
         })
 
@@ -65,10 +65,10 @@ ApplicationWindow
         links.clear()
         loggedin = false
 
-        var url = Qt.atob(accounts.current.host) + "rest/auth/1/session"
+        var url = accounts.current.host + "rest/auth/1/session"
 
-        var content = { username: Qt.atob(accounts.current.auth).split(":")[0],
-                        password: Qt.atob(accounts.current.auth).split(":")[1] }
+        var content = { username: accounts.current.auth.split(":")[0],
+                        password: accounts.current.auth.split(":")[1] }
 
         post(url, JSON.stringify(content), "POST", function(o)
         {
@@ -79,14 +79,14 @@ ApplicationWindow
             getserverinfo()
             getcurrentuserinfo()
             jqlsearch(0)
-            activitystream.source = Qt.atob(accounts.current.host) + "activity"
+            activitystream.source = accounts.current.host + "activity"
             acdata.update()
         })
     }
 
     function getserverinfo()
     {
-        request(Qt.atob(accounts.current.host) + "rest/api/2/serverInfo", function(o)
+        request(accounts.current.host + "rest/api/2/serverInfo", function(o)
         {
             serverinfo = JSON.parse(o.responseText)
         })
@@ -94,9 +94,9 @@ ApplicationWindow
 
     function getcurrentuserinfo()
     {
-        request(Qt.atob(accounts.current.host) + "rest/api/2/user?key=" + Qt.atob(accounts.current.auth).split(":")[0], function(o)
+        request(accounts.current.host + "rest/api/2/user?key=" + accounts.current.auth.split(":")[0], function(o)
         {
-            currentuser = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+            currentuser = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), accounts.current.host))
         })
     }
 
@@ -170,11 +170,14 @@ ApplicationWindow
         function findaccount()
         {
             for (var i=0 ; i<count; i++)
+            {
                 if (get(i).id == activeaccount.value)
                 {
-                    current = get(i)
+                    var tmp = get(i)
+                    current = { "id" : tmp.id, "host" : Crypter.decrypt(tmp.host), "auth" : Crypter.decrypt(tmp.auth) }
                     break
                 }
+            }
             log("account " + activeaccount.value + " at index " + i)
         }
 
@@ -187,7 +190,6 @@ ApplicationWindow
                 var res = x.executeSql("SELECT * FROM accounts")
                 for(var i = 0; i < res.rows.length; i++)
                 {
-                    log(res.rows.item(i).id + " = " + res.rows.item(i).host + " - " + res.rows.item(i).auth)
                     append(res.rows.item(i))
                 }
             })
@@ -243,10 +245,10 @@ ApplicationWindow
             clear()
             if (searchtext === "")
             {
-                request(Qt.atob(accounts.current.host) + "rest/api/2/user/assignable/search?" + _searchterm,
+                request(accounts.current.host + "rest/api/2/user/assignable/search?" + _searchterm,
                 function (o)
                 {
-                    allusers = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+                    allusers = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), accounts.current.host))
                     logjson(allusers, "users update()")
 
                     for (var i=0 ; i<allusers.length ; i++)
@@ -289,7 +291,7 @@ ApplicationWindow
         function update()
         {
             clear()
-            request(Qt.atob(accounts.current.host) + "rest/api/2/filter/favourite",
+            request(accounts.current.host + "rest/api/2/filter/favourite",
             function (o)
             {
                 var d = JSON.parse(o.responseText)
@@ -315,10 +317,10 @@ ApplicationWindow
         function update()
         {
             clear()
-            request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key + "/transitions?expand=transitions.fields",
+            request(accounts.current.host + "rest/api/2/issue/" + currentissue.key + "/transitions?expand=transitions.fields",
             function (o)
             {
-                var d = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+                var d = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), accounts.current.host))
                 logjson(d, "update transitions")
 
                 for (var i=0 ; i<d.transitions.length ; i++)
@@ -367,10 +369,10 @@ ApplicationWindow
 
         function update()
         {
-            request(Qt.atob(accounts.current.host) + "rest/api/2/project",
+            request(accounts.current.host + "rest/api/2/project",
             function (o)
             {
-                allprojects = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+                allprojects = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), accounts.current.host))
                 logjson(allprojects, "projects update()")
                 prevsearchtext = ""
                 sortby(sortedby)
@@ -415,7 +417,7 @@ ApplicationWindow
 
         function update()
         {
-            request(Qt.atob(accounts.current.host) + "rest/api/2/jql/autocompletedata",
+            request(accounts.current.host + "rest/api/2/jql/autocompletedata",
             function (o)
             {
                 allacdata = JSON.parse(o.responseText)
@@ -755,10 +757,10 @@ ApplicationWindow
 
     function jqlsearch(startat)
     {
-        request(Qt.atob(accounts.current.host) + "rest/api/2/search?jql=" + jqlstring.value.replace(/ /g, "+") + "&startAt=" + startat + "&maxResults=10",
+        request(accounts.current.host + "rest/api/2/search?jql=" + jqlstring.value.replace(/ /g, "+") + "&startAt=" + startat + "&maxResults=10",
         function (o)
         {
-            var d = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+            var d = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), accounts.current.host))
             logjson(d, "jqlsearch")
 
             if (startat === 0)
@@ -788,10 +790,10 @@ ApplicationWindow
 
     function fetchproject(projectkey)
     {
-        request(Qt.atob(accounts.current.host) + "rest/api/2/project/" + projectkey,
+        request(accounts.current.host + "rest/api/2/project/" + projectkey,
         function (o)
         {
-            currentproject = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+            currentproject = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), accounts.current.host))
 
             logjson(currentproject, "fetchproject")
 
@@ -810,16 +812,16 @@ ApplicationWindow
 
     function fetchissue(issuekey, callback)
     {
-        request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey,
+        request(accounts.current.host + "rest/api/2/issue/" + issuekey,
         function (o)
         {
-            currentissue = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+            currentissue = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), accounts.current.host))
 
             logjson(currentissue, "fetchissue")
 
             customfields.clear()
 
-            request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/editmeta", function(o)
+            request(accounts.current.host + "rest/api/2/issue/" + issuekey + "/editmeta", function(o)
             {
                 var meta = JSON.parse(o.responseText)
 
@@ -931,19 +933,19 @@ ApplicationWindow
         var content = { body: body }
         logjson(content, issuekey)
         if (id > 0)
-            post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/comment/" + id, JSON.stringify(content), "PUT", callback)
+            post(accounts.current.host + "rest/api/2/issue/" + issuekey + "/comment/" + id, JSON.stringify(content), "PUT", callback)
         else
-            post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content), "POST", callback)
+            post(accounts.current.host + "rest/api/2/issue/" + issuekey + "/comment", JSON.stringify(content), "POST", callback)
     }
 
     function removeattachment(id)
     {
-        post(Qt.atob(accounts.current.host) + "rest/api/2/attachment/" + id, "", "DELETE", function() { fetchissue(currentissue.key) })
+        post(accounts.current.host + "rest/api/2/attachment/" + id, "", "DELETE", function() { fetchissue(currentissue.key) })
     }
 
     function removecomment(issuekey, id)
     {
-        post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "/comment/" + id, "", "DELETE", function() { fetchissue(currentissue.key) })
+        post(accounts.current.host + "rest/api/2/issue/" + issuekey + "/comment/" + id, "", "DELETE", function() { fetchissue(currentissue.key) })
     }
 
     function managefilter(name, description, jql, id)
@@ -954,14 +956,14 @@ ApplicationWindow
                         favourite: true }
         logjson(content, "managefilter")
         if (id > 0)
-            post(Qt.atob(accounts.current.host) + "rest/api/2/filter/" + id, JSON.stringify(content), "PUT", function(o) { filters.update() } )
+            post(accounts.current.host + "rest/api/2/filter/" + id, JSON.stringify(content), "PUT", function(o) { filters.update() } )
         else
-            post(Qt.atob(accounts.current.host) + "rest/api/2/filter", JSON.stringify(content), "POST", function(o) { filters.update() } )
+            post(accounts.current.host + "rest/api/2/filter", JSON.stringify(content), "POST", function(o) { filters.update() } )
     }
 
     function deletefilter(id)
     {
-        post(Qt.atob(accounts.current.host) + "rest/api/2/filter/" + id, "", "DELETE", function(o) { filters.update() } )
+        post(accounts.current.host + "rest/api/2/filter/" + id, "", "DELETE", function(o) { filters.update() } )
     }
 
     function projecthandler()
@@ -984,7 +986,7 @@ ApplicationWindow
             var it = pageStack.push(Qt.resolvedUrl("pages/IssuetypeSelector.qml"))
             it.selected.connect(function()
             {
-                request(Qt.atob(accounts.current.host) + "rest/api/2/issue/createmeta?projectKeys=" + projectkey + "&issuetypeIds=" + issuetypes.get(it.issuetypeindex).id + "&expand=projects.issuetypes.fields", function(o)
+                request(accounts.current.host + "rest/api/2/issue/createmeta?projectKeys=" + projectkey + "&issuetypeIds=" + issuetypes.get(it.issuetypeindex).id + "&expand=projects.issuetypes.fields", function(o)
                 {
                     var meta = JSON.parse(o.responseText)
                     logjson(meta, "createmeta")
@@ -1023,7 +1025,7 @@ ApplicationWindow
                     fielddialog.accepted.connect(function()
                     {
                         logjson(fielddialog.content, "new issue content")
-                        post(Qt.atob(accounts.current.host) + "rest/api/2/issue", JSON.stringify(fielddialog.content), "POST", function(o)
+                        post(accounts.current.host + "rest/api/2/issue", JSON.stringify(fielddialog.content), "POST", function(o)
                         {
                             var nir = JSON.parse(o.responseText)
                             logjson(nir, "new issue response")
@@ -1045,7 +1047,7 @@ ApplicationWindow
     function editissue(callback)
     {
         users.update("", "issueKey=" + currentissue.key)
-        request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key + "/editmeta", function(o)
+        request(accounts.current.host + "rest/api/2/issue/" + currentissue.key + "/editmeta", function(o)
         {
             var contentin = { fields: {} }
             var meta = JSON.parse(o.responseText)
@@ -1081,7 +1083,7 @@ ApplicationWindow
             fielddialog.accepted.connect(function()
             {
                 logjson(fielddialog.content, "edit issue content")
-                post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key, JSON.stringify(fielddialog.content), "PUT", function(o)
+                post(accounts.current.host + "rest/api/2/issue/" + currentissue.key, JSON.stringify(fielddialog.content), "PUT", function(o)
                 {
                     fetchissue(currentissue.key, callback)
                 })
@@ -1091,12 +1093,12 @@ ApplicationWindow
 
     function getrendereddescription(issuekey, callback)
     {
-        request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + issuekey + "?fields=description&expand=renderedFields", function(o)
+        request(accounts.current.host + "rest/api/2/issue/" + issuekey + "?fields=description&expand=renderedFields", function(o)
         {
-            var resp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+            var resp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), accounts.current.host))
             logjson(resp, "description")
 
-            var tmp = resp.renderedFields.description.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host))
+            var tmp = resp.renderedFields.description.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + accounts.current.host)
             tmp = tmp.replace(/(class..emoticon.*?height..)\d+/ig, "$1" + Theme.iconSizeExtraSmall)
             tmp = tmp.replace(/(class..emoticon.*?width..)\d+/ig, "$1" + Theme.iconSizeExtraSmall)
 
@@ -1106,12 +1108,12 @@ ApplicationWindow
 
     function getrenderedcomment(comment, callback)
     {
-        request(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + comment.issuekey + "/comment/" + comment.id + "?expand=renderedBody", function(o)
+        request(accounts.current.host + "rest/api/2/issue/" + comment.issuekey + "/comment/" + comment.id + "?expand=renderedBody", function(o)
         {
-            var resp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), Qt.atob(accounts.current.host)))
+            var resp = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), accounts.current.host))
             logjson(resp, "comment")
 
-            var tmp = resp.renderedBody.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + Qt.atob(accounts.current.host))
+            var tmp = resp.renderedBody.replace(new RegExp("src=\\\"\/jira\/", "g"), "src=\"" + accounts.current.host)
             tmp = tmp.replace(/(class..emoticon.*?height..)\d+/ig, "$1" + Theme.iconSizeExtraSmall)
             tmp = tmp.replace(/(class..emoticon.*?width..)\d+/ig, "$1" + Theme.iconSizeExtraSmall)
 
@@ -1121,7 +1123,7 @@ ApplicationWindow
 
     function maketransition(content)
     {
-        post(Qt.atob(accounts.current.host) + "rest/api/2/issue/" + currentissue.key + "/transitions", JSON.stringify(content), "POST", function()
+        post(accounts.current.host + "rest/api/2/issue/" + currentissue.key + "/transitions", JSON.stringify(content), "POST", function()
         {
             fetchissue(currentissue.key)
         })
@@ -1131,7 +1133,7 @@ ApplicationWindow
     {
         log(link, "link")
 
-        if (stringContains(link, serverinfo.baseUrl) || stringContains(link, Qt.atob(accounts.current.host)))
+        if (stringContains(link, serverinfo.baseUrl) || stringContains(link, accounts.current.host))
         {
             var linkkey = link.split("/").pop()
 

@@ -89,7 +89,7 @@ Page
                             clip: true
                             anchors.left: parent.left
                             anchors.leftMargin: Theme.paddingMedium
-                            text: Qt.atob(host)
+                            text: Crypter.decrypt(host)
                             elide: Text.ElideRight
                             font.bold: activeaccount.value === accounts.get(index).id
                         }
@@ -99,7 +99,7 @@ Page
                             clip: true
                             anchors.left: parent.left
                             anchors.leftMargin: Theme.paddingMedium
-                            text: Qt.atob(auth).split(":")[0]
+                            text: Crypter.decrypt(auth).split(":")[0]
                             font.pixelSize: Theme.fontSizeSmall
                             elide: Text.ElideRight
                             font.bold: activeaccount.value === accounts.get(index).id
@@ -137,7 +137,7 @@ Page
                             var db = opendb()
                             db.transaction(function(x)
                             {
-                                x.executeSql("UPDATE accounts SET host=?, auth=? WHERE id=?",[ea.host, ea.auth, activeaccount.value])
+                                x.executeSql("UPDATE accounts SET host=?, auth=? WHERE id=?",[Crypter.encrypt(ea.host), Crypter.encrypt(ea.auth), activeaccount.value])
                                 log("account updated")
                             })
                             accounts.reload()
@@ -150,7 +150,7 @@ Page
                         var db = opendb()
                         db.transaction(function(x)
                         {
-                            x.executeSql("INSERT INTO accounts (host, auth) VALUES(?, ?)",[accounts.current.host, accounts.current.auth])
+                            x.executeSql("INSERT INTO accounts (host, auth) VALUES(?, ?)",[Crypter.encrypt(accounts.current.host), Crypter.encrypt(accounts.current.auth)])
                             log("inserted new account")
                         })
                         accounts.reload()

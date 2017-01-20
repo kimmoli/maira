@@ -61,7 +61,11 @@ Page
             {
                 visible: !loggedin
                 text: "Retry login"
-                onClicked: auth()
+                onClicked:
+                {
+                    accounts.findaccount()
+                    auth()
+                }
             }
             MenuItem
             {
