@@ -575,16 +575,21 @@ ApplicationWindow
                             key = get(i-1).objecttitle
                         else if (get(i-1).targettitle != undefined && get(i-1).targettitle.match(/^[A-Z]+-\d+$/))
                             key = get(i-1).targettitle
+                        var title = ""
+                        title = get(i-1).title.replace(/<(?:.|\n)*?>/gm, '').replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ')
 
-                        Notifications.notify(serverinfo.serverTitle,
-                                             ((key.length > 0) ? key : serverinfo.serverTitle),
-                                             get(i-1).title.replace(/<(?:.|\n)*?>/gm, '').replace(/[\n\r]/g, ' ').replace(/\s+/g, ' '),
-                                             false, get(i-1).published, key)
+                        Notifications.notify(serverinfo.serverTitle, ((key.length > 0) ? key : serverinfo.serverTitle), title, false, get(i-1).published, key)
                         newitems++
                     }
                 }
-                if (newitems > 0)
+                if (newitems == 1)
+                {
+                    Notifications.notify("", ((key.length > 0) ? key : serverinfo.serverTitle), title, true, "", key)
+                }
+                else if (newitems > 1)
+                {
                     Notifications.notify("", serverinfo.serverTitle, newitems + " new activity", true, "", "")
+                }
                 lastactivitystreamupdate.value = new Date().getTime()
             }
         }

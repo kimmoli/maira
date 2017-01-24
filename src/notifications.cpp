@@ -25,6 +25,16 @@ void Notifications::notify(QString appName, QString summary, QString body, bool 
         notif.setPreviewSummary(summary);
         notif.setPreviewBody(body);
         notif.setCategory("x-harbour.maira.activity.preview");
+        if (issuekey.isEmpty())
+        {
+            remoteactions << Notification::remoteAction("default",
+                                                        QString(),
+                                                        "com.kimmoli.harbour.maira",
+                                                        "/",
+                                                        "com.kimmoli.harbour.maira",
+                                                        "openapp",
+                                                         QVariantList());
+        }
     }
     else
     {
