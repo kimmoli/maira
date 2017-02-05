@@ -16,6 +16,9 @@ Page
     id: page
 
     property var attachment
+    property bool isImage : stringStartsWith(attachment.mime, "image")
+
+    Component.onDestruction: bi.stop()
 
     RemorsePopup { id: remorse }
 
@@ -98,8 +101,24 @@ Page
             Image
             {
                 id: thumbnail
+                visible: isImage && previewImage.status == Image.Loading
                 anchors.horizontalCenter: parent.horizontalCenter
-                source: stringStartsWith(attachment.mime, "image") ? attachment.thumbnail : "image://theme/icon-l-document"
+                source: isImage ? attachment.thumbnail : ""
+            }
+            Image
+            {
+                id: previewImage
+                anchors.horizontalCenter: parent.horizontalCenter
+                sourceSize.width: page.width - 2*Theme.paddingLarge
+                fillMode: Image.PreserveAspectFit
+                source: isImage ? attachment.content : "image://theme/icon-l-document"
+                onStatusChanged:
+                {
+                    if (status == Image.Loading && isImage)
+                        bi.start()
+                    else
+                        bi.stop()
+                }
             }
             Item
             {
@@ -108,6 +127,7 @@ Page
             }
             IconButton
             {
+                visible: previewImage.status == Image.Ready
                 icon.source: "image://theme/icon-m-cloud-download"
                 anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: FileDownloader.downloadFile(attachment.content, attachment.filename)
