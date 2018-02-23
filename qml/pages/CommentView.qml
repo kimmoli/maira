@@ -59,6 +59,21 @@ Page
                     })
                 }
             }
+            MenuItem
+            {
+                text: "Add new comment"
+                onClicked:
+                {
+                    var newcomment = pageStack.push(Qt.resolvedUrl("Editor.qml"), {text: ""})
+                    newcomment.accepted.connect(function()
+                    {
+                        if (newcomment.text.length > 0)
+                        {
+                            managecomment(currentissue.key, newcomment.text, 0, function() { fetchissue(currentissue.key) })
+                        }
+                    })
+                }
+            }
         }
 
         contentHeight: column.height + pageHeader.height
