@@ -267,7 +267,7 @@ ApplicationWindow
             clear()
             if (searchtext === "")
             {
-                request(accounts.current.host + "rest/api/2/user/assignable/search?" + _searchterm,
+                request(accounts.current.host + "rest/api/2/user/assignable/search?maxResults=200&" + _searchterm,
                 function (o)
                 {
                     allusers = JSON.parse(o.responseText.replace(new RegExp(serverinfo.baseUrl, "g"), accounts.current.host))
