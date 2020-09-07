@@ -143,8 +143,8 @@ Page
             DetailUserItem
             {
                 label: "Assignee"
-                avatar: currentissue.fields.assignee.avatarUrls["32x32"]
-                value: currentissue.fields.assignee.displayName
+                avatar: (currentissue.fields.assignee == null) ? "" : currentissue.fields.assignee.avatarUrls["32x32"]
+                value: (currentissue.fields.assignee == null) ? "None" : currentissue.fields.assignee.displayName
             }
             DetailUserItem
             {

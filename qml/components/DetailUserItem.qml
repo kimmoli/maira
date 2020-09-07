@@ -87,5 +87,6 @@ Item {
         font.pixelSize: Theme.fontSizeSmall
         textFormat: Text.PlainText
         wrapMode: Text.Wrap
+        font.italic: text == "None"
     }
 }

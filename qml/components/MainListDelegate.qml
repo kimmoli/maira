@@ -81,6 +81,7 @@ BackgroundItem
             font.pixelSize: Theme.fontSizeSmall
             color: delegate.highlighted ? Theme.highlightColor : Theme.secondaryColor
             elide: Text.ElideRight
+            font.italic: text == "None"
         }
 
         Column

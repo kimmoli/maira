@@ -800,7 +800,7 @@ ApplicationWindow
                 issues.append({
                     key: d.issues[i].key,
                     summary: d.issues[i].fields.summary,
-                    assignee: d.issues[i].fields.assignee.displayName,
+                    assignee: (d.issues[i].fields.assignee == null) ? "None" : d.issues[i].fields.assignee.displayName,
                     issueicon: d.issues[i].fields.issuetype.iconUrl,
                     statusicon: d.issues[i].fields.status.iconUrl,
                     priorityicon: iconUrl(d.issues[i].fields.priority),
