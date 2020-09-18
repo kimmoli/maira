@@ -63,6 +63,8 @@ ApplicationWindow
         comments.clear()
         attachments.clear()
         links.clear()
+        subtasks.clear()
+        parents.clear()
         loggedin = false
 
         var url = accounts.current.host + "rest/auth/1/session"
@@ -250,6 +252,16 @@ ApplicationWindow
     ListModel
     {
         id: links
+    }
+
+    ListModel
+    {
+        id: subtasks
+    }
+
+    ListModel
+    {
+        id: parents
     }
 
     ListModel
@@ -932,25 +944,50 @@ ApplicationWindow
                 {
                     links.append({
                         linktype: currentissue.fields.issuelinks[i].type.inward,
-                        linkedissuekey: currentissue.fields.issuelinks[i].inwardIssue.key,
-                        linkedissuesummary: currentissue.fields.issuelinks[i].inwardIssue.fields.summary
+                        key: currentissue.fields.issuelinks[i].inwardIssue.key,
+                        summary: currentissue.fields.issuelinks[i].inwardIssue.fields.summary,
+                        typeicon: currentissue.fields.issuelinks[i].inwardIssue.fields.issuetype.iconUrl,
+                        statusicon: currentissue.fields.issuelinks[i].inwardIssue.fields.status.iconUrl,
+                        priorityicon: currentissue.fields.issuelinks[i].inwardIssue.fields.priority.iconUrl
                     })
                 }
                 else if (currentissue.fields.issuelinks[i].outwardIssue)
                 {
                     links.append({
                         linktype: currentissue.fields.issuelinks[i].type.outward,
-                        linkedissuekey: currentissue.fields.issuelinks[i].outwardIssue.key,
-                        linkedissuesummary: currentissue.fields.issuelinks[i].outwardIssue.fields.summary
+                        key: currentissue.fields.issuelinks[i].outwardIssue.key,
+                        summary: currentissue.fields.issuelinks[i].outwardIssue.fields.summary,
+                        typeicon: currentissue.fields.issuelinks[i].outwardIssue.fields.issuetype.iconUrl,
+                        statusicon: currentissue.fields.issuelinks[i].outwardIssue.fields.status.iconUrl,
+                        priorityicon: currentissue.fields.issuelinks[i].outwardIssue.fields.priority.iconUrl
                     })
                 }
-                else
-                {
-                    links.append({
-                        linktype: "unknown",
-                        ofkey: "unknown"
-                    })
-                }
+            }
+
+            subtasks.clear()
+            for (var i=0 ; i < currentissue.fields.subtasks.length; i++)
+            {
+                subtasks.append({
+                    linktype: "",
+                    key: currentissue.fields.subtasks[i].key,
+                    summary: currentissue.fields.subtasks[i].fields.summary,
+                    typeicon: currentissue.fields.subtasks[i].fields.issuetype.iconUrl,
+                    statusicon: currentissue.fields.subtasks[i].fields.status.iconUrl,
+                    priorityicon: currentissue.fields.subtasks[i].fields.priority.iconUrl
+                })
+            }
+
+            parents.clear()
+            if (currentissue.fields.hasOwnProperty("parent"))
+            {
+                parents.append({
+                    linktype: "",
+                    key: currentissue.fields.parent.key,
+                    summary: currentissue.fields.parent.fields.summary,
+                    typeicon: currentissue.fields.parent.fields.issuetype.iconUrl,
+                    statusicon: currentissue.fields.parent.fields.status.iconUrl,
+                    priorityicon: currentissue.fields.parent.fields.priority.iconUrl
+                })
             }
         })
     }

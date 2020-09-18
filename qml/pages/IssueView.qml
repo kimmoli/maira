@@ -224,7 +224,7 @@ Page
                 Label
                 {
                     id: descriptionText
-                    text: rendereddescriptiontext.length > 0 ? rendereddescriptiontext : currentissue.fields.description
+                    text: rendereddescriptiontext.length > 0 ? rendereddescriptiontext : (currentissue.fields.description.length > 0 ? currentissue.fields.description : "None")
                     width: column.width - 2* Theme.paddingSmall
                     wrapMode: Text.Wrap
                     textFormat: Text.RichText
@@ -252,7 +252,7 @@ Page
                 id: linkAnimation
                 target: page
                 property: "showLinks"
-                duration: 40 * currentissue.fields.issuelinks.length
+                duration: 40 * links.length
                 easing.type: Easing.InOutQuad
             }
 
@@ -264,10 +264,66 @@ Page
                 onClicked:
                 {
                     if (showLinks === 3)
-                        linkAnimation.to = currentissue.fields.issuelinks.length
+                        linkAnimation.to = links.length
                     else
                         linkAnimation.to = 3
                     linkAnimation.start()
+                }
+
+                Image
+                {
+                    source: "image://Theme/icon-lock-more"
+                    anchors.right: parent.right
+                    anchors.rightMargin: Theme.paddingMedium
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+
+            SectionHeader
+            {
+                visible: currentissue.fields.hasOwnProperty("parent")
+                text: "Parent task"
+            }
+
+            Repeater
+            {
+                model: parents
+                delegate: LinkDelegate {}
+            }
+
+            SectionHeader
+            {
+                visible: currentissue.fields.hasOwnProperty("subtasks") && currentissue.fields.subtasks.length > 0
+                text: "Subtasks (" + currentissue.fields.subtasks.length + ")"
+            }
+
+            Repeater
+            {
+                model: subtasks
+                delegate: LinkDelegate {}
+            }
+
+            NumberAnimation
+            {
+                id: subtaskAnimation
+                target: page
+                property: "showLinks"
+                duration: 40 * currentissue.fields.subtasks.length
+                easing.type: Easing.InOutQuad
+            }
+
+            BackgroundItem
+            {
+                visible: currentissue.fields.subtasks.length > 3
+                width: parent.width
+                height: Theme.itemSizeExtraSmall
+                onClicked:
+                {
+                    if (showLinks === 3)
+                        subtaskAnimation.to = currentissue.fields.subtasks.length
+                    else
+                        subtaskAnimation.to = 3
+                    subtaskAnimation.start()
                 }
 
                 Image
